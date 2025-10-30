@@ -199,8 +199,8 @@ CREATE TABLE IF NOT EXISTS contact_products (
 
 CREATE INDEX IF NOT EXISTS idx_contact_products_contact_id ON contact_products(contact_id);
 CREATE INDEX IF NOT EXISTS idx_contact_products_product_id ON contact_products(product_id);
-CREATE INDEX IF NOT EXISTS idx_contact_products_active ON contact_products(access_expires_at) 
-    WHERE access_expires_at IS NULL OR access_expires_at > now();
+CREATE INDEX IF NOT EXISTS idx_contact_products_expires ON contact_products(access_expires_at)
+    WHERE access_expires_at IS NOT NULL;
 
 COMMENT ON TABLE contact_products IS 'Many-to-many: Contacts ↔ Products (access/purchase history)';
 
