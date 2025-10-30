@@ -1,11 +1,11 @@
 id,email,first_name,last_name,phone,address_line_1,address_line_2,city,state,postal_code,country,email_subscribed,source_system,kajabi_id,kajabi_member_id,ticket_tailor_id,zoho_id,quickbooks_id,mailchimp_id,notes,created_at,updated_at
-30b523b3-aa4e-4d5d-974c-c2285051d183,lilaplays@gmail.com,Lila,Tresemer,,,,,,,,True,kajabi,106604827,35974138,,,,,,2020-11-05T11:10:44Z,2025-10-28T21:51:21Z
-3a961edf-7b2b-4d26-89b2-be784b735dbc,corin@thestarhouse.org,Corin,Blanchard,7205857345,3472 Sunshine Canyon Dr,,Boulder,CO,80302,US,True,kajabi,107567998,36177348,,,,,,2020-11-09T14:27:29Z,2025-10-28T21:51:21Z
-12021f64-925f-4c41-a51a-34cedb51e9cd,ascpr@thestarhouse.org,Debbie,Burns,3032458452,3472 Sunshine Canyon Dr,3472 Sunshine Canyon Dr,BOULDER,CO,80302,US,True,kajabi,107568519,36177409,,,,,,2020-11-09T14:28:51Z,2025-10-28T21:51:21Z
-1808dc45-36ec-41ad-a28c-5f4298a58ee8,vincecobb@gmail.com,Vince,Cobb,,,,,,,,True,kajabi,115571898,,,,,,,2020-12-03T17:51:08Z,2025-10-28T21:51:21Z
-9b10083f-8d30-452e-aec2-fc66c0e01794,kim@kimmariecoaching.com,Kim,Marie,,,,,,,,True,kajabi,115571904,2173943088,,,,,,2020-12-03T17:51:11Z,2025-10-28T21:51:21Z
-bebd50aa-2fe4-436c-b839-dde4d2106e3c,akimama09@earthlink.net,Karin,Aarons,,,,,,,,True,kajabi,115571905,38362555,,,,,,2020-12-03T17:51:11Z,2025-10-28T21:51:21Z
-2f0b0a5e-1e3c-46f8-8b4c-3f17d47539b8,nicolettaabbate@yahoo.co.uk,Nicoletta,Abbate,,,,,,,,True,kajabi,115571909,,,,,,,2020-12-03T17:51:12Z,2025-10-28T21:51:21Z
-32bba625-d6bf-4145-a908-226a6a3642eb,paintpaper9@gmail.com,Ellen,Abramson,,,,,,,,True,kajabi,115571914,,,,,,,2020-12-03T17:51:14Z,2025-10-28T21:51:21Z
-cb60537a-b6c3-44e8-a78d-4660716a9738,rebeccaabraxas@gmail.com,Rebecca,Abrades,,,,,,,,True,kajabi,115571917,,,,,,,2020-12-03T17:51:15Z,2025-10-28T21:51:21Z
-db874969-1fbe-480c-bafe-afa1bf464387,priscila.ykt@gmail.com,Priscila,Abreu,,,,,,,,True,kajabi,115572047,,,,,,,2020-12-03T17:52:57Z,2025-10-28T21:51:21Z
+30b523b3-aa4e-4d5d-974c-c2285051d183,lilaplays@gmail.com,Lila,Tresemer,,,,,,,,true,kajabi,106604827,35974138,,,,,,2020-11-05T11:10:44Z,2025-10-28T21:51:21Z
+3a961edf-7b2b-4d26-89b2-be784b735dbc,corin@thestarhouse.org,Corin,Blanchard,7205857345,3472 Sunshine Canyon Dr,,Boulder,CO,80302,US,true,kajabi,107567998,36177348,,,,,,2020-11-09T14:27:29Z,2025-10-28T21:51:21Z
+12021f64-925f-4c41-a51a-34cedb51e9cd,ascpr@thestarhouse.org,Debbie,Burns,3032458452,3472 Sunshine Canyon Dr,3472 Sunshine Canyon Dr,BOULDER,CO,80302,US,true,kajabi,107568519,36177409,,,,,,2020-11-09T14:28:51Z,2025-10-28T21:51:21Z
+1808dc45-36ec-41ad-a28c-5f4298a58ee8,vincecobb@gmail.com,Vince,Cobb,,,,,,,,true,kajabi,115571898,,,,,,,2020-12-03T17:51:08Z,2025-10-28T21:51:21Z
+9b10083f-8d30-452e-aec2-fc66c0e01794,kim@kimmariecoaching.com,Kim,Marie,,,,,,,,true,kajabi,115571904,2173943088,,,,,,2020-12-03T17:51:11Z,2025-10-28T21:51:21Z
+bebd50aa-2fe4-436c-b839-dde4d2106e3c,akimama09@earthlink.net,Karin,Aarons,,,,,,,,true,kajabi,115571905,38362555,,,,,,2020-12-03T17:51:11Z,2025-10-28T21:51:21Z
+2f0b0a5e-1e3c-46f8-8b4c-3f17d47539b8,nicolettaabbate@yahoo.co.uk,Nicoletta,Abbate,,,,,,,,true,kajabi,115571909,,,,,,,2020-12-03T17:51:12Z,2025-10-28T21:51:21Z
+32bba625-d6bf-4145-a908-226a6a3642eb,paintpaper9@gmail.com,Ellen,Abramson,,,,,,,,true,kajabi,115571914,,,,,,,2020-12-03T17:51:14Z,2025-10-28T21:51:21Z
+cb60537a-b6c3-44e8-a78d-4660716a9738,rebeccaabraxas@gmail.com,Rebecca,Abrades,,,,,,,,true,kajabi,115571917,,,,,,,2020-12-03T17:51:15Z,2025-10-28T21:51:21Z
+db874969-1fbe-480c-bafe-afa1bf464387,priscila.ykt@gmail.com,Priscila,Abreu,,,,,,,,true,kajabi,115572047,,,,,,,2020-12-03T17:52:57Z,2025-10-28T21:51:21Z
