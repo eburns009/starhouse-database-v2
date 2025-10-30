@@ -1,0 +1,11 @@
+id,contact_id,product_id,kajabi_subscription_id,status,amount,currency,billing_cycle,start_date,trial_end_date,cancellation_date,next_billing_date,payment_processor,coupon_code,created_at,updated_at
+c22a1dfc-dcb3-4e02-8fc4-89ab18fa5276,3feef3e3-8f89-44cf-9311-2bbb39e4d3ef,,35285761,canceled,$242.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+aa51e987-7d7f-40f4-b620-bdd8b1bb5841,dfa0b190-2fb2-410a-9364-8d10b0277500,,35289382,canceled,$968.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+d0bc233f-5de7-4b90-ab94-0350c00ba23e,2b23ce1f-fd53-453a-85ac-02b81bce7215,,35499064,active,$242.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+cfb84f8a-a954-4add-a032-3330515b4181,10febf51-c6d0-42f3-bfaa-4d9f7596803a,,35814795,canceled,$242.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+0b987166-d8cf-4d91-a804-f067f05d2b00,0927e405-587d-481e-8589-95e79dbdd3c0,,35837493,canceled,$242.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+c2494cbd-38c2-4a6e-bebe-00133fcc940d,bd5cf844-375b-4045-afd5-fab60d39b94d,,36047725,canceled,$44.00,USD,Month,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+dea95a75-db38-418e-8355-f26991c4fb94,53bff3a8-2ce1-44ce-8323-b132ba05d410,,36052465,canceled,$968.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+65b4cf98-de8a-4cd5-96d4-37a65a342ac5,9762adf7-40f3-40ac-914a-163254f857eb,,36511053,canceled,$22.00,USD,Month,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+f6f16391-b8aa-4715-8e5d-8b11124a2731,94f9c9f5-68b1-429e-a567-f3238030ae85,,36574186,active,$22.00,USD,Month,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
+9cf63d3c-8b17-4eb2-9cc6-90b4f37f8ca4,a30d8747-274f-4884-85fa-a70ca314861b,,37080647,active,$242.00,USD,Year,,,,,PayPal,,2025-10-28T21:51:21Z,2025-10-28T21:51:21Z
