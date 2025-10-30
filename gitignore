@@ -1,0 +1,42 @@
+# Sensitive files
+*.env
+*.secret
+.env.local
+connection_string.txt
+credentials.json
+
+# Database dumps
+*.dump
+*.sql.gz
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+package-lock.json

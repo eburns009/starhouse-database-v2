@@ -1,0 +1,11 @@
+id,contact_id,product_id,subscription_id,kajabi_transaction_id,order_number,transaction_type,status,amount,currency,tax_amount,quantity,payment_method,payment_processor,coupon_code,transaction_date,created_at,updated_at
+94ef0074-d25e-4afd-b27a-0e5aa48726a0,621acab9-c1b0-4006-b31b-74de7fed2f6d,,,2277195243,N/A,subscription,completed,88.00,USD,,,paypal,PayPal,,2025-10-28T06:56:07Z,2025-10-28T06:56:07Z,2025-10-28T21:51:22Z
+2b7be874-3ecd-4da2-b769-ad4be4e71461,6211f8e5-7fb2-4cc5-b9aa-aecc18470cd6,,,2277190610,N/A,subscription,completed,12.00,USD,,,paypal,PayPal,,2025-10-28T05:42:09Z,2025-10-28T05:42:09Z,2025-10-28T21:51:22Z
+75257ad1-34de-47f5-9c38-c237765ddf69,f4ca26da-204c-442c-83ae-56390b2c9300,,,2277189895,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-28T05:34:06Z,2025-10-28T05:34:06Z,2025-10-28T21:51:22Z
+46843fc3-fb68-4450-b3af-4680f4285321,e4a3e220-e9c2-4fdd-b07d-c6e0dc357c2f,,,2277189215,N/A,subscription,completed,55.00,USD,,,paypal,PayPal,,2025-10-28T05:26:42Z,2025-10-28T05:26:42Z,2025-10-28T21:51:22Z
+08b33be2-e1c0-4595-931c-be7a9919d3c9,6cfad42e-de59-4b10-a599-7643046b0093,,,2277181947,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-28T04:03:44Z,2025-10-28T04:03:44Z,2025-10-28T21:51:22Z
+c0e208ef-fd86-4c1c-a199-9912ea5513bf,ea8e4f73-bfe1-456b-9061-539269d0968e,,,2277103376,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-27T05:59:25Z,2025-10-27T05:59:25Z,2025-10-28T21:51:22Z
+533f70c4-b128-4703-b683-1bdb391a3d4e,a4fc72ae-ed54-4899-9306-75f986080fad,,,2277022365,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-26T04:32:30Z,2025-10-26T04:32:30Z,2025-10-28T21:51:22Z
+60b38411-751e-44b5-a29e-38ae97ddcc3e,931895ab-f451-4e14-9201-3cc5de36e472,,,2277021356,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-26T04:18:09Z,2025-10-26T04:18:09Z,2025-10-28T21:51:22Z
+d78d55a1-9f4c-49e6-a34f-af7afff1bbaf,e8e1cd86-57e0-4dc6-bb97-887f40cdfa3e,,,2276874548,N/A,subscription,completed,33.00,USD,,,paypal,PayPal,,2025-10-24T04:21:48Z,2025-10-24T04:21:48Z,2025-10-28T21:51:22Z
+004e020f-b2f4-4802-817d-81da3450176d,1d286806-a0e1-4317-abf0-ae6a15baa0a1,,,2276796529,N/A,subscription,completed,22.00,USD,,,paypal,PayPal,,2025-10-23T05:36:47Z,2025-10-23T05:36:47Z,2025-10-28T21:51:22Z
