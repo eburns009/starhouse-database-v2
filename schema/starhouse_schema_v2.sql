@@ -95,7 +95,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_contacts_email ON contacts(email);
 CREATE INDEX IF NOT EXISTS idx_contacts_kajabi_id ON contacts(kajabi_id) WHERE kajabi_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_contacts_source_system ON contacts(source_system);
 CREATE INDEX IF NOT EXISTS idx_contacts_created_at ON contacts(created_at);
-CREATE INDEX IF NOT EXISTS idx_contacts_email_subscribed ON contacts(email_subscribed) WHERE email_subscribed = true;
+CREATE INDEX IF NOT EXISTS idx_contacts_email_subscribed ON contacts(email_subscribed) WHERE email_subscribed IS TRUE;
 
 -- Source system composite indexes (for incremental imports)
 CREATE INDEX IF NOT EXISTS idx_contacts_source_lookup ON contacts(source_system, kajabi_id) WHERE kajabi_id IS NOT NULL;
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_products_name_norm ON products(name_norm);
 CREATE INDEX IF NOT EXISTS idx_products_kajabi_offer_id ON products(kajabi_offer_id) WHERE kajabi_offer_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_products_active ON products(active) WHERE active = true;
+CREATE INDEX IF NOT EXISTS idx_products_active ON products(active) WHERE active IS TRUE;
 
 COMMENT ON TABLE products IS 'Products, courses, memberships, and services offered';
 
@@ -251,8 +251,8 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_contact_id ON subscriptions(contact
 CREATE INDEX IF NOT EXISTS idx_subscriptions_product_id ON subscriptions(product_id) WHERE product_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_kajabi_id ON subscriptions(kajabi_subscription_id) WHERE kajabi_subscription_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_subscriptions_next_billing ON subscriptions(next_billing_date) WHERE status = 'active' AND next_billing_date IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_subscriptions_active ON subscriptions(contact_id, status) WHERE status = 'active';
+CREATE INDEX IF NOT EXISTS idx_subscriptions_next_billing ON subscriptions(next_billing_date) WHERE next_billing_date IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_subscriptions_active ON subscriptions(contact_id, status);
 
 COMMENT ON TABLE subscriptions IS 'Recurring subscription records with full lifecycle tracking';
 
