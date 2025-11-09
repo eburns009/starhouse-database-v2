@@ -216,3 +216,107 @@ credentials.json
 # Sensitive data
 .env.local
 *.env.backup
+
+# Data import files (contain sensitive PII and are too large)
+data/current/*.csv
+data/current/*.txt
+data/current/*.tsv
+data/archive/**/*.csv
+data/archive/**/*.txt
+data/archive/**/*.tsv
+
+# But keep sample files (sanitized test data)
+!data/samples/*.csv
+!data/samples/*.txt
+!data/samples/*.tsv
+
+# But keep templates and production data structure
+!data/templates/
+data/production/**/*.csv
+data/production/**/*.txt
+data/production/**/*.tsv
+
+# Keep folder structure
+!data/*/.gitkeep
+!data/*/README.md
+
+# Session documentation (keep in docs/sessions/ instead)
+/*SESSION*.md
+/*HANDOFF*.md
+/*NEXT_SESSION*.md
+/*DEPLOYMENT*.md
+/*IMPORT*.md
+/*WEBHOOK*.md
+/*PAYPAL*.md
+/*KAJABI*.md
+/*ZOHO*.md
+/*TICKET*.md
+/*FAANG*.md
+/*COMPLETE*.md
+/*DUPLICATE*.md
+/*CRITICAL*.md
+/*SECURITY*.md
+/*PROGRAM*.md
+/*CONTACT*.md
+/*MEMBERSHIP*.md
+/*DATA*.md
+/*REVIEWER*.md
+/*OPTION*.md
+/*PROPER*.md
+/*COMPREHENSIVE*.md
+/*OPERATIONAL*.md
+/*PRODUCTION*.md
+/*CONFLICT*.md
+/*WHATS_NEW.md
+/*TESTING_GUIDE.md
+/*QUICK*.md
+/*STEP*.md
+/*STANDARDIZATION*.md
+/*SUBSCRIPTION*.md
+/*UI*.md
+/*ADDRESS*.md
+/*API*.md
+/*CHECK*.md
+/*CODE_REVIEW*.md
+/*CSV*.md
+/*DATABASE*.md
+/*DLQ*.md
+/*FINAL*.md
+/*INTEGRATION*.md
+/*MASSIVE*.md
+/*OPTIMIZATION*.md
+/*PERFORMANCE*.md
+/*PHONE*.md
+/APPLY_MIGRATION_NOW.md
+/DEPLOY_NOW.md
+
+# Temporary data files in root
+/*.csv
+/*.tsv
+/*.txt
+!README.md
+!LICENSE
+!requirements.txt
+
+# Temporary SQL files in root
+/*.sql
+!schema/**/*.sql
+!scripts/**/*.sql
+
+# Temporary directories
+/kajabi*
+
+# Temporary analysis and summary files in root
+contact_search*.md
+enriched_donor_list.*
+*mailing_list.csv
+*validated_mailing_list.csv
+
+# Data files with PII (keep in data/ folders only)
+data/*.csv
+data/*.tsv
+data/*.txt
+data/*.json
+!data/README.md
+!data/samples/**
+!data/templates/**

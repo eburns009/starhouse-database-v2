@@ -1,0 +1,5 @@
+[functions.kajabi-webhook]
+verify_jwt = false
+
+[functions.paypal-webhook]
+verify_jwt = false

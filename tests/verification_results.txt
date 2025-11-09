@@ -1,0 +1,374 @@
+Timing is on.
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║              CONTACTS MODULE - VERIFICATION TEST SUITE                   ║
+║                        FAANG Quality Standards                           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 1: Subscription Data Integrity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ test_id |                    test_name                    | pass_count | fail_count | total | result  
+---------+-------------------------------------------------+------------+------------+-------+---------
+ 1.1     | Active subscriptions with membership_product_id |        226 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 55.520 ms
+ test_id |                 test_name                 | pass_count | fail_count | total | result  
+---------+-------------------------------------------+------------+------------+-------+---------
+ 1.2     | Subscription amount matches product price |        223 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 53.967 ms
+ test_id |                     test_name                     | pass_count | fail_count | total | result  
+---------+---------------------------------------------------+------------+------------+-------+---------
+ 1.3     | is_annual flag matches amount (annual vs monthly) |        222 |          1 |   226 | ❌ FAIL
+(1 row)
+
+Time: 54.987 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 2: Contact Data Integrity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ test_id |                     test_name                      | pass_count | fail_count | total | result  
+---------+----------------------------------------------------+------------+------------+-------+---------
+ 2.1     | Active subscribers have membership_level populated |        128 |          0 |   128 | ✅ PASS
+(1 row)
+
+Time: 54.100 ms
+ test_id |                       test_name                       | pass_count | fail_count | total | result  
+---------+-------------------------------------------------------+------------+------------+-------+---------
+ 2.2     | Contact membership_level matches subscription product |        185 |          8 |   193 | ❌ FAIL
+(1 row)
+
+Time: 54.012 ms
+ test_id |                test_name                 | pass_count | fail_count | total | result  
+---------+------------------------------------------+------------+------------+-------+---------
+ 2.3     | has_active_subscription flag is accurate |       5880 |         33 |  5913 | ❌ FAIL
+(1 row)
+
+Time: 86.815 ms
+ test_id |              test_name              | pass_count | fail_count | total | result  
+---------+-------------------------------------+------------+------------+-------+---------
+ 2.4     | All contact emails are valid format |       5913 |          0 |  5913 | ✅ PASS
+(1 row)
+
+Time: 106.217 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 3: Referential Integrity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ test_id |                 test_name                  | pass_count | fail_count | total | result  
+---------+--------------------------------------------+------------+------------+-------+---------
+ 3.1     | All subscriptions reference valid contacts |        411 |          0 |   411 | ✅ PASS
+(1 row)
+
+Time: 54.155 ms
+ test_id |                   test_name                   | pass_count | fail_count | total | result  
+---------+-----------------------------------------------+------------+------------+-------+---------
+ 3.2     | Active subscriptions reference valid products |        226 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 53.359 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 4: Business Logic Validation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ test_id |                  test_name                  | pass_count | fail_count | total |              result               
+---------+---------------------------------------------+------------+------------+-------+-----------------------------------
+ 4.1     | Contacts with multiple active subscriptions |         99 |         62 |   161 | ⚠️  WARNING (check if intentional)
+(1 row)
+
+Time: 54.203 ms
+ test_id |               test_name               | pass_count | fail_count | total | result  
+---------+---------------------------------------+------------+------------+-------+---------
+ 4.2     | All subscription amounts are positive |        226 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 53.005 ms
+ test_id |            test_name            | pass_count | fail_count | total | result  
+---------+---------------------------------+------------+------------+-------+---------
+ 4.3     | Start date <= next billing date |        226 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 53.572 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 5: Performance Validation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Testing v_contact_list_optimized view performance...
+                                                                                         QUERY PLAN                                                                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.90..850.43 rows=50 width=213) (actual time=7.473..21.497 rows=50 loops=1)
+   ->  Merge Left Join  (cost=0.90..100449.06 rows=5912 width=213) (actual time=7.471..21.488 rows=50 loops=1)
+         Merge Cond: (c.id = contact_roles.contact_id)
+         ->  Merge Left Join  (cost=0.56..99741.96 rows=5912 width=146) (actual time=3.742..17.502 rows=50 loops=1)
+               Merge Cond: (c.id = c_1.id)
+               ->  Index Scan using contacts_pkey on contacts c  (cost=0.28..372.76 rows=5912 width=82) (actual time=0.016..0.157 rows=50 loops=1)
+               ->  Index Scan using contacts_pkey on contacts c_1  (cost=0.28..99280.52 rows=5912 width=80) (actual time=3.050..16.626 rows=50 loops=1)
+                     SubPlan 1
+                       ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.269..0.269 rows=1 loops=50)
+                             ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce  (cost=0.28..2.50 rows=1 width=23) (actual time=0.269..0.269 rows=1 loops=50)
+                                   Index Cond: (contact_id = c_1.id)
+                                   Filter: is_outreach
+                     SubPlan 2
+                       ->  Limit  (cost=0.28..2.50 rows=1 width=23) (never executed)
+                             ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_1  (cost=0.28..2.50 rows=1 width=23) (never executed)
+                                   Index Cond: (contact_id = c_1.id)
+                                   Filter: is_primary
+                     SubPlan 3
+                       ->  Limit  (cost=2.51..2.51 rows=1 width=31) (never executed)
+                             ->  Sort  (cost=2.51..2.51 rows=1 width=31) (never executed)
+                                   Sort Key: ce_2.created_at
+                                   ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_2  (cost=0.28..2.50 rows=1 width=31) (never executed)
+                                         Index Cond: (contact_id = c_1.id)
+                                         Filter: verified
+                     SubPlan 4
+                       ->  Limit  (cost=2.51..2.51 rows=1 width=31) (never executed)
+                             ->  Sort  (cost=2.51..2.51 rows=1 width=31) (never executed)
+                                   Sort Key: ce_3.created_at
+                                   ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_3  (cost=0.28..2.50 rows=1 width=31) (never executed)
+                                         Index Cond: (contact_id = c_1.id)
+                     SubPlan 6
+                       ->  Index Only Scan using ux_contact_emails_one_outreach on contact_emails ce_4  (cost=0.28..128.56 rows=5912 width=16) (actual time=0.074..1.637 rows=5912 loops=1)
+                             Heap Fetches: 101
+                     SubPlan 8
+                       ->  Index Only Scan using ux_contact_emails_one_primary on contact_emails ce_5  (cost=0.28..128.56 rows=5912 width=16) (never executed)
+                             Heap Fetches: 0
+                     SubPlan 10
+                       ->  Seq Scan on contact_emails ce_6  (cost=0.00..171.13 rows=5913 width=16) (never executed)
+                             Filter: verified
+                     SubPlan 12
+                       ->  Index Only Scan using idx_contact_emails_contact_id on contact_emails ce_7  (cost=0.28..128.58 rows=5913 width=16) (never executed)
+                             Heap Fetches: 0
+         ->  GroupAggregate  (cost=0.34..572.42 rows=4015 width=80) (actual time=3.720..3.910 rows=35 loops=1)
+               Group Key: contact_roles.contact_id
+               ->  Incremental Sort  (cost=0.34..377.18 rows=4835 width=32) (actual time=3.133..3.205 rows=46 loops=1)
+                     Sort Key: contact_roles.contact_id, contact_roles.role
+                     Presorted Key: contact_roles.contact_id
+                     Full-sort Groups: 2  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+                     ->  Index Scan using idx_v_contact_roles_quick_contact_id on contact_roles  (cost=0.28..188.31 rows=4835 width=32) (actual time=0.027..0.151 rows=65 loops=1)
+ Planning Time: 5.838 ms
+ Execution Time: 22.391 ms
+(51 rows)
+
+Time: 93.470 ms
+
+Testing v_contact_detail_enriched view performance...
+                                                                                             QUERY PLAN                                                                                             
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=3.12..58.55 rows=1 width=921) (actual time=6.759..6.784 rows=1 loops=1)
+   InitPlan 31
+     ->  Limit  (cost=0.00..0.05 rows=1 width=16) (actual time=0.020..0.021 rows=1 loops=1)
+           ->  Seq Scan on contacts  (cost=0.00..279.12 rows=5912 width=16) (actual time=0.019..0.020 rows=1 loops=1)
+   ->  Nested Loop Left Join  (cost=0.56..34.27 rows=1 width=732) (actual time=2.551..2.567 rows=1 loops=1)
+         ->  Index Scan using contacts_pkey on contacts c  (cost=0.28..2.50 rows=1 width=667) (actual time=0.037..0.039 rows=1 loops=1)
+               Index Cond: (id = (InitPlan 31).col1)
+         ->  Index Scan using contacts_pkey on contacts c_1  (cost=0.28..31.76 rows=1 width=81) (actual time=2.511..2.524 rows=1 loops=1)
+               Index Cond: (id = (InitPlan 31).col1)
+               SubPlan 2
+                 ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.015..0.016 rows=0 loops=1)
+                       ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_1  (cost=0.28..2.50 rows=1 width=23) (actual time=0.015..0.015 rows=0 loops=1)
+                             Index Cond: (contact_id = c_1.id)
+                             Filter: is_outreach
+               SubPlan 3
+                 ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.005..0.006 rows=0 loops=1)
+                       ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_2  (cost=0.28..2.50 rows=1 width=23) (actual time=0.004..0.005 rows=0 loops=1)
+                             Index Cond: (contact_id = c_1.id)
+                             Filter: is_primary
+               SubPlan 4
+                 ->  Limit  (cost=2.51..2.51 rows=1 width=31) (actual time=0.032..0.033 rows=0 loops=1)
+                       ->  Sort  (cost=2.51..2.51 rows=1 width=31) (actual time=0.031..0.032 rows=0 loops=1)
+                             Sort Key: ce_3.created_at
+                             Sort Method: quicksort  Memory: 25kB
+                             ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_3  (cost=0.28..2.50 rows=1 width=31) (actual time=0.002..0.002 rows=0 loops=1)
+                                   Index Cond: (contact_id = c_1.id)
+                                   Filter: verified
+               SubPlan 5
+                 ->  Limit  (cost=2.51..2.51 rows=1 width=31) (actual time=0.012..0.013 rows=0 loops=1)
+                       ->  Sort  (cost=2.51..2.51 rows=1 width=31) (actual time=0.011..0.012 rows=0 loops=1)
+                             Sort Key: ce_4.created_at
+                             Sort Method: quicksort  Memory: 25kB
+                             ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_4  (cost=0.28..2.50 rows=1 width=31) (actual time=0.004..0.004 rows=0 loops=1)
+                                   Index Cond: (contact_id = c_1.id)
+               SubPlan 6
+                 ->  Index Only Scan using ux_contact_emails_one_outreach on contact_emails ce_5  (cost=0.28..1.40 rows=1 width=0) (actual time=0.020..0.021 rows=0 loops=1)
+                       Index Cond: (contact_id = c_1.id)
+                       Heap Fetches: 0
+               SubPlan 8
+                 ->  Index Only Scan using ux_contact_emails_one_primary on contact_emails ce_6  (cost=0.28..1.40 rows=1 width=0) (actual time=2.298..2.299 rows=0 loops=1)
+                       Index Cond: (contact_id = c_1.id)
+                       Heap Fetches: 0
+               SubPlan 10
+                 ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_7  (cost=0.28..2.50 rows=1 width=0) (actual time=0.019..0.020 rows=0 loops=1)
+                       Index Cond: (contact_id = c_1.id)
+                       Filter: verified
+               SubPlan 12
+                 ->  Index Only Scan using ux_contact_emails_unique_per_contact on contact_emails ce_8  (cost=0.28..1.40 rows=1 width=0) (actual time=0.006..0.007 rows=0 loops=1)
+                       Index Cond: (contact_id = c_1.id)
+                       Heap Fetches: 0
+               SubPlan 18
+                 ->  Limit  (cost=10.31..12.53 rows=1 width=1) (actual time=0.077..0.081 rows=0 loops=1)
+                       InitPlan 14
+                         ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.026..0.026 rows=0 loops=1)
+                               ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce2  (cost=0.28..2.50 rows=1 width=23) (actual time=0.025..0.025 rows=0 loops=1)
+                                     Index Cond: (contact_id = c_1.id)
+                                     Filter: is_outreach
+                       InitPlan 15
+                         ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.006..0.006 rows=0 loops=1)
+                               ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce2_1  (cost=0.28..2.50 rows=1 width=23) (actual time=0.005..0.005 rows=0 loops=1)
+                                     Index Cond: (contact_id = c_1.id)
+                                     Filter: is_primary
+                       InitPlan 16
+                         ->  Limit  (cost=2.51..2.51 rows=1 width=31) (actual time=0.017..0.018 rows=0 loops=1)
+                               ->  Sort  (cost=2.51..2.51 rows=1 width=31) (actual time=0.017..0.017 rows=0 loops=1)
+                                     Sort Key: ce2_2.created_at
+                                     Sort Method: quicksort  Memory: 25kB
+                                     ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce2_2  (cost=0.28..2.50 rows=1 width=31) (actual time=0.004..0.005 rows=0 loops=1)
+                                           Index Cond: (contact_id = c_1.id)
+                                           Filter: verified
+                       InitPlan 17
+                         ->  Limit  (cost=2.51..2.51 rows=1 width=31) (actual time=0.019..0.019 rows=0 loops=1)
+                               ->  Sort  (cost=2.51..2.51 rows=1 width=31) (actual time=0.018..0.019 rows=0 loops=1)
+                                     Sort Key: ce2_3.created_at
+                                     Sort Method: quicksort  Memory: 25kB
+                                     ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce2_3  (cost=0.28..2.50 rows=1 width=31) (actual time=0.006..0.006 rows=0 loops=1)
+                                           Index Cond: (contact_id = c_1.id)
+                       ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_9  (cost=0.28..2.50 rows=1 width=1) (actual time=0.004..0.004 rows=0 loops=1)
+                             Index Cond: ((contact_id = c_1.id) AND (email = COALESCE((InitPlan 14).col1, (InitPlan 15).col1, (InitPlan 16).col1, (InitPlan 17).col1)))
+   ->  GroupAggregate  (cost=2.51..2.58 rows=1 width=80) (actual time=0.030..0.030 rows=0 loops=1)
+         ->  Sort  (cost=2.51..2.51 rows=1 width=40) (actual time=0.028..0.029 rows=0 loops=1)
+               Sort Key: contact_roles.role
+               Sort Method: quicksort  Memory: 25kB
+               ->  Index Scan using idx_v_contact_roles_quick_contact_id on contact_roles  (cost=0.28..2.50 rows=1 width=40) (actual time=0.019..0.019 rows=0 loops=1)
+                     Index Cond: (contact_id = (InitPlan 31).col1)
+   SubPlan 1
+     ->  Limit  (cost=0.28..2.50 rows=1 width=23) (actual time=0.010..0.011 rows=0 loops=1)
+           ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce  (cost=0.28..2.50 rows=1 width=23) (actual time=0.010..0.010 rows=0 loops=1)
+                 Index Cond: (contact_id = c.id)
+                 Filter: is_primary
+   SubPlan 19
+     ->  Aggregate  (cost=2.52..2.53 rows=1 width=32) (actual time=0.086..0.087 rows=1 loops=1)
+           ->  Sort  (cost=2.51..2.51 rows=1 width=51) (actual time=0.084..0.085 rows=0 loops=1)
+                 Sort Key: ce_10.is_primary DESC, ce_10.is_outreach DESC, ce_10.created_at
+                 Sort Method: quicksort  Memory: 25kB
+                 ->  Index Scan using ux_contact_emails_unique_per_contact on contact_emails ce_10  (cost=0.28..2.50 rows=1 width=51) (actual time=0.002..0.002 rows=0 loops=1)
+                       Index Cond: (contact_id = c.id)
+   SubPlan 20
+     ->  Aggregate  (cost=2.51..2.52 rows=1 width=32) (actual time=1.274..1.274 rows=1 loops=1)
+           ->  Index Scan using ux_external_identities_contact_system on external_identities ei  (cost=0.28..2.50 rows=1 width=59) (actual time=1.271..1.271 rows=0 loops=1)
+                 Index Cond: (contact_id = c.id)
+   SubPlan 21
+     ->  Aggregate  (cost=2.37..2.38 rows=1 width=8) (actual time=0.033..0.034 rows=1 loops=1)
+           ->  Index Only Scan using idx_contact_notes_contact_id on contact_notes cn  (cost=0.15..2.37 rows=1 width=0) (actual time=0.030..0.030 rows=0 loops=1)
+                 Index Cond: (contact_id = c.id)
+                 Heap Fetches: 0
+   SubPlan 22
+     ->  Aggregate  (cost=2.54..2.55 rows=1 width=8) (actual time=2.634..2.634 rows=1 loops=1)
+           ->  Index Only Scan using idx_contact_tags_timeline on contact_tags ct  (cost=0.29..2.54 rows=3 width=0) (actual time=2.626..2.627 rows=1 loops=1)
+                 Index Cond: (contact_id = c.id)
+                 Heap Fetches: 1
+   SubPlan 23
+     ->  Aggregate  (cost=1.44..1.45 rows=1 width=8) (actual time=0.022..0.022 rows=1 loops=1)
+           ->  Index Only Scan using idx_transactions_contact_timeline on transactions t  (cost=0.28..1.43 rows=3 width=0) (actual time=0.020..0.020 rows=0 loops=1)
+                 Index Cond: (contact_id = c.id)
+                 Heap Fetches: 0
+   SubPlan 24
+     ->  Aggregate  (cost=2.49..2.50 rows=1 width=8) (actual time=0.026..0.026 rows=1 loops=1)
+           ->  Index Only Scan using idx_subscriptions_contact_timeline on subscriptions s  (cost=0.27..2.49 rows=1 width=0) (actual time=0.024..0.024 rows=0 loops=1)
+                 Index Cond: (contact_id = c.id)
+                 Heap Fetches: 0
+   SubPlan 25
+     ->  Aggregate  (cost=1.06..1.07 rows=1 width=8) (actual time=0.031..0.032 rows=1 loops=1)
+           ->  Seq Scan on webhook_events we  (cost=0.00..1.06 rows=1 width=0) (actual time=0.030..0.030 rows=0 loops=1)
+                 Filter: (contact_id = c.id)
+                 Rows Removed by Filter: 6
+   SubPlan 27
+     ->  Result  (cost=2.37..2.38 rows=1 width=8) (actual time=0.009..0.010 rows=1 loops=1)
+           InitPlan 26
+             ->  Limit  (cost=0.15..2.37 rows=1 width=8) (actual time=0.007..0.008 rows=0 loops=1)
+                   ->  Index Only Scan using idx_contact_notes_contact_id on contact_notes cn_1  (cost=0.15..2.37 rows=1 width=8) (actual time=0.007..0.007 rows=0 loops=1)
+                         Index Cond: (contact_id = c.id)
+                         Heap Fetches: 0
+   SubPlan 29
+     ->  Result  (cost=0.66..0.67 rows=1 width=8) (actual time=0.008..0.009 rows=1 loops=1)
+           InitPlan 28
+             ->  Limit  (cost=0.28..0.66 rows=1 width=8) (actual time=0.007..0.007 rows=0 loops=1)
+                   ->  Index Only Scan using idx_transactions_contact_timeline on transactions t_1  (cost=0.28..1.43 rows=3 width=8) (actual time=0.006..0.006 rows=0 loops=1)
+                         Index Cond: (contact_id = c.id)
+                         Heap Fetches: 0
+   SubPlan 30
+     ->  Aggregate  (cost=1.06..1.07 rows=1 width=8) (actual time=0.009..0.010 rows=1 loops=1)
+           ->  Seq Scan on webhook_events we_1  (cost=0.00..1.06 rows=1 width=8) (actual time=0.008..0.008 rows=0 loops=1)
+                 Filter: (contact_id = c.id)
+                 Rows Removed by Filter: 6
+ Planning Time: 26.614 ms
+ Execution Time: 12.407 ms
+(147 rows)
+
+Time: 154.739 ms
+
+Testing search_contacts function performance...
+                                                       QUERY PLAN                                                        
+-------------------------------------------------------------------------------------------------------------------------
+ Function Scan on search_contacts  (cost=0.25..10.25 rows=1000 width=182) (actual time=382.993..382.997 rows=50 loops=1)
+ Planning Time: 0.037 ms
+ Execution Time: 383.027 ms
+(3 rows)
+
+Time: 444.219 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 6: PayPal Subscription Data Quality
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ test_id |                   test_name                    | pass_count | fail_count | total | result  
+---------+------------------------------------------------+------------+------------+-------+---------
+ 6.1     | PayPal references have correct format (I-XXXX) |        148 |        263 |   411 | ❌ FAIL
+(1 row)
+
+Time: 55.281 ms
+ test_id |                   test_name                   | pass_count | fail_count | total | result  
+---------+-----------------------------------------------+------------+------------+-------+---------
+ 6.2     | Active PayPal subs have membership_product_id |        226 |          0 |   226 | ✅ PASS
+(1 row)
+
+Time: 54.569 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEST 7: Verify Specific Fixes from Today
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7.1: Verifying brieandbjorn@gmail.com (original issue)...
+ test_id |                  test_name                  |         email          | membership_level | has_active_subscription | result  
+---------+---------------------------------------------+------------------------+------------------+-------------------------+---------
+ 7.1     | brieandbjorn@gmail.com has membership level | brieandbjorn@gmail.com | Antares          | t                       | ✅ PASS
+(1 row)
+
+Time: 53.324 ms
+7.2: Verifying mysticcker@aol.com (missing PayPal subscription)...
+ test_id |                     test_name                      |       email        | membership_level | paypal_subscription_reference | amount  | result  
+---------+----------------------------------------------------+--------------------+------------------+-------------------------------+---------+---------
+ 7.2     | mysticcker@aol.com has Astral Partner subscription | mysticcker@aol.com | Astral Partner   | I-62RBW0RK1J8L                | 1089.00 | ✅ PASS
+(1 row)
+
+Time: 53.571 ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DATABASE SUMMARY STATISTICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+               metric               | value 
+------------------------------------+-------
+ Total Contacts                     | 5913
+ Contacts with Active Subscriptions | 128
+ Total Subscriptions                | 411
+ Active Subscriptions               | 226
+ PayPal Subscription References     | 149
+ Membership Products                | 9
+(6 rows)
+
+Time: 65.095 ms
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                    VERIFICATION COMPLETE                                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+Timing is off.

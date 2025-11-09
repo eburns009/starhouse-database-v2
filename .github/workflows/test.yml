@@ -1,0 +1,90 @@
+name: Test Supabase Functions
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Deno Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Verify Deno installation
+        run: deno --version
+
+      - name: Run Kajabi Webhook Tests
+        working-directory: ./supabase/functions/kajabi-webhook
+        run: deno test --allow-env --allow-net index.test.ts
+
+      - name: Run PayPal Webhook Tests
+        working-directory: ./supabase/functions/paypal-webhook
+        run: |
+          if [ -f "index.test.ts" ]; then
+            deno test --allow-env --allow-net index.test.ts
+          else
+            echo "PayPal webhook tests not yet implemented"
+          fi
+        continue-on-error: true
+
+      - name: Run Ticket Tailor Webhook Tests
+        working-directory: ./supabase/functions/ticket-tailor-webhook
+        run: |
+          if [ -f "index.test.ts" ]; then
+            deno test --allow-env --allow-net index.test.ts
+          else
+            echo "Ticket Tailor webhook tests not yet implemented"
+          fi
+        continue-on-error: true
+
+      - name: Run Shared Utilities Tests
+        working-directory: ./supabase/functions/_shared
+        run: |
+          if [ -f "webhook-security.test.ts" ]; then
+            deno test --allow-env --allow-net webhook-security.test.ts
+          else
+            echo "Shared utilities tests not yet implemented"
+          fi
+        continue-on-error: true
+
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Run Deno Lint
+        run: deno lint supabase/functions/
+
+  format-check:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Check Deno Format
+        run: deno fmt --check supabase/functions/

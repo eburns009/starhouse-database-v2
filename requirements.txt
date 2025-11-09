@@ -1,0 +1,24 @@
+# Core Dependencies for Kajabi Import System
+# Install with: pip install -r requirements.txt
+
+# Database
+psycopg2-binary>=2.9.9
+
+# Environment and Configuration
+python-dotenv>=1.0.0
+
+# Logging and Observability
+structlog>=24.1.0
+
+# Testing
+pytest>=7.4.3
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# Code Quality (Optional but Recommended)
+ruff>=0.1.9
+mypy>=1.8.0
+black>=23.12.1
+
+# Type Stubs
+types-psycopg2>=2.9.21
