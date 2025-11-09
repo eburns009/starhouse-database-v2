@@ -46,10 +46,8 @@ from psycopg2.extras import RealDictCursor
 # CONFIGURATION
 # ============================================================================
 
-DB_CONNECTION = os.environ.get(
-    'DATABASE_URL',
-    'postgres://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-)
+# Database connection - NO DEFAULTS, fails fast if missing
+DB_CONNECTION = get_database_url()
 
 DEFAULT_SUBSCRIPTIONS_FILE = 'data/kajabi_subscriptions.csv'
 DEFAULT_OFFERS_FILE = 'data/kajabi_offers_extracted.csv'
@@ -402,6 +400,11 @@ def main():
     except Exception as e:
         print(f"\n❌ FATAL ERROR: {e}")
         import traceback
+
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from secure_config import get_database_url
+
         traceback.print_exc()
         sys.exit(1)
     finally:

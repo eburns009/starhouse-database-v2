@@ -24,7 +24,7 @@ DB_PARAMS = {
     'port': '6543',
     'database': 'postgres',
     'user': '***REMOVED***',
-    'password': '***REMOVED***'
+    'password': os.getenv('DB_PASSWORD')
 }
 
 def get_validated_contacts(conn):

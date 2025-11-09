@@ -24,10 +24,8 @@ import psycopg2
 from psycopg2.extras import execute_batch, RealDictCursor
 
 # Database connection string
-DB_CONNECTION = os.environ.get(
-    'DATABASE_URL',
-    'postgresql://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-)
+# Database connection - NO DEFAULTS, fails fast if missing
+DB_CONNECTION = get_database_url()
 
 class PayPalImporter:
     def __init__(self, connection_string, dry_run=True, corrections_file=None):
@@ -600,6 +598,11 @@ def main():
     except Exception as e:
         print(f"\n❌ Fatal error: {str(e)}")
         import traceback
+
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from secure_config import get_database_url
+
         traceback.print_exc()
         sys.exit(1)
 

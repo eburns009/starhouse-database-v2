@@ -325,13 +325,11 @@ if __name__ == '__main__':
     import os
     import psycopg2
     from psycopg2.extras import RealDictCursor
+    from secure_config import get_database_url
 
     # Connect to database
     conn = psycopg2.connect(
-        os.environ.get(
-            'DATABASE_URL',
-            'postgresql://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-        ),
+        get_database_url(),
         cursor_factory=RealDictCursor
     )
     cur = conn.cursor()

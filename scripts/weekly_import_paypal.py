@@ -40,14 +40,16 @@ from typing import Dict, List, Optional
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from secure_config import get_database_url
+
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
 
-DB_CONNECTION = os.environ.get(
-    'DATABASE_URL',
-    'postgres://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-)
+# Database connection - NO DEFAULTS, fails fast if missing
+DB_CONNECTION = get_database_url()
 
 # ============================================================================
 # HELPERS

@@ -11,7 +11,7 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 # Database connection string
-DB_CONNECTION_STRING = 'postgres://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
+DB_CONNECTION_STRING = 'PLACEHOLDER_USE_ENV_VAR'
 
 def parse_date(date_str):
     """Parse Kajabi date format: 'Nov 28, 2025' or 'Sep 28, 2022'"""

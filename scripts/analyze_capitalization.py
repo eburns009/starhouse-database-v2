@@ -6,7 +6,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 DB_URL = "postgres://***REMOVED***@***REMOVED***:6543/postgres"
-DB_PASSWORD = "***REMOVED***"
+DB_PASSWORD = os.getenv("DB_PASSWORD")  # SECURITY: No hardcoded credentials
 
 
 def analyze_capitalization():

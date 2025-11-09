@@ -17,7 +17,7 @@ from psycopg2.extras import RealDictCursor
 # Database connection
 DB_CONNECTION_STRING = os.environ.get(
     'DATABASE_URL',
-    'postgres://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
+    'PLACEHOLDER_USE_ENV_VAR'
 )
 
 SUBSCRIPTIONS_FILE = '/workspaces/starhouse-database-v2/data/kajabi_subscriptions.csv'

@@ -49,10 +49,8 @@ from psycopg2.extras import RealDictCursor
 # CONFIGURATION
 # ============================================================================
 
-DB_CONNECTION = os.environ.get(
-    'DATABASE_URL',
-    'postgresql://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-)
+# Database connection - NO DEFAULTS, fails fast if missing
+DB_CONNECTION = get_database_url()
 
 # Default file locations
 DEFAULT_CONTACTS_FILE = 'data/current/kajabi_contacts.csv'
@@ -820,6 +818,11 @@ class KajabiSimpleImporter:
         except Exception as e:
             print(f"\n❌ FATAL ERROR: {e}")
             import traceback
+
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from secure_config import get_database_url
+
             traceback.print_exc()
             return False
 

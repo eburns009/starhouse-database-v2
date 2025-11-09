@@ -19,7 +19,7 @@ from psycopg2.extras import RealDictCursor
 
 # Database configuration
 DB_URL = "postgres://***REMOVED***@***REMOVED***:6543/postgres"
-DB_PASSWORD = "***REMOVED***"
+DB_PASSWORD = os.getenv("DB_PASSWORD")  # SECURITY: No hardcoded credentials
 
 # CSV file path
 CSV_FILE = '/workspaces/starhouse-database-v2/data/production/v2_contacts.csv'

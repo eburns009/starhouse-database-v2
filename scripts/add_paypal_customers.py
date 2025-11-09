@@ -22,7 +22,7 @@ import re
 from datetime import datetime
 
 # Database connection
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres')
+DATABASE_URL = os.getenv('DATABASE_URL', 'PLACEHOLDER_USE_ENV_VAR')
 
 def normalize_phone(phone):
     """Normalize phone number to digits only"""

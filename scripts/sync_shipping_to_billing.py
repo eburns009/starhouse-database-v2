@@ -17,7 +17,7 @@ from psycopg2.extras import RealDictCursor
 from datetime import datetime
 
 DB_URL = "postgres://***REMOVED***@***REMOVED***:6543/postgres"
-DB_PASSWORD = "***REMOVED***"
+DB_PASSWORD = os.getenv("DB_PASSWORD")  # SECURITY: No hardcoded credentials
 
 
 def sync_shipping_to_billing(dry_run=True):

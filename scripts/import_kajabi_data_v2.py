@@ -30,15 +30,16 @@ from decimal import Decimal
 import psycopg2
 from psycopg2.extras import RealDictCursor, execute_values
 
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from secure_config import get_database_url
+
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
 
-# Get database connection from environment or default
-DB_CONNECTION_STRING = os.environ.get(
-    'DATABASE_URL',
-    'postgres://***REMOVED***:***REMOVED***@***REMOVED***:6543/postgres'
-)
+# Database connection - NO DEFAULTS, fails fast if missing
+DB_CONNECTION_STRING = get_database_url()
 
 # Data file paths
 DATA_DIR = '/workspaces/starhouse-database-v2/data'

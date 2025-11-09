@@ -13,7 +13,7 @@ from psycopg2.extras import DictCursor
 
 # Database connection
 DB_URL = "postgres://***REMOVED***@***REMOVED***:6543/postgres"
-DB_PASSWORD = "***REMOVED***"
+DB_PASSWORD = os.getenv("DB_PASSWORD")  # SECURITY: No hardcoded credentials
 
 # Read PayPal subscriptions CSV
 paypal_file = '/workspaces/starhouse-database-v2/data/paypal_subscriptions_analysis.csv'
