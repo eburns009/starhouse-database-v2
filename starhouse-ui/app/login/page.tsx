@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,36 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+
+  // Intercept fetch to debug invalid parameter
+  useEffect(() => {
+    const originalFetch = window.fetch
+    window.fetch = function(...args) {
+      console.log('[FETCH INTERCEPTOR] Called with:', {
+        url: args[0],
+        options: args[1],
+        optionsType: typeof args[1],
+        optionsKeys: args[1] ? Object.keys(args[1]) : null,
+      })
+
+      // Log each option in detail
+      if (args[1]) {
+        Object.entries(args[1]).forEach(([key, value]) => {
+          console.log(`[FETCH INTERCEPTOR] ${key}:`, {
+            value,
+            type: typeof value,
+            constructor: value?.constructor?.name
+          })
+        })
+      }
+
+      return originalFetch.apply(this, args)
+    }
+
+    return () => {
+      window.fetch = originalFetch
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
