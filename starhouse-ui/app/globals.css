@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Elegant color palette - soft purples and warm tones */
+    --background: 280 20% 99%;
+    --foreground: 280 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 280 10% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 280 10% 15%;
+
+    /* Primary: Soft purple/lavender */
+    --primary: 270 60% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Warm rose */
+    --secondary: 340 50% 95%;
+    --secondary-foreground: 340 60% 30%;
+
+    /* Muted: Soft neutrals */
+    --muted: 280 15% 96%;
+    --muted-foreground: 280 10% 45%;
+
+    /* Accent: Soft peach */
+    --accent: 20 60% 95%;
+    --accent-foreground: 20 60% 30%;
+
+    --destructive: 0 70% 65%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 280 15% 90%;
+    --input: 280 15% 92%;
+    --ring: 270 60% 65%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Elegant typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-muted rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full hover:bg-primary/50;
+  }
+}
