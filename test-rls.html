@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>StarHouse RLS Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: monospace;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1, h2 { color: #4ec9b0; }
+    input, button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 200px;
+    }
+    button:hover { background: #1177bb; }
+    #results {
+      background: #252526;
+      padding: 15px;
+      border: 1px solid #3e3e42;
+      min-height: 100px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+    .success { color: #4ec9b0; }
+    .error { color: #f48771; }
+    .warning { color: #dcdcaa; }
+    .section {
+      background: #252526;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #3e3e42;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 StarHouse RLS Test</h1>
+
+  <div class="section" id="config-section">
+    <h2>Step 1: Configuration</h2>
+    <p>Get your Supabase anon key from: Dashboard → Settings → API</p>
+    <input type="text" id="supabaseUrl" placeholder="https://your-project.supabase.co" value="https://lnagadkqejnopgfxwlkb.supabase.co">
+    <input type="text" id="anonKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+    <button onclick="initSupabase()">Initialize Connection</button>
+  </div>
+
+  <div class="section" id="login-section" style="display:none;">
+    <h2>Step 2: Login as Authenticated User</h2>
+    <p>Login with the test user you created in Supabase Dashboard</p>
+    <input type="email" id="email" placeholder="test@starhouse.org">
+    <input type="password" id="password" placeholder="TestPassword123!">
+    <button onclick="login()">🔐 Login</button>
+  </div>
+
+  <div class="section" id="test-section" style="display:none;">
+    <h2>Step 3: Run RLS Tests</h2>
+    <p>These tests verify the authenticated role has full access</p>
+    <button onclick="testSelect()">✅ Test SELECT (read contacts)</button>
+    <button onclick="testInsert()">✅ Test INSERT (create contact)</button>
+    <button onclick="testUpdate()">✅ Test UPDATE (modify contact)</button>
+    <button onclick="testDelete()">✅ Test DELETE (remove contact)</button>
+    <button onclick="runAllTests()">🚀 Run All Tests</button>
+  </div>
+
+  <div class="section">
+    <h2>Test Results</h2>
+    <div id="results">Waiting for configuration...</div>
+  </div>
+
+  <script>
+    let supabase = null
+    const results = document.getElementById('results')
+
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString()
+      const color = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : ''
+      const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'
+      results.innerHTML += `<span class="${color}">[${timestamp}] ${prefix} ${message}</span>\n`
+      results.scrollTop = results.scrollHeight
+    }
+
+    function initSupabase() {
+      const url = document.getElementById('supabaseUrl').value
+      const key = document.getElementById('anonKey').value
+
+      if (!url || !key) {
+        log('Please enter both Supabase URL and anon key', 'error')
+        return
+      }
+
+      try {
+        supabase = window.supabase.createClient(url, key)
+        log('Supabase client initialized', 'success')
+        log('URL: ' + url)
+        document.getElementById('config-section').style.display = 'none'
+        document.getElementById('login-section').style.display = 'block'
+      } catch (e) {
+        log('Failed to initialize: ' + e.message, 'error')
+      }
+    }
+
+    async function login() {
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+
+      if (!email || !password) {
+        log('Please enter email and password', 'error')
+        return
+      }
+
+      log('Attempting login...')
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email, password
+      })
+
+      if (error) {
+        log('Login failed: ' + error.message, 'error')
+        log('Make sure you created the user in: Dashboard → Authentication → Users', 'warning')
+        return
+      }
+
+      log('Login successful!', 'success')
+      log('User ID: ' + data.user.id)
+      log('Email: ' + data.user.email)
+      log('Role: authenticated (via JWT)', 'success')
+
+      document.getElementById('login-section').style.display = 'none'
+      document.getElementById('test-section').style.display = 'block'
+    }
+
+    async function testSelect() {
+      log('\n=== Testing SELECT ===')
+
+      const { data, error, count } = await supabase
+        .from('contacts')
+        .select('id, first_name, last_name, email', { count: 'exact' })
+        .limit(5)
+
+      if (error) {
+        log('SELECT failed: ' + error.message, 'error')
+        log('If you see "permission denied" or "policy violation", RLS is blocking authenticated users!', 'error')
+        return false
+      }
+
+      log('SELECT works!', 'success')
+      log('Sample data: ' + JSON.stringify(data.slice(0, 2), null, 2))
+      return true
+    }
+
+    async function testInsert() {
+      log('\n=== Testing INSERT ===')
+
+      const testEmail = 'test-' + Date.now() + '@example.com'
+
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert({
+          first_name: 'RLS',
+          last_name: 'Test',
+          email: testEmail,
+          source_system: 'manual'
+        })
+        .select()
+
+      if (error) {
+        log('INSERT failed: ' + error.message, 'error')
+        log('Authenticated users should be able to create contacts!', 'error')
+        return false
+      }
+
+      log('INSERT works!', 'success')
+      log('Created contact ID: ' + data[0].id)
+      window.testContactId = data[0].id
+      return true
+    }
+
+    async function testUpdate() {
+      if (!window.testContactId) {
+        log('UPDATE skipped - run INSERT test first', 'warning')
+        return false
+      }
+
+      log('\n=== Testing UPDATE ===')
+
+      const { data, error } = await supabase
+        .from('contacts')
+        .update({ notes: 'Updated via RLS test at ' + new Date().toISOString() })
+        .eq('id', window.testContactId)
+        .select()
+
+      if (error) {
+        log('UPDATE failed: ' + error.message, 'error')
+        log('Authenticated users should be able to edit contacts!', 'error')
+        return false
+      }
+
+      log('UPDATE works!', 'success')
+      log('Updated contact ID: ' + data[0].id)
+      return true
+    }
+
+    async function testDelete() {
+      if (!window.testContactId) {
+        log('DELETE skipped - run INSERT test first', 'warning')
+        return false
+      }
+
+      log('\n=== Testing DELETE ===')
+
+      const { error } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('id', window.testContactId)
+
+      if (error) {
+        log('DELETE failed: ' + error.message, 'error')
+        log('Authenticated users should be able to delete contacts!', 'error')
+        return false
+      }
+
+      log('DELETE works!', 'success')
+      log('Removed test contact ID: ' + window.testContactId)
+      window.testContactId = null
+      return true
+    }
+
+    async function runAllTests() {
+      log('\n========================================')
+      log('🚀 Running all RLS tests...')
+      log('========================================\n')
+
+      const selectResult = await testSelect()
+      await new Promise(r => setTimeout(r, 500))
+
+      const insertResult = await testInsert()
+      await new Promise(r => setTimeout(r, 500))
+
+      const updateResult = await testUpdate()
+      await new Promise(r => setTimeout(r, 500))
+
+      const deleteResult = await testDelete()
+
+      log('\n========================================')
+      log('📊 Test Summary:')
+      log('========================================')
+      log(`SELECT: ${selectResult ? '✅ PASS' : '❌ FAIL'}`)
+      log(`INSERT: ${insertResult ? '✅ PASS' : '❌ FAIL'}`)
+      log(`UPDATE: ${updateResult ? '✅ PASS' : '❌ FAIL'}`)
+      log(`DELETE: ${deleteResult ? '✅ PASS' : '❌ FAIL'}`)
+
+      const allPassed = selectResult && insertResult && updateResult && deleteResult
+
+      if (allPassed) {
+        log('\n🎉 ALL TESTS PASSED!', 'success')
+        log('RLS is configured correctly for authenticated users', 'success')
+        log('Staff UI should work as expected', 'success')
+      } else {
+        log('\n⚠️  SOME TESTS FAILED', 'error')
+        log('DO NOT DEPLOY - Fix RLS policies first', 'error')
+        log('Check sql/migrations/002c_rls_simple_staff_access.sql', 'warning')
+      }
+    }
+  </script>
+</body>
+</html>

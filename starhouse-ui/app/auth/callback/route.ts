@@ -14,9 +14,14 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const cookieStore = cookies()
+
+    // CRITICAL FIX: Strip newlines from environment variables
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim().replace(/\n/g, '')
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim().replace(/\n/g, '')
+
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      url,
+      key,
       {
         cookies: {
           get(name: string) {

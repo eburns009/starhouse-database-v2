@@ -148,12 +148,48 @@ class KajabiV2Importer:
             'contact_products': {'processed': 0, 'created': 0, 'skipped': 0, 'errors': 0},
             'subscriptions': {'processed': 0, 'created': 0, 'updated': 0, 'skipped': 0, 'errors': 0},
             'transactions': {'processed': 0, 'created': 0, 'skipped': 0, 'errors': 0},
+            'validation': {'city_corrected': 0, 'duplicates_removed': 0, 'total_issues': 0},
         }
 
         # Caches for lookups
         self.contact_id_by_email: Dict[str, str] = {}
         self.tag_ids: Set[str] = set()
         self.product_ids: Set[str] = set()
+
+    def validate_and_correct_address(self, address_line_1: Optional[str], address_line_2: Optional[str],
+                                     city: Optional[str]) -> Tuple[Optional[str], Optional[str], Optional[str], bool]:
+        """
+        Validate and auto-correct address fields based on known patterns.
+
+        Patterns corrected:
+        1. City in address_line_2 (when city is empty but address_line_2 has data)
+        2. Duplicate addresses (when address_line_1 equals address_line_2)
+
+        Returns:
+            Tuple of (corrected_address_line_1, corrected_address_line_2, corrected_city, was_corrected)
+        """
+        corrected = False
+
+        # Pattern 1: City in address_line_2
+        # If city is empty, address_line_1 has data, and address_line_2 has data,
+        # move address_line_2 to city
+        if not city and address_line_1 and address_line_2:
+            city = address_line_2
+            address_line_2 = None
+            corrected = True
+            self.stats['validation']['city_corrected'] += 1
+
+        # Pattern 2: Duplicate addresses
+        # If address_line_1 equals address_line_2, clear address_line_2
+        if address_line_1 and address_line_2 and address_line_1 == address_line_2:
+            address_line_2 = None
+            corrected = True
+            self.stats['validation']['duplicates_removed'] += 1
+
+        if corrected:
+            self.stats['validation']['total_issues'] += 1
+
+        return address_line_1, address_line_2, city, corrected
 
     def connect(self):
         """Connect to database."""
@@ -235,6 +271,11 @@ class KajabiV2Importer:
                     state = row.get('state', '').strip() or None
                     postal_code = row.get('postal_code', '').strip() or None
                     country = row.get('country', '').strip() or None
+
+                    # Validate and auto-correct address data
+                    address_line_1, address_line_2, city, was_corrected = self.validate_and_correct_address(
+                        address_line_1, address_line_2, city
+                    )
 
                     # External IDs
                     kajabi_id = row.get('kajabi_id', '').strip() or None
@@ -325,6 +366,13 @@ class KajabiV2Importer:
         print(f"  Created: {self.stats['contacts']['created']}")
         print(f"  Updated: {self.stats['contacts']['updated']}")
         print(f"  Errors: {self.stats['contacts']['errors']}")
+
+        # Address validation summary
+        if self.stats['validation']['total_issues'] > 0:
+            print(f"\n🔧 Address Validation (Auto-Corrections):")
+            print(f"  City placement fixed: {self.stats['validation']['city_corrected']}")
+            print(f"  Duplicates removed: {self.stats['validation']['duplicates_removed']}")
+            print(f"  Total corrections: {self.stats['validation']['total_issues']}")
 
     def load_tags(self):
         """Import tags from v2_tags.csv."""
@@ -769,7 +817,15 @@ class KajabiV2Importer:
             print(f"  Transactions:     {self.stats['transactions']['created']} created")
             print()
 
-            total_errors = sum(s['errors'] for s in self.stats.values())
+            # Validation summary
+            if self.stats['validation']['total_issues'] > 0:
+                print(f"🔧 Address Validation:")
+                print(f"  City placements fixed:   {self.stats['validation']['city_corrected']}")
+                print(f"  Duplicates removed:      {self.stats['validation']['duplicates_removed']}")
+                print(f"  Total auto-corrections:  {self.stats['validation']['total_issues']}")
+                print()
+
+            total_errors = sum(s.get('errors', 0) for s in self.stats.values() if 'errors' in s)
             if total_errors > 0:
                 print(f"⚠️  Total errors: {total_errors}")
             else:

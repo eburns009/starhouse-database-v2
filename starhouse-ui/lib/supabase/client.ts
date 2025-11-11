@@ -10,8 +10,11 @@ let client: ReturnType<typeof createSupabaseClient> | undefined
 export function createClient() {
   if (client) return client
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  // CRITICAL FIX: Strip newlines and whitespace from environment variables
+  // The Vercel environment variable input can wrap long JWTs with newlines,
+  // which causes "Invalid value" errors in fetch() headers
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim().replace(/\n/g, '')
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim().replace(/\n/g, '')
 
   // Debug logging
   console.log('[Supabase Client] Creating client with:', {
@@ -19,6 +22,7 @@ export function createClient() {
     keyLength: key?.length,
     urlType: typeof url,
     keyType: typeof key,
+    hasNewlines: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.includes('\n')
   })
 
   // Use basic createClient from @supabase/supabase-js

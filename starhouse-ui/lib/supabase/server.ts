@@ -9,9 +9,13 @@ import { Database } from '@/lib/types/database'
 export function createClient() {
   const cookieStore = cookies()
 
+  // CRITICAL FIX: Strip newlines from environment variables
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim().replace(/\n/g, '')
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim().replace(/\n/g, '')
+
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         get(name: string) {
@@ -47,9 +51,13 @@ export function createServiceClient() {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for service client')
   }
 
+  // CRITICAL FIX: Strip newlines from environment variables
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim().replace(/\n/g, '')
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY.trim().replace(/\n/g, '')
+
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    url,
+    serviceKey,
     {
       cookies: {
         get() { return undefined },
