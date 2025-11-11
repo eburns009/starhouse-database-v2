@@ -1,10 +1,11 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 /**
  * Create Supabase client for Client Components
+ * Using basic @supabase/supabase-js instead of @supabase/ssr to avoid fetch issues
  * FAANG Standard: Singleton pattern, reuse client instance
  */
-let client: ReturnType<typeof createBrowserClient> | undefined
+let client: ReturnType<typeof createSupabaseClient> | undefined
 
 export function createClient() {
   if (client) return client
@@ -20,8 +21,15 @@ export function createClient() {
     keyType: typeof key,
   })
 
-  // Try without Database type parameter
-  client = createBrowserClient(url, key)
+  // Use basic createClient from @supabase/supabase-js
+  // This avoids the SSR package's fetch wrapper that causes "Invalid value" errors
+  client = createSupabaseClient(url, key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  })
 
   return client
 }
