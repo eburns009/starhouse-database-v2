@@ -16,14 +16,6 @@ export function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!.trim().replace(/\n/g, '').replace(/\s/g, '')
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim().replace(/\n/g, '').replace(/\s/g, '')
 
-  // Debug logging
-  console.log('[Supabase Client] Creating client with:', {
-    url,
-    keyLength: key?.length,
-    hasNewlines: key.includes('\n'),
-    hasSpaces: key.includes(' ')
-  })
-
   // Use SSR package for proper cookie management
   // With newline stripping, this now works correctly
   client = createBrowserClient(url, key)

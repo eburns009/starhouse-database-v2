@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
@@ -15,77 +15,27 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const router = useRouter()
 
-  // Intercept fetch to debug invalid parameter
-  useEffect(() => {
-    const originalFetch = window.fetch
-    window.fetch = function(...args) {
-      console.log('[FETCH INTERCEPTOR] Called with:', {
-        url: args[0],
-        options: args[1],
-        optionsType: typeof args[1],
-        optionsKeys: args[1] ? Object.keys(args[1]) : null,
-      })
-
-      // Log each option in detail
-      if (args[1]) {
-        Object.entries(args[1]).forEach(([key, value]) => {
-          console.log(`[FETCH INTERCEPTOR] ${key}:`, {
-            value,
-            type: typeof value,
-            constructor: value?.constructor?.name
-          })
-
-          // If it's headers, log each header
-          if (key === 'headers' && value && typeof value === 'object') {
-            console.log('[FETCH INTERCEPTOR] Headers breakdown:')
-            Object.entries(value).forEach(([headerKey, headerValue]) => {
-              console.log(`  ${headerKey}:`, {
-                value: headerValue,
-                type: typeof headerValue,
-                length: typeof headerValue === 'string' ? headerValue.length : null,
-                isValid: typeof headerValue === 'string' || typeof headerValue === 'number'
-              })
-            })
-          }
-        })
-      }
-
-      return originalFetch.apply(this, args)
-    }
-
-    return () => {
-      window.fetch = originalFetch
-    }
-  }, [])
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      console.log('[Login] Starting login process...')
       const supabase = createClient()
-      console.log('[Login] Supabase client created, calling signInWithPassword...')
 
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      console.log('[Login] signInWithPassword completed:', { error })
-
       if (error) {
-        console.error('[Login] Auth error:', error)
         setError(error.message)
         setLoading(false)
       } else {
-        console.log('[Login] Success, redirecting...')
         router.push('/')
         router.refresh()
       }
     } catch (err) {
-      console.error('[Login] Caught exception:', err)
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       setLoading(false)
     }
