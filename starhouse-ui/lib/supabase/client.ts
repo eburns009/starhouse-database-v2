@@ -1,11 +1,10 @@
 import { createBrowserClient } from '@supabase/ssr'
-import { Database } from '@/lib/types/database'
 
 /**
  * Create Supabase client for Client Components
  * FAANG Standard: Singleton pattern, reuse client instance
  */
-let client: ReturnType<typeof createBrowserClient<Database>> | undefined
+let client: ReturnType<typeof createBrowserClient> | undefined
 
 export function createClient() {
   if (client) return client
@@ -21,7 +20,8 @@ export function createClient() {
     keyType: typeof key,
   })
 
-  client = createBrowserClient<Database>(url, key)
+  // Try without Database type parameter
+  client = createBrowserClient(url, key)
 
   return client
 }
