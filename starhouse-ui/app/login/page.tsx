@@ -34,6 +34,19 @@ export default function LoginPage() {
             type: typeof value,
             constructor: value?.constructor?.name
           })
+
+          // If it's headers, log each header
+          if (key === 'headers' && value && typeof value === 'object') {
+            console.log('[FETCH INTERCEPTOR] Headers breakdown:')
+            Object.entries(value).forEach(([headerKey, headerValue]) => {
+              console.log(`  ${headerKey}:`, {
+                value: headerValue,
+                type: typeof headerValue,
+                length: typeof headerValue === 'string' ? headerValue.length : null,
+                isValid: typeof headerValue === 'string' || typeof headerValue === 'number'
+              })
+            })
+          }
         })
       }
 
