@@ -278,8 +278,23 @@ class KajabiImprover:
                             continue
 
                         # Parse and sanitize contact data
+                        # IMPORTANT: Use Kajabi as source of truth for names
+                        full_name = sanitize_string(row.get('Name', ''), 255) or None
                         first_name = sanitize_string(row.get('First Name', ''), 100) or None
                         last_name = sanitize_string(row.get('Last Name', ''), 100) or None
+
+                        # Extract middle name from full name for email compliance
+                        # Example: "Lynn Amber Ryan" → first="Lynn", middle="Amber", last="Ryan"
+                        middle_name = None
+                        if full_name and first_name and last_name:
+                            # Remove first and last from full name to get middle
+                            temp = full_name
+                            if first_name:
+                                temp = temp.replace(first_name, '', 1).strip()
+                            if last_name:
+                                temp = temp.replace(last_name, '', 1).strip()
+                            if temp:  # If something remains, it's the middle name
+                                middle_name = temp
 
                         # Phone - try multiple columns
                         phone_raw = (
@@ -319,10 +334,13 @@ class KajabiImprover:
                             contact_products_map[email] = contact_products_list
 
                         # Add to batch
+                        # Include middle name and source for Kajabi as #1 source of truth
+                        # Only set source to 'kajabi' if we actually extracted a middle name
+                        additional_name_source = 'kajabi' if middle_name else None
                         contact_data = (
-                            email, first_name, last_name, phone,
+                            email, first_name, last_name, middle_name, phone,
                             address_line_1, address_line_2, city, state, postal_code, country,
-                            kajabi_id, kajabi_member_id
+                            kajabi_id, kajabi_member_id, additional_name_source
                         )
                         contacts_to_insert.append(contact_data)
 
@@ -390,15 +408,20 @@ class KajabiImprover:
                 self.cur,
                 """
                 INSERT INTO contacts (
-                    email, first_name, last_name, phone,
+                    email, first_name, last_name, additional_name, phone,
                     address_line_1, address_line_2, city, state, postal_code, country,
                     kajabi_id, kajabi_member_id,
-                    source_system, created_at, updated_at
+                    additional_name_source, source_system, created_at, updated_at
                 )
                 VALUES %s
                 ON CONFLICT (email) DO UPDATE SET
                     first_name = COALESCE(EXCLUDED.first_name, contacts.first_name),
                     last_name = COALESCE(EXCLUDED.last_name, contacts.last_name),
+                    additional_name = COALESCE(EXCLUDED.additional_name, contacts.additional_name),
+                    additional_name_source = CASE
+                        WHEN EXCLUDED.additional_name IS NOT NULL THEN 'kajabi'
+                        ELSE contacts.additional_name_source
+                    END,
                     phone = COALESCE(EXCLUDED.phone, contacts.phone),
                     address_line_1 = COALESCE(EXCLUDED.address_line_1, contacts.address_line_1),
                     address_line_2 = COALESCE(EXCLUDED.address_line_2, contacts.address_line_2),
@@ -411,8 +434,9 @@ class KajabiImprover:
                     source_system = 'kajabi',
                     updated_at = NOW()
                 """,
-                [(email, fn, ln, phone, a1, a2, city, state, zip_code, country, kid, kmid, 'kajabi', 'NOW()', 'NOW()')
-                 for email, fn, ln, phone, a1, a2, city, state, zip_code, country, kid, kmid in contacts],
+                [(email, fn, ln, middle, phone, a1, a2, city, state, zip_code, country, kid, kmid, src)
+                 for email, fn, ln, middle, phone, a1, a2, city, state, zip_code, country, kid, kmid, src in contacts],
+                template="(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'kajabi', NOW(), NOW())",
                 page_size=config.import_config.batch_size
             )
 
