@@ -1,0 +1,42 @@
+{
+  "timestamp": "20251112_222507",
+  "mode": "dryrun",
+  "results": {
+    "total": 6,
+    "successful": 0,
+    "skipped": 0,
+    "failed": 6,
+    "details": [
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "d2566fc0-8953-4ee8-b768-94ed8cbe5ba4"
+      },
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "76984bd1-f4fb-416b-a0a1-695e6096c246"
+      },
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "8790070d-98ed-4f1f-b76c-e4eac0991779"
+      },
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "25c49e83-b3b7-4c39-8ef2-745386971c46"
+      },
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "9de73d37-f3ef-4253-bfe3-770797dc3de9"
+      },
+      {
+        "success": false,
+        "reason": "Contact not found",
+        "kajabi_id": "ad3f01d0-91b8-42d3-b3c2-86102f61126b"
+      }
+    ]
+  }
+}

@@ -1,0 +1,396 @@
+{
+  "timestamp": "20251112_223257",
+  "mode": "dryrun",
+  "results": {
+    "total_missing": 63,
+    "matched": 55,
+    "no_match": 8,
+    "details": [
+      {
+        "subscription_id": "394fdf33-ea7b-4f5b-b862-cc8dace947e2",
+        "amount": 1089.0,
+        "cycle": "annual",
+        "product_name": "Program Partners - Astral Annual",
+        "status": "active"
+      },
+      {
+        "subscription_id": "4ad1cc2c-7a15-4071-bde2-48b77370eb99",
+        "amount": 968.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Spica annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "569dea27-0f18-47e0-b53d-fd7ee479362f",
+        "amount": 968.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Spica annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "6d83b7dc-85bf-40f9-8d06-d6c81605ee24",
+        "amount": 968.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Spica annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c69b2637-1f29-4ba0-bd91-b695c634b350",
+        "amount": 968.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Spica annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "9cab710a-ac2d-4677-94a1-9f98c1452e77",
+        "amount": 968.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Spica annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "decef664-e4b0-4372-9ca8-b27ecb0dfcf2",
+        "amount": 363.0,
+        "cycle": "annual",
+        "product_name": "Program Partner - Luminary Annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "0a175cbd-0b6e-4e7a-927f-deb25fc7665d",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c31af159-495e-4c46-9eff-3017048e6734",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "fcf81c1a-ed55-4893-b52a-187c28c84478",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "0f94e994-d91f-484b-b6e0-971fe78d0734",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "9e5e863f-7853-4af3-b02a-64f14012e08e",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "59abc3d3-01b0-4bbc-b7b9-48ac53bcc3d3",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "6e9df3d2-27d6-4088-bdac-234124d48afd",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c6fc343f-385e-4254-9c73-5285a5fbbd1a",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "9b391f68-6a09-43e4-ac47-4610ad3c510d",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "96c467d4-0ebe-44a1-9863-3d1e7f0431e0",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "040eb444-8499-43a7-9a49-7b42a2066d82",
+        "amount": 242.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Antares annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "43154c4d-b343-4ec2-abfc-4821dfdd474c",
+        "amount": 144.0,
+        "cycle": "annual",
+        "product_name": "StarHouse Membership - Nova Annual",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "88d6459f-304c-4957-a4ce-eff6681c80fe",
+        "amount": 99.0,
+        "cycle": "monthly",
+        "product_name": "Program Partners - Astral monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "f370621e-9594-4c11-afd0-e9f9ad1fa795",
+        "amount": 44.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Aldebaran monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "d0c90d13-7ead-48fc-ae09-526a47320f15",
+        "amount": 44.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Aldebaran monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "ddb5b269-b16f-4d4c-883a-a4fa35e19e19",
+        "amount": 44.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Aldebaran monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "459215dc-e2e5-40f7-9988-6f38f45ec5d2",
+        "amount": 44.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Aldebaran monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "8394aa12-3b19-4647-8b88-32a56b06f9fa",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "canceled"
+      },
+      {
+        "subscription_id": "bf9bd561-61ae-4d87-8bc9-9d1d6a6db424",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "08112047-948a-44e4-8fa4-f6d0aae057dc",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "f396185b-6d49-40e6-a0fd-a1a91ef15131",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "f320ad73-8b60-4ac0-a17e-c26cdc484943",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "26dba927-65c7-4ec2-aba0-0e4cadd99fc3",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "35d3c686-a7be-4177-99f4-b905077944f9",
+        "amount": 33.0,
+        "cycle": "monthly",
+        "product_name": "Program Partner - Luminary monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c5ff0fcb-e976-4bb3-9a19-4c0098ee20ae",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "3cf1c596-b8c4-4a0c-8b39-da6913e6926d",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "78657899-e83f-45f0-a21b-229890727c27",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "active"
+      },
+      {
+        "subscription_id": "7728f696-7a21-4029-a86d-d0eefad66742",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "33c97803-8414-4c54-aaff-06028aa290d4",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c5f2843c-672e-415c-a67f-e85c585c07d8",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "active"
+      },
+      {
+        "subscription_id": "3442f49b-adb2-417b-ba83-3634f5fa7c1b",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "7588fde2-c6fa-4351-8986-554528bb9aa8",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "74a3d5d7-3605-4b4b-aa7b-18d1c27e3a8a",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "canceled"
+      },
+      {
+        "subscription_id": "2d4ab9ef-aa32-479e-90ee-b27440c25c55",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "c19994d5-2ad4-4cc1-a1ba-4fbb6f4b7019",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "2ac71c9e-d429-4b0d-8e4f-2544acb15200",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "canceled"
+      },
+      {
+        "subscription_id": "d2d9396f-3b00-4f91-bd9f-a9bf1b1b4fdb",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "active"
+      },
+      {
+        "subscription_id": "4a4581b4-c717-4fcc-a46b-9325bf708fff",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "65f18cef-7441-4ac0-9bd8-0cf3953d8362",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "7e1ba4bb-98ca-46c2-bf80-3c2b3f9b3142",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "52014df6-6282-40cb-b67f-9210fbc0d47c",
+        "amount": 22.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Antares monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "deae52b1-6395-4ea8-a859-08e0e87348bd",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "canceled"
+      },
+      {
+        "subscription_id": "8c23f90e-4fb5-4c9b-bdbf-e11ccd95fab4",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "b10fe469-0807-40d3-b43e-42b8d8c999c5",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "76eb709b-ad48-4bc2-b395-d937b5f73336",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "active"
+      },
+      {
+        "subscription_id": "0a6c8314-7f65-4c93-a921-d442b3dd52d0",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "76775cad-f197-49ee-b852-1e08f04666e5",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "expired"
+      },
+      {
+        "subscription_id": "47b509bd-9155-41ed-a048-1f1cedabfb7c",
+        "amount": 12.0,
+        "cycle": "monthly",
+        "product_name": "StarHouse Membership - Nova monthly",
+        "status": "expired"
+      }
+    ]
+  }
+}

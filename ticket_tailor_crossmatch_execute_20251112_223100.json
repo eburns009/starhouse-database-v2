@@ -1,0 +1,159 @@
+{
+  "timestamp": "20251112_223100",
+  "mode": "execute",
+  "results": {
+    "total_matches": 14,
+    "enriched_phone": 14,
+    "enriched_address": 6,
+    "enriched_both": 6,
+    "skipped": 0,
+    "details": [
+      {
+        "kajabi_email": "julisaadams6@aol.com",
+        "kajabi_name": "Julisa Adams",
+        "tt_email": "julisaadams@gmail.com",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 303-818-6432",
+        "address": null
+      },
+      {
+        "kajabi_email": "megan.adams@naropa.edu",
+        "kajabi_name": "Megan Adams",
+        "tt_email": "meganadams713@gmail.com",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 303-903-4503",
+        "address": null
+      },
+      {
+        "kajabi_email": "heather.baines@outlook.com",
+        "kajabi_name": "Heather Baines",
+        "tt_email": "heather@earthguardians.org",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 303-475-9294",
+        "address": "4109 Niblick Dr"
+      },
+      {
+        "kajabi_email": "allisonconte@me.com",
+        "kajabi_name": "Allison Conte",
+        "tt_email": "hello@sanctuaryforsacredunion.org",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 440-552-7373",
+        "address": null
+      },
+      {
+        "kajabi_email": "contemplativeartist@gmail.com",
+        "kajabi_name": "Suzanne Frazier",
+        "tt_email": "suzannefrazierartist@gmail.com",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 303-502-0751",
+        "address": null
+      },
+      {
+        "kajabi_email": "christine@cmhuston.com",
+        "kajabi_name": "Christine Huston",
+        "tt_email": "chuston909@comcast.net",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 484-678-6285",
+        "address": null
+      },
+      {
+        "kajabi_email": "brookeleclaire@gmail.com",
+        "kajabi_name": "Brooke LeClaire",
+        "tt_email": "elegant_caterer0g@icloud.com",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "1 970-420-8952",
+        "address": null
+      },
+      {
+        "kajabi_email": "kevin@envoypeace.com",
+        "kajabi_name": "Kevin Lockwood",
+        "tt_email": "envoypeace@gmail.com",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 720-255-5470",
+        "address": "17671 W 83rd Pl"
+      },
+      {
+        "kajabi_email": "c.mcgroarty@att.net",
+        "kajabi_name": "Christine McGroarty",
+        "tt_email": "cmcg216@gmail.com",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 303-888-7118",
+        "address": "3775 south Grant Street"
+      },
+      {
+        "kajabi_email": "alison-meredith@outlook.co.nz",
+        "kajabi_name": "Alison Meredith",
+        "tt_email": "just.imagine@slingshot.co.nz",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "64272413423",
+        "address": null
+      },
+      {
+        "kajabi_email": "alison@wisecosmos.org",
+        "kajabi_name": "Alison Meredith",
+        "tt_email": "just.imagine@slingshot.co.nz",
+        "enriched": [
+          "phone"
+        ],
+        "phone": "64272413423",
+        "address": null
+      },
+      {
+        "kajabi_email": "rodanita41@gmail.com",
+        "kajabi_name": "Anita Rodriguez-Mccaffrey",
+        "tt_email": "anitarodriguez@suncoastwaldorf.org",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 954-909-9178",
+        "address": "812 Franklin Circle"
+      },
+      {
+        "kajabi_email": "smithdeborahf@gmail.com",
+        "kajabi_name": "Deborah Smith",
+        "tt_email": "dlseese@protonmail.com",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 808-699-1996",
+        "address": "2792 Aina Lani drive"
+      },
+      {
+        "kajabi_email": "stoddard.t@gmail.com",
+        "kajabi_name": "Tonya Stoddard",
+        "tt_email": "tonyatoenail@gmail.com",
+        "enriched": [
+          "phone",
+          "address"
+        ],
+        "phone": "1 415-225-0523",
+        "address": "7943 covert ln"
+      }
+    ]
+  }
+}

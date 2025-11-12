@@ -1,0 +1,83 @@
+{
+  "generated_at": "2025-11-12",
+  "total_opportunities": 6,
+  "opportunities": [
+    {
+      "type": "phone_match",
+      "kajabi_id": "d2566fc0-8953-4ee8-b768-94ed8cbe5ba4",
+      "kajabi_email": "marijship@gmail.com",
+      "kajabi_name": "Marianne Shiple",
+      "signal": "phone",
+      "phone": "1 786-877-9344",
+      "source": "ticket_tailor",
+      "source_id": "171275b8-f5fc-47a7-b728-fcdd39a324a8",
+      "source_email": "ejbamford@gmail.com",
+      "action": "Add ticket_tailor_id=None to Kajabi contact"
+    },
+    {
+      "type": "name_address_match",
+      "kajabi_id": "76984bd1-f4fb-416b-a0a1-695e6096c246",
+      "kajabi_email": "lexcoach@gmail.com",
+      "kajabi_name": "Ali Katz",
+      "signal": "last_name + address",
+      "address": "1320 Upland Ave",
+      "source": "manual",
+      "source_id": "9c05c219-b397-4128-ad1e-7ff0ea38927f",
+      "source_email": "ali@newlawbusinessmodel.com",
+      "other_phone": "3103514173",
+      "action": "Add phone"
+    },
+    {
+      "type": "name_address_match",
+      "kajabi_id": "8790070d-98ed-4f1f-b76c-e4eac0991779",
+      "kajabi_email": "efriedlander17@yahoo.com",
+      "kajabi_name": "Ellen Friedlander",
+      "signal": "last_name + address",
+      "address": "1475 Chestnut Place",
+      "source": "manual",
+      "source_id": "6c70bfc5-502c-4d85-a034-36777efb0224",
+      "source_email": "elliebelle17@mac.com",
+      "other_phone": "7203939493",
+      "action": "Add phone"
+    },
+    {
+      "type": "name_address_match",
+      "kajabi_id": "25c49e83-b3b7-4c39-8ef2-745386971c46",
+      "kajabi_email": "daniel.kolman@gmail.com",
+      "kajabi_name": "Daniel Kolman",
+      "signal": "last_name + address",
+      "address": "2393 McKinley Ave",
+      "source": "manual",
+      "source_id": "3e5d8354-1d4c-4c6c-8b14-be82ee5ea34e",
+      "source_email": "daniel.kolman+us@gmail.com",
+      "other_phone": "4083290810",
+      "action": "Add phone"
+    },
+    {
+      "type": "name_address_match",
+      "kajabi_id": "9de73d37-f3ef-4253-bfe3-770797dc3de9",
+      "kajabi_email": "lasirenaazul@gmail.com",
+      "kajabi_name": "Helen Henry",
+      "signal": "last_name + address",
+      "address": "2931 Plaza Azul",
+      "source": "ticket_tailor",
+      "source_id": "2f8f524f-2896-4df2-bbdf-2ad3262d5fd8",
+      "source_email": "folklife@earthlink.net",
+      "other_phone": "1 505-204-6182",
+      "action": "Add phone"
+    },
+    {
+      "type": "name_address_match",
+      "kajabi_id": "ad3f01d0-91b8-42d3-b3c2-86102f61126b",
+      "kajabi_email": "mechie246@gmail.com",
+      "kajabi_name": "Michele Andre",
+      "signal": "last_name + address",
+      "address": "326 HENRY CLAY AVE",
+      "source": "ticket_tailor",
+      "source_id": "1dbdfe4f-935a-4ad8-8ade-004627505171",
+      "source_email": "mandre@ballhort.com",
+      "other_phone": "1 504-554-9737",
+      "action": "Add phone"
+    }
+  ]
+}

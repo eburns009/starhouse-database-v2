@@ -1,0 +1,83 @@
+{
+  "timestamp": "20251112_222835",
+  "mode": "execute",
+  "results": {
+    "total_missing_addresses": 4482,
+    "paypal_addresses_available": 222,
+    "enriched_address": 10,
+    "enriched_phone": 6,
+    "no_match": 4472,
+    "details": [
+      {
+        "email": "asc@thestarhouse.org",
+        "name": "Ed None",
+        "address": "3476 Sunshine Canyon Dr, Boulder, CO 80302",
+        "phone_added": false,
+        "phone": null
+      },
+      {
+        "email": "bwholden@comcast.net",
+        "name": "Barbara Holden",
+        "address": "1165 Harper Lake Dr., Louisville, CO 80027",
+        "phone_added": false,
+        "phone": null
+      },
+      {
+        "email": "cboerder@hotmail.com",
+        "name": "Catherine Boerder",
+        "address": "2895 W Riverwalk CIR, Littleton, CO 80123",
+        "phone_added": true,
+        "phone": "7203461007"
+      },
+      {
+        "email": "divinereadingsbylaura@gmail.com",
+        "name": "Laura None",
+        "address": "PO Box 482, Parkdale, OR 97041",
+        "phone_added": true,
+        "phone": "7076016268"
+      },
+      {
+        "email": "houseofmartin@comcast.net",
+        "name": "Stacie Martin",
+        "address": "1711 Juniper HIll Rd., Aspen, CO 81611",
+        "phone_added": true,
+        "phone": "2148018414"
+      },
+      {
+        "email": "kentspies@gmail.com",
+        "name": "Kent Spies",
+        "address": "1713 Sagewood Dr, Fort Collins, CO 80525-2073",
+        "phone_added": true,
+        "phone": "2182095869"
+      },
+      {
+        "email": "lilaplays@icloud.com",
+        "name": "Lila None",
+        "address": "3464 Sunshine Canyon, Boulder, CO 80302",
+        "phone_added": true,
+        "phone": "7203205988"
+      },
+      {
+        "email": "reynaoflight@gmail.com",
+        "name": "Reyn\u00e1 Cambrey",
+        "address": "11449 CENTRAL CT, Broomfield, CO 80021",
+        "phone_added": false,
+        "phone": null
+      },
+      {
+        "email": "stkesler@gmail.com",
+        "name": "Songya Kesler",
+        "address": "823 Beauprez Ave, Lafayette, CO 80026",
+        "phone_added": true,
+        "phone": "3036816020"
+      },
+      {
+        "email": "yes.annemore@gmail.com",
+        "name": "Anne More",
+        "address": "6469 Olde Stage Road, Boulder, CO 80302",
+        "phone_added": false,
+        "phone": null
+      }
+    ]
+  }
+}

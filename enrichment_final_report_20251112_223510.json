@@ -1,0 +1,60 @@
+{
+  "generated_at": "2025-11-12T22:35:10.193276",
+  "database_stats": {
+    "overall": {
+      "total_contacts": 6878,
+      "email_subscribers": 3757,
+      "has_phone": 2628,
+      "has_primary_address": 1538,
+      "has_shipping_address": 1219
+    },
+    "kajabi": {
+      "total": 5905,
+      "has_phone": 2186,
+      "has_primary_address": 1406,
+      "has_shipping_address": 971
+    },
+    "subscriptions": {
+      "total_subscriptions": 326,
+      "has_product_id": 318,
+      "active_subscriptions": 137
+    },
+    "products": {
+      "total_products": 109
+    },
+    "emails": {
+      "total_alternate_emails": 6956
+    }
+  },
+  "enrichment_summary": {
+    "phone_contacts_enriched": 20,
+    "address_contacts_enriched": 16,
+    "subscriptions_linked": 55
+  },
+  "activities": [
+    {
+      "name": "Kajabi Mobile Phone Numbers",
+      "status": "Completed - Only 1 mobile phone available in source data",
+      "result": "0 contacts enriched (data not available in source)",
+      "icon": "\u2298"
+    },
+    {
+      "name": "PayPal Shipping Addresses",
+      "status": "Completed",
+      "result": "10 Kajabi contacts enriched with addresses, 6 also got phone numbers",
+      "icon": "\u2713"
+    },
+    {
+      "name": "Ticket Tailor Cross-Match",
+      "status": "Completed",
+      "result": "14 Kajabi contacts enriched (14 phones, 6 addresses)",
+      "icon": "\u2713"
+    },
+    {
+      "name": "Subscription Product Links",
+      "status": "Completed",
+      "result": "55 subscriptions linked to products (87.3% success rate)",
+      "icon": "\u2713"
+    }
+  ]
+}
