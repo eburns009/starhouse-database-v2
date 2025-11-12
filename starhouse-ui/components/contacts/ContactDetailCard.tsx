@@ -556,42 +556,44 @@ export function ContactDetailCard({
       {/* Header Card */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-start gap-6">
+          <div className="flex items-start gap-4 sm:gap-6">
             <Avatar
               initials={getInitials(contact.first_name, contact.last_name)}
-              className="h-20 w-20 text-lg"
+              className="h-16 w-16 sm:h-20 sm:w-20 text-base sm:text-lg flex-shrink-0"
             />
 
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-3 min-w-0">
               <div>
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-xl sm:text-2xl font-bold">
                   {formatName(contact.first_name, contact.last_name)}
                 </h2>
 
                 {/* Contact Info - Email & Phone */}
-                <div className="mt-3 space-y-2">
+                <div className="mt-3 space-y-3">
                   {/* Email */}
-                  <div className="flex items-center gap-3 text-sm">
-                    <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                    <span className="font-mono text-foreground select-all">
-                      {contact.email}
-                    </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="font-mono text-foreground select-all text-xs sm:text-sm truncate">
+                        {contact.email}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 px-2 flex-shrink-0"
+                        onClick={() => handleCopyEmail(contact.email)}
+                        title="Copy email"
+                      >
+                        {copiedEmail ? (
+                          <Check className="h-3 w-3 text-green-600" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
                     <Button
                       size="sm"
-                      variant="ghost"
-                      className="h-7 px-2"
-                      onClick={() => handleCopyEmail(contact.email)}
-                      title="Copy email"
-                    >
-                      {copiedEmail ? (
-                        <Check className="h-3 w-3 text-green-600" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="h-7 ml-auto"
+                      className="h-8 w-full sm:w-auto sm:ml-auto"
                       onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
                     >
                       <Mail className="h-3 w-3 mr-1" />
@@ -627,7 +629,7 @@ export function ContactDetailCard({
       </Card>
 
       {/* Quick Action Buttons - Products & Tags */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <Button
           variant={showProducts ? "default" : "outline"}
           size="sm"
@@ -635,7 +637,7 @@ export function ContactDetailCard({
             setShowProducts(!showProducts)
             if (showTags) setShowTags(false)
           }}
-          className="flex-1 transition-all"
+          className="flex-1 transition-all h-10 sm:h-9"
         >
           <Package className="h-4 w-4 mr-2" />
           Products
@@ -648,7 +650,7 @@ export function ContactDetailCard({
             setShowTags(!showTags)
             if (showProducts) setShowProducts(false)
           }}
-          className="flex-1 transition-all"
+          className="flex-1 transition-all h-10 sm:h-9"
         >
           <Tag className="h-4 w-4 mr-2" />
           Tags
@@ -673,10 +675,10 @@ export function ContactDetailCard({
                 {subscriptions.map((subscription) => (
                   <div
                     key={subscription.id}
-                    className="flex items-center justify-between rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-4 transition-all hover:shadow-md hover:border-primary/30"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-3 sm:p-4 transition-all hover:shadow-md hover:border-primary/30"
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-1 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="font-medium text-sm">
                           {subscription.products?.name || 'Unknown Product'}
                         </span>
@@ -694,13 +696,13 @@ export function ContactDetailCard({
                       )}
                     </div>
                     {subscription.amount && (
-                      <div className="text-right">
+                      <div className="text-left sm:text-right flex-shrink-0">
                         <div className="font-semibold text-sm">
                           {formatCurrency(Number(subscription.amount))}
+                          <span className="text-xs text-muted-foreground font-normal ml-1">
+                            / {subscription.billing_cycle}
+                          </span>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          / {subscription.billing_cycle}
-                        </p>
                       </div>
                     )}
                   </div>
@@ -729,13 +731,13 @@ export function ContactDetailCard({
                 onChange={(e) => setNewTag(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                 placeholder="Add a tag..."
-                className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2 text-sm focus:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:focus:border-purple-700 dark:focus:ring-purple-900"
+                className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2.5 sm:py-2 text-sm focus:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:focus:border-purple-700 dark:focus:ring-purple-900"
               />
               <Button
                 size="sm"
                 onClick={handleAddTag}
                 disabled={!newTag.trim()}
-                className="rounded-full px-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="rounded-full px-4 sm:px-4 h-10 sm:h-9 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex-shrink-0"
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -1070,10 +1072,10 @@ export function ContactDetailCard({
               {activeSubscriptions.map((subscription) => (
                 <div
                   key={subscription.id}
-                  className="flex items-center justify-between rounded-xl border border-border/50 p-3"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border/50 p-3"
                 >
-                  <div className="space-y-1">
-                    <div className="font-medium">
+                  <div className="space-y-1 flex-1">
+                    <div className="font-medium text-sm sm:text-base">
                       {subscription.products?.name || subscription.billing_cycle || 'Subscription'}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1081,9 +1083,9 @@ export function ContactDetailCard({
                         `Next billing: ${formatDate(subscription.next_billing_date)}`}
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="flex items-center justify-between sm:flex-col sm:text-right gap-2 sm:gap-1">
                     {subscription.amount && (
-                      <div className="font-semibold">
+                      <div className="font-semibold text-sm">
                         {formatCurrency(
                           Number(subscription.amount),
                           subscription.currency
@@ -1093,7 +1095,7 @@ export function ContactDetailCard({
                         </span>
                       </div>
                     )}
-                    <Badge variant="default" className="mt-1 text-xs">
+                    <Badge variant="default" className="text-xs">
                       {subscription.status}
                     </Badge>
                   </div>
@@ -1119,7 +1121,7 @@ export function ContactDetailCard({
         <CardContent className="space-y-3">
           {/* Add Note Form */}
           {showAddNote && (
-            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-4">
+            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-3 sm:p-4">
               <div>
                 <label className="text-xs font-medium text-muted-foreground">
                   Subject (3-5 words)
@@ -1129,7 +1131,7 @@ export function ContactDetailCard({
                   value={newNoteSubject}
                   onChange={(e) => setNewNoteSubject(e.target.value)}
                   placeholder="e.g., Follow up needed"
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm"
                   maxLength={50}
                 />
               </div>
@@ -1141,7 +1143,7 @@ export function ContactDetailCard({
                   value={newNoteContent}
                   onChange={(e) => setNewNoteContent(e.target.value)}
                   placeholder="Enter your note here..."
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm resize-y min-h-[100px]"
                   rows={4}
                 />
               </div>
@@ -1149,6 +1151,7 @@ export function ContactDetailCard({
                 size="sm"
                 onClick={handleSaveNote}
                 disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
+                className="w-full sm:w-auto h-10 sm:h-9"
               >
                 {savingNote ? 'Saving...' : 'Save Note'}
               </Button>
