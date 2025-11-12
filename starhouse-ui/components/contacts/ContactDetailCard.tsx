@@ -18,7 +18,6 @@ import {
   Loader2,
   ExternalLink,
   User,
-  AlertTriangle,
 } from 'lucide-react'
 import type {
   Contact,
@@ -232,7 +231,6 @@ export function ContactDetailCard({
   const [alternateEmails, setAlternateEmails] = useState<AlternateEmail[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [subscriptions, setSubscriptions] = useState<SubscriptionWithProduct[]>([])
-  const [duplicates, setDuplicates] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -291,23 +289,6 @@ export function ContactDetailCard({
 
         if (subscriptionsError) {
           console.error('Error fetching subscriptions:', subscriptionsError)
-        }
-
-        // Fetch duplicate contacts if this contact is flagged
-        if (contactData.potential_duplicate_group) {
-          const { data: duplicatesData, error: duplicatesError } = await supabase
-            .from('contacts')
-            .select('*')
-            .eq('potential_duplicate_group', contactData.potential_duplicate_group)
-            .neq('id', contactId)
-            .is('deleted_at', null)
-            .order('created_at', { ascending: true })
-
-          if (duplicatesError) {
-            console.error('Error fetching duplicates:', duplicatesError)
-          } else {
-            setDuplicates(duplicatesData || [])
-          }
         }
 
         setContact(contactData)
@@ -393,93 +374,6 @@ export function ContactDetailCard({
           </div>
         </CardContent>
       </Card>
-
-      {/* Duplicate Warning */}
-      {contact.potential_duplicate_group && (
-        <Card className="border-yellow-300 bg-yellow-50/50">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <div className="rounded-full bg-yellow-100 p-2">
-                <AlertTriangle className="h-5 w-5 text-yellow-600" />
-              </div>
-              <div className="flex-1 space-y-3">
-                <div>
-                  <h3 className="font-semibold text-yellow-900">
-                    Potential Duplicate Detected
-                  </h3>
-                  <p className="mt-1 text-sm text-yellow-800">
-                    {contact.potential_duplicate_reason}
-                  </p>
-                </div>
-
-                {duplicates.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-yellow-900">
-                      Possible duplicate accounts ({duplicates.length}):
-                    </p>
-                    <div className="space-y-2">
-                      {duplicates.map((dup) => (
-                        <div
-                          key={dup.id}
-                          className="rounded-lg border border-yellow-200 bg-white p-3"
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 space-y-1">
-                              <div className="font-medium">
-                                {formatName(dup.first_name, dup.last_name)}
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {dup.email}
-                              </div>
-                              {dup.phone && (
-                                <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                                  <Phone className="h-3.5 w-3.5" />
-                                  {dup.phone}
-                                </div>
-                              )}
-                              {dup.city && dup.state && (
-                                <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                                  <MapPin className="h-3.5 w-3.5" />
-                                  {dup.city}, {dup.state}
-                                </div>
-                              )}
-                              <Badge variant="outline" className="mt-1 text-xs">
-                                Created {formatDate(dup.created_at)}
-                              </Badge>
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                // Navigate to the duplicate contact
-                                window.location.href = `/contacts?id=${dup.id}`
-                              }}
-                            >
-                              View
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Button
-                      variant="default"
-                      className="mt-2 bg-yellow-600 hover:bg-yellow-700"
-                      onClick={() => {
-                        alert(
-                          'Merge functionality coming soon! For now, please manually review and consolidate these contacts.'
-                        )
-                      }}
-                    >
-                      Merge Contacts
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-3">
