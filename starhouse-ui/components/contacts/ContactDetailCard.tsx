@@ -21,7 +21,6 @@ import {
 } from 'lucide-react'
 import type {
   Contact,
-  AlternateEmail,
   Transaction,
   SubscriptionWithProduct,
   NameVariant,
@@ -32,6 +31,88 @@ import type {
 interface ContactDetailCardProps {
   contactId: string
   onClose: () => void
+}
+
+// Extended Contact type with additional email fields
+interface ContactWithEmails extends Contact {
+  paypal_email?: string | null
+  additional_email?: string | null
+  additional_email_source?: string | null
+  zoho_email?: string | null
+}
+
+interface AdditionalEmail {
+  email: string
+  source: string
+  priority: number
+}
+
+/**
+ * Get source priority for email ranking
+ * FAANG Standard: Pure function with clear business logic
+ */
+function getEmailSourcePriority(source: string): number {
+  const priorities: Record<string, number> = {
+    'kajabi': 1,
+    'ticket_tailor': 2,
+    'paypal': 3,
+    'manual': 4,
+    'zoho': 4,
+  }
+  return priorities[source.toLowerCase()] || 4
+}
+
+/**
+ * Get display label for email source
+ */
+function getEmailSourceLabel(source: string): string {
+  const labels: Record<string, string> = {
+    'kajabi': 'Kajabi',
+    'ticket_tailor': 'Ticket Tailor',
+    'paypal': 'PayPal',
+    'manual': 'Manual Entry',
+    'zoho': 'Zoho CRM',
+  }
+  return labels[source.toLowerCase()] || source
+}
+
+/**
+ * Extract additional emails from contact fields
+ * FAANG Standard: Pure function, no side effects
+ */
+function extractAdditionalEmails(contact: ContactWithEmails): AdditionalEmail[] {
+  const additionalEmails: AdditionalEmail[] = []
+  const primaryEmail = contact.email.toLowerCase()
+
+  // PayPal email
+  if (contact.paypal_email && contact.paypal_email.toLowerCase() !== primaryEmail) {
+    additionalEmails.push({
+      email: contact.paypal_email,
+      source: 'paypal',
+      priority: 3,
+    })
+  }
+
+  // Additional email (from various sources)
+  if (contact.additional_email && contact.additional_email.toLowerCase() !== primaryEmail) {
+    additionalEmails.push({
+      email: contact.additional_email,
+      source: contact.additional_email_source || 'manual',
+      priority: getEmailSourcePriority(contact.additional_email_source || 'manual'),
+    })
+  }
+
+  // Zoho email
+  if (contact.zoho_email && contact.zoho_email.toLowerCase() !== primaryEmail) {
+    additionalEmails.push({
+      email: contact.zoho_email,
+      source: 'zoho',
+      priority: 4,
+    })
+  }
+
+  // Sort by priority (ascending)
+  return additionalEmails.sort((a, b) => a.priority - b.priority)
 }
 
 /**
@@ -228,7 +309,6 @@ export function ContactDetailCard({
   onClose,
 }: ContactDetailCardProps) {
   const [contact, setContact] = useState<Contact | null>(null)
-  const [alternateEmails, setAlternateEmails] = useState<AlternateEmail[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [subscriptions, setSubscriptions] = useState<SubscriptionWithProduct[]>([])
   const [loading, setLoading] = useState(true)
@@ -247,18 +327,6 @@ export function ContactDetailCard({
           .single()
 
         if (contactError) throw contactError
-
-        // Fetch alternate emails
-        const { data: emailsData, error: emailsError } = await supabase
-          .from('contact_emails')
-          .select('id, email, email_type, is_primary, is_outreach, source, verified')
-          .eq('contact_id', contactId)
-          .order('is_primary', { ascending: false })
-          .order('created_at', { ascending: false })
-
-        if (emailsError) {
-          console.error('Error fetching emails:', emailsError)
-        }
 
         // Fetch transactions
         const { data: transactionsData, error: transactionsError } = await supabase
@@ -292,7 +360,6 @@ export function ContactDetailCard({
         }
 
         setContact(contactData)
-        setAlternateEmails(emailsData || [])
         setTransactions(transactionsData || [])
         setSubscriptions(subscriptionsData || [])
       } catch (err) {
@@ -333,6 +400,7 @@ export function ContactDetailCard({
   const nameVariants = extractNameVariants(contact)
   const phoneVariants = extractPhoneVariants(contact)
   const addressVariants = extractAddressVariants(contact)
+  const additionalEmails = extractAdditionalEmails(contact)
 
   // Calculate stats
   const totalRevenue = transactions
@@ -474,7 +542,7 @@ export function ContactDetailCard({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {/* Primary email from contacts table */}
+            {/* Primary email with subscription status */}
             <div className="rounded-lg bg-muted/30 p-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -488,43 +556,48 @@ export function ContactDetailCard({
                     Primary • {contact.source_system}
                   </p>
                 </div>
-                <Badge variant="secondary" className="text-xs">
-                  Primary
-                </Badge>
+                <div className="flex gap-1 flex-wrap">
+                  <Badge variant="secondary" className="text-xs">
+                    Primary
+                  </Badge>
+                  {contact.email_subscribed ? (
+                    <Badge variant="default" className="text-xs bg-green-600">
+                      Subscribed
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs">
+                      Not Subscribed
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Alternate emails */}
-            {alternateEmails.map((altEmail) => (
-              <div key={altEmail.id} className="rounded-lg bg-muted/30 p-3">
+            {/* Additional emails with source priority */}
+            {additionalEmails.map((additionalEmail, idx) => (
+              <div key={idx} className="rounded-lg bg-muted/30 p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 overflow-hidden">
                     <a
-                      href={`mailto:${altEmail.email}`}
+                      href={`mailto:${additionalEmail.email}`}
                       className="block truncate font-medium hover:text-primary"
                     >
-                      {altEmail.email}
+                      {additionalEmail.email}
                     </a>
-                    <div className="flex flex-wrap gap-1 text-xs text-muted-foreground">
-                      <span className="capitalize">{altEmail.email_type}</span>
-                      <span>• {altEmail.source}</span>
-                      {altEmail.verified && <span>• ✓ Verified</span>}
-                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {getEmailSourceLabel(additionalEmail.source)}
+                    </p>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    {altEmail.is_outreach && (
-                      <Badge variant="default" className="text-xs">
-                        Outreach
-                      </Badge>
-                    )}
-                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {getEmailSourceLabel(additionalEmail.source)}
+                  </Badge>
                 </div>
               </div>
             ))}
 
-            {alternateEmails.length === 0 && (
+            {additionalEmails.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                No alternate emails found
+                No additional emails found
               </p>
             )}
           </CardContent>
