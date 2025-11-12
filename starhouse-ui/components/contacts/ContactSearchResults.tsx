@@ -33,12 +33,12 @@ export function ContactSearchResults({
       setLoading(true)
       const supabase = createClient()
 
-      // Tokenized search: Split query into words and search across ALL name fields
+      // Tokenized search with AND logic: ALL words must match (but each word can match in ANY field)
       // This handles complex cases like:
       // - Multiple first names: "Lynn Amber Ryan"
       // - Couples: "Sue Johnson and Mike Moritz"
       // - Business names split across fields
-      const words = searchQuery.trim().split(/\s+/)
+      const words = searchQuery.trim().toLowerCase().split(/\s+/)
 
       // Search these fields for each word
       const searchFields = [
@@ -52,11 +52,8 @@ export function ContactSearchResults({
         'phone'
       ]
 
-      // For each word, check if it appears in ANY field
-      // Example: "Lynn Amber Ryan" becomes:
-      // (first_name ILIKE '%lynn%' OR last_name ILIKE '%lynn%' OR ... OR
-      //  first_name ILIKE '%amber%' OR last_name ILIKE '%amber%' OR ... OR
-      //  first_name ILIKE '%ryan%' OR last_name ILIKE '%ryan%' OR ...)
+      // Fetch a larger set to filter client-side with AND logic
+      // Create OR conditions to get any contact that might match
       const conditions = words.flatMap(word =>
         searchFields.map(field => `${field}.ilike.%${word}%`)
       )
@@ -66,15 +63,68 @@ export function ContactSearchResults({
         .select('*')
         .is('deleted_at', null)
         .or(conditions.join(','))
-        .order('created_at', { ascending: false })
-        .limit(20)
+        .limit(200) // Fetch more to filter client-side
 
       if (error) {
         console.error('Search error:', error)
+        setLoading(false)
+        return
       }
 
       if (!error && data) {
-        setContacts(data)
+        // Client-side filtering: ALL words must match (AND logic)
+        const filteredContacts = data.filter((contact: Contact) => {
+          return words.every(word => {
+            // Check if this word appears in at least one field
+            return searchFields.some(fieldName => {
+              const fieldValue = (contact[fieldName as keyof Contact] as string)?.toLowerCase() || ''
+              return fieldValue.includes(word)
+            })
+          })
+        })
+
+        // Relevance scoring for better ranking
+        const scoredContacts = filteredContacts.map((contact: Contact) => {
+          let score = 0
+
+          words.forEach(word => {
+            searchFields.forEach(fieldName => {
+              const fieldValue = (contact[fieldName as keyof Contact] as string)?.toLowerCase() || ''
+
+              if (fieldValue === word) {
+                // Exact match: highest score
+                score += 10
+              } else if (fieldValue.startsWith(word)) {
+                // Starts with: high score
+                score += 5
+              } else if (fieldValue.includes(word)) {
+                // Contains: base score
+                score += 1
+              }
+            })
+
+            // Bonus for matching in primary name fields
+            const firstName = contact.first_name?.toLowerCase() || ''
+            const lastName = contact.last_name?.toLowerCase() || ''
+            if (firstName === word) score += 5
+            if (lastName === word) score += 5
+            if (firstName.startsWith(word)) score += 2
+            if (lastName.startsWith(word)) score += 2
+          })
+
+          return { contact, score }
+        })
+
+        // Sort by relevance score (highest first), then by created_at
+        scoredContacts.sort((a: { contact: Contact; score: number }, b: { contact: Contact; score: number }) => {
+          if (b.score !== a.score) {
+            return b.score - a.score
+          }
+          return new Date(b.contact.created_at).getTime() - new Date(a.contact.created_at).getTime()
+        })
+
+        // Take top 20 results
+        setContacts(scoredContacts.slice(0, 20).map((item: { contact: Contact; score: number }) => item.contact))
       }
 
       setLoading(false)
