@@ -431,7 +431,45 @@ export function ContactDetailCard({
                 <h2 className="text-2xl font-bold">
                   {formatName(contact.first_name, contact.last_name)}
                 </h2>
-                <div className="mt-2 flex flex-wrap gap-2">
+
+                {/* Contact Info - Email & Phone */}
+                <div className="mt-3 space-y-2">
+                  {/* Email */}
+                  <div className="flex items-center gap-3 text-sm">
+                    <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="font-mono text-primary hover:underline select-all"
+                      title="Click to email or select to copy"
+                    >
+                      {contact.email}
+                    </a>
+                    <Button
+                      size="sm"
+                      className="h-7 ml-auto"
+                      onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
+                    >
+                      <Mail className="h-3 w-3 mr-1" />
+                      Send Email
+                    </Button>
+                  </div>
+
+                  {/* Phone */}
+                  {contact.phone && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <a
+                        href={`tel:${contact.phone}`}
+                        className="font-mono text-primary hover:underline select-all"
+                        title="Click to call or select to copy"
+                      >
+                        {contact.phone}
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2">
                   {contact.email_subscribed && <Badge>Email Subscribed</Badge>}
                   <Badge variant="outline" className="capitalize">
                     {contact.source_system.replace('_', ' ')}
