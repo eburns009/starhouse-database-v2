@@ -23,7 +23,7 @@ import type {
   Contact,
   AlternateEmail,
   Transaction,
-  Subscription,
+  SubscriptionWithProduct,
   NameVariant,
   PhoneVariant,
   AddressVariant,
@@ -230,7 +230,7 @@ export function ContactDetailCard({
   const [contact, setContact] = useState<Contact | null>(null)
   const [alternateEmails, setAlternateEmails] = useState<AlternateEmail[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
+  const [subscriptions, setSubscriptions] = useState<SubscriptionWithProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -272,11 +272,19 @@ export function ContactDetailCard({
           console.error('Error fetching transactions:', transactionsError)
         }
 
-        // Fetch subscriptions
+        // Fetch subscriptions with product information (JOIN)
         const { data: subscriptionsData, error: subscriptionsError } = await supabase
           .from('subscriptions')
-          .select('*')
+          .select(`
+            *,
+            products (
+              id,
+              name,
+              product_type
+            )
+          `)
           .eq('contact_id', contactId)
+          .not('product_id', 'is', null)  // Only show subscriptions with products
           .order('created_at', { ascending: false })
 
         if (subscriptionsError) {
@@ -659,8 +667,8 @@ export function ContactDetailCard({
                   className="flex items-center justify-between rounded-xl border border-border/50 p-3"
                 >
                   <div className="space-y-1">
-                    <div className="font-medium capitalize">
-                      {subscription.billing_cycle || 'Subscription'}
+                    <div className="font-medium">
+                      {subscription.products?.name || subscription.billing_cycle || 'Subscription'}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {subscription.next_billing_date &&
@@ -674,6 +682,9 @@ export function ContactDetailCard({
                           Number(subscription.amount),
                           subscription.currency
                         )}
+                        <span className="ml-1 text-xs font-normal text-muted-foreground">
+                          / {subscription.billing_cycle}
+                        </span>
                       </div>
                     )}
                     <Badge variant="default" className="mt-1 text-xs">

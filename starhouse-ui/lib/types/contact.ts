@@ -8,6 +8,11 @@ import type { Database } from './database'
 export type Contact = Database['public']['Tables']['contacts']['Row']
 export type Transaction = Database['public']['Tables']['transactions']['Row']
 export type Subscription = Database['public']['Tables']['subscriptions']['Row']
+export type Product = Database['public']['Tables']['products']['Row']
+
+export interface SubscriptionWithProduct extends Subscription {
+  products: Pick<Product, 'id' | 'name' | 'product_type'> | null
+}
 
 export interface AlternateEmail {
   id: string
