@@ -16,8 +16,15 @@ import {
   DollarSign,
   CreditCard,
   Loader2,
-  ExternalLink,
   User,
+  Copy,
+  Check,
+  Tag,
+  Package,
+  X,
+  Plus,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import type {
   Contact,
@@ -27,6 +34,19 @@ import type {
   PhoneVariant,
   AddressVariant,
 } from '@/lib/types/contact'
+
+// Note type for contact notes
+interface ContactNote {
+  id: string
+  contact_id: string
+  note_type: string
+  subject: string | null
+  content: string
+  author_name: string
+  is_pinned: boolean
+  created_at: string
+  updated_at: string
+}
 
 interface ContactDetailCardProps {
   contactId: string
@@ -311,8 +331,93 @@ export function ContactDetailCard({
   const [contact, setContact] = useState<Contact | null>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [subscriptions, setSubscriptions] = useState<SubscriptionWithProduct[]>([])
+  const [notes, setNotes] = useState<ContactNote[]>([])
+  const [totalRevenue, setTotalRevenue] = useState(0)
+  const [totalTransactionCount, setTotalTransactionCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [copiedEmail, setCopiedEmail] = useState(false)
+  const [expandedNoteIds, setExpandedNoteIds] = useState<Set<string>>(new Set())
+  const [showAddNote, setShowAddNote] = useState(false)
+  const [newNoteSubject, setNewNoteSubject] = useState('')
+  const [newNoteContent, setNewNoteContent] = useState('')
+  const [savingNote, setSavingNote] = useState(false)
+  const [showProducts, setShowProducts] = useState(false)
+  const [showTags, setShowTags] = useState(false)
+  const [contactTags, setContactTags] = useState<string[]>([])
+  const [newTag, setNewTag] = useState('')
+
+  const handleCopyEmail = async (email: string) => {
+    try {
+      await navigator.clipboard.writeText(email)
+      setCopiedEmail(true)
+      setTimeout(() => setCopiedEmail(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy email:', err)
+    }
+  }
+
+  const toggleNoteExpand = (noteId: string) => {
+    setExpandedNoteIds((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(noteId)) {
+        newSet.delete(noteId)
+      } else {
+        newSet.add(noteId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSaveNote = async () => {
+    if (!newNoteSubject.trim() || !newNoteContent.trim()) {
+      return
+    }
+
+    setSavingNote(true)
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('contact_notes')
+        .insert({
+          contact_id: contactId,
+          subject: newNoteSubject.trim(),
+          content: newNoteContent.trim(),
+          note_type: 'general',
+          author_name: 'User', // TODO: Get from auth when available
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      // Add new note to the list
+      setNotes((prev) => [data, ...prev])
+
+      // Reset form
+      setNewNoteSubject('')
+      setNewNoteContent('')
+      setShowAddNote(false)
+    } catch (err) {
+      console.error('Error saving note:', err)
+      alert('Failed to save note. Please try again.')
+    } finally {
+      setSavingNote(false)
+    }
+  }
+
+  const handleAddTag = () => {
+    if (newTag.trim() && !contactTags.includes(newTag.trim())) {
+      setContactTags([...contactTags, newTag.trim()])
+      setNewTag('')
+      // TODO: Save to database when tags field is added to contacts table
+    }
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setContactTags(contactTags.filter((tag) => tag !== tagToRemove))
+    // TODO: Save to database when tags field is added to contacts table
+  }
 
   useEffect(() => {
     const fetchContactDetails = async () => {
@@ -340,6 +445,28 @@ export function ContactDetailCard({
           console.error('Error fetching transactions:', transactionsError)
         }
 
+        // Fetch total revenue (all transactions, not just the recent 5)
+        const { data: revenueData, error: revenueError } = await supabase
+          .from('transactions')
+          .select('amount, transaction_type')
+          .eq('contact_id', contactId)
+          .neq('transaction_type', 'refund')
+
+        if (revenueError) {
+          console.error('Error fetching revenue:', revenueError)
+        } else {
+          const revenue = revenueData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+          setTotalRevenue(revenue)
+        }
+
+        // Get total transaction count
+        const { count: transactionCount } = await supabase
+          .from('transactions')
+          .select('*', { count: 'exact', head: true })
+          .eq('contact_id', contactId)
+
+        setTotalTransactionCount(transactionCount || 0)
+
         // Fetch subscriptions with product information (JOIN)
         const { data: subscriptionsData, error: subscriptionsError } = await supabase
           .from('subscriptions')
@@ -359,9 +486,22 @@ export function ContactDetailCard({
           console.error('Error fetching subscriptions:', subscriptionsError)
         }
 
+        // Fetch notes
+        const { data: notesData, error: notesError } = await supabase
+          .from('contact_notes')
+          .select('*')
+          .eq('contact_id', contactId)
+          .order('is_pinned', { ascending: false })  // Pinned notes first
+          .order('created_at', { ascending: false })  // Then by date
+
+        if (notesError) {
+          console.error('Error fetching notes:', notesError)
+        }
+
         setContact(contactData)
         setTransactions(transactionsData || [])
         setSubscriptions(subscriptionsData || [])
+        setNotes(notesData || [])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load contact')
         console.error('Error loading contact:', err)
@@ -403,10 +543,6 @@ export function ContactDetailCard({
   const additionalEmails = extractAdditionalEmails(contact)
 
   // Calculate stats
-  const totalRevenue = transactions
-    .filter((t) => t.transaction_type !== 'refund')
-    .reduce((sum, t) => sum + Number(t.amount), 0)
-
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active')
 
   return (
@@ -437,13 +573,22 @@ export function ContactDetailCard({
                   {/* Email */}
                   <div className="flex items-center gap-3 text-sm">
                     <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                    <a
-                      href={`mailto:${contact.email}`}
-                      className="font-mono text-primary hover:underline select-all"
-                      title="Click to email or select to copy"
-                    >
+                    <span className="font-mono text-foreground select-all">
                       {contact.email}
-                    </a>
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-2"
+                      onClick={() => handleCopyEmail(contact.email)}
+                      title="Copy email"
+                    >
+                      {copiedEmail ? (
+                        <Check className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
+                    </Button>
                     <Button
                       size="sm"
                       className="h-7 ml-auto"
@@ -481,9 +626,159 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
+      {/* Quick Action Buttons - Products & Tags */}
+      <div className="flex gap-3">
+        <Button
+          variant={showProducts ? "default" : "outline"}
+          size="sm"
+          onClick={() => {
+            setShowProducts(!showProducts)
+            if (showTags) setShowTags(false)
+          }}
+          className="flex-1 transition-all"
+        >
+          <Package className="h-4 w-4 mr-2" />
+          Products
+          {showProducts ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+        </Button>
+        <Button
+          variant={showTags ? "default" : "outline"}
+          size="sm"
+          onClick={() => {
+            setShowTags(!showTags)
+            if (showProducts) setShowProducts(false)
+          }}
+          className="flex-1 transition-all"
+        >
+          <Tag className="h-4 w-4 mr-2" />
+          Tags
+          {showTags ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+        </Button>
+      </div>
+
+      {/* Products Expandable Section */}
+      {showProducts && (
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Products & Subscriptions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {subscriptions.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">No products or subscriptions yet</p>
+            ) : (
+              <div className="grid gap-3">
+                {subscriptions.map((subscription) => (
+                  <div
+                    key={subscription.id}
+                    className="flex items-center justify-between rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-4 transition-all hover:shadow-md hover:border-primary/30"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">
+                          {subscription.products?.name || 'Unknown Product'}
+                        </span>
+                        <Badge
+                          variant={subscription.status === 'active' ? 'default' : 'outline'}
+                          className="text-xs"
+                        >
+                          {subscription.status}
+                        </Badge>
+                      </div>
+                      {subscription.products?.product_type && (
+                        <p className="text-xs text-muted-foreground capitalize">
+                          {subscription.products.product_type}
+                        </p>
+                      )}
+                    </div>
+                    {subscription.amount && (
+                      <div className="text-right">
+                        <div className="font-semibold text-sm">
+                          {formatCurrency(Number(subscription.amount))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          / {subscription.billing_cycle}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tags Expandable Section */}
+      {showTags && (
+        <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/50 to-transparent dark:from-purple-950/20 dark:border-purple-800/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Tag className="h-4 w-4" />
+              Contact Tags
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Add Tag Input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                placeholder="Add a tag..."
+                className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2 text-sm focus:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:focus:border-purple-700 dark:focus:ring-purple-900"
+              />
+              <Button
+                size="sm"
+                onClick={handleAddTag}
+                disabled={!newTag.trim()}
+                className="rounded-full px-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Tags Display */}
+            {contactTags.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic text-center py-4">
+                No tags yet. Add your first tag above!
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {contactTags.map((tag, index) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="rounded-full px-3 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-900 border-purple-200 dark:from-purple-900/30 dark:to-pink-900/30 dark:text-purple-200 dark:border-purple-800 hover:shadow-md transition-all"
+                  >
+                    {tag}
+                    <button
+                      onClick={() => handleRemoveTag(tag)}
+                      className="ml-2 hover:text-destructive transition-colors"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+        <Card
+          className={totalTransactionCount > 0 ? 'cursor-pointer hover:bg-accent/50 transition-colors' : ''}
+          onClick={() => {
+            if (totalTransactionCount > 0) {
+              document.getElementById('transactions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+          }}
+        >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
@@ -495,8 +790,8 @@ export function ContactDetailCard({
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalRevenue)}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {transactions.length}{' '}
-              {transactions.length === 1 ? 'transaction' : 'transactions'}
+              {totalTransactionCount}{' '}
+              {totalTransactionCount === 1 ? 'transaction' : 'transactions'}
             </p>
           </CardContent>
         </Card>
@@ -505,7 +800,7 @@ export function ContactDetailCard({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
-                Active Subscriptions
+                Active Member
               </span>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -522,7 +817,7 @@ export function ContactDetailCard({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
-                Member Since
+                StarHouse Friend Since
               </span>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -715,7 +1010,7 @@ export function ContactDetailCard({
 
       {/* Recent Transactions */}
       {transactions.length > 0 && (
-        <Card>
+        <Card id="transactions">
           <CardHeader>
             <CardTitle className="text-base">Recent Transactions</CardTitle>
           </CardHeader>
@@ -810,56 +1105,112 @@ export function ContactDetailCard({
       )}
 
       {/* Notes */}
-      {contact.notes && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Notes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-wrap text-sm text-muted-foreground">
-              {contact.notes}
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* External Links */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">External Systems</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">Notes</CardTitle>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowAddNote(!showAddNote)}
+          >
+            {showAddNote ? 'Cancel' : '+ Add Note'}
+          </Button>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {contact.kajabi_id && (
-            <div className="flex items-center justify-between rounded-lg bg-muted/30 p-3">
+        <CardContent className="space-y-3">
+          {/* Add Note Form */}
+          {showAddNote && (
+            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-4">
               <div>
-                <p className="text-sm font-medium">Kajabi</p>
-                <p className="text-xs text-muted-foreground">ID: {contact.kajabi_id}</p>
+                <label className="text-xs font-medium text-muted-foreground">
+                  Subject (3-5 words)
+                </label>
+                <input
+                  type="text"
+                  value={newNoteSubject}
+                  onChange={(e) => setNewNoteSubject(e.target.value)}
+                  placeholder="e.g., Follow up needed"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  maxLength={50}
+                />
               </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">
+                  Note Content
+                </label>
+                <textarea
+                  value={newNoteContent}
+                  onChange={(e) => setNewNoteContent(e.target.value)}
+                  placeholder="Enter your note here..."
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  rows={4}
+                />
+              </div>
+              <Button
+                size="sm"
+                onClick={handleSaveNote}
+                disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
+              >
+                {savingNote ? 'Saving...' : 'Save Note'}
+              </Button>
             </div>
           )}
-          {contact.zoho_id && (
-            <div className="flex items-center justify-between rounded-lg bg-muted/30 p-3">
-              <div>
-                <p className="text-sm font-medium">Zoho CRM</p>
-                <p className="text-xs text-muted-foreground">ID: {contact.zoho_id}</p>
-              </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground" />
-            </div>
+
+          {/* Notes List */}
+          {notes.length === 0 && !showAddNote && (
+            <p className="text-sm text-muted-foreground">No notes yet. Add your first note!</p>
           )}
-          {contact.mailchimp_id && (
-            <div className="flex items-center justify-between rounded-lg bg-muted/30 p-3">
-              <div>
-                <p className="text-sm font-medium">Mailchimp</p>
-                <p className="text-xs text-muted-foreground">
-                  ID: {contact.mailchimp_id}
-                </p>
+
+          {notes.map((note) => {
+            const isExpanded = expandedNoteIds.has(note.id)
+            const summary = note.subject || note.content.split(' ').slice(0, 3).join(' ')
+
+            return (
+              <div
+                key={note.id}
+                className="rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
+              >
+                <div
+                  className="flex cursor-pointer items-start justify-between"
+                  onClick={() => toggleNoteExpand(note.id)}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">
+                        {summary}
+                      </span>
+                      {note.is_pinned && (
+                        <Badge variant="secondary" className="text-xs">
+                          Pinned
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(note.created_at)} • {note.author_name}
+                    </p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {isExpanded ? '▼' : '▶'}
+                  </span>
+                </div>
+
+                {isExpanded && (
+                  <div className="mt-3 border-t border-border/50 pt-3">
+                    <p className="whitespace-pre-wrap text-sm text-foreground">
+                      {note.content}
+                    </p>
+                    {note.note_type !== 'general' && (
+                      <Badge variant="outline" className="mt-2 text-xs">
+                        {note.note_type}
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground" />
-            </div>
-          )}
+            )
+          })}
         </CardContent>
       </Card>
+
     </div>
   )
 }
