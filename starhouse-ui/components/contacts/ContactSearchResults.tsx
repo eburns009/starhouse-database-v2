@@ -33,32 +33,39 @@ export function ContactSearchResults({
       setLoading(true)
       const supabase = createClient()
 
-      // Split search query into words for name matching
+      // Tokenized search: Split query into words and search across ALL name fields
+      // This handles complex cases like:
+      // - Multiple first names: "Lynn Amber Ryan"
+      // - Couples: "Sue Johnson and Mike Moritz"
+      // - Business names split across fields
       const words = searchQuery.trim().split(/\s+/)
 
-      let query = supabase
+      // Search these fields for each word
+      const searchFields = [
+        'first_name',
+        'last_name',
+        'additional_name',
+        'paypal_first_name',
+        'paypal_last_name',
+        'paypal_business_name',
+        'email',
+        'phone'
+      ]
+
+      // For each word, check if it appears in ANY field
+      // Example: "Lynn Amber Ryan" becomes:
+      // (first_name ILIKE '%lynn%' OR last_name ILIKE '%lynn%' OR ... OR
+      //  first_name ILIKE '%amber%' OR last_name ILIKE '%amber%' OR ... OR
+      //  first_name ILIKE '%ryan%' OR last_name ILIKE '%ryan%' OR ...)
+      const conditions = words.flatMap(word =>
+        searchFields.map(field => `${field}.ilike.%${word}%`)
+      )
+
+      const { data, error } = await supabase
         .from('contacts')
         .select('*')
         .is('deleted_at', null)
-
-      if (words.length === 1) {
-        // Single word: search in first_name, last_name, email, phone
-        query = query.or(
-          `first_name.ilike.%${words[0]}%,last_name.ilike.%${words[0]}%,email.ilike.%${words[0]}%,phone.ilike.%${words[0]}%`
-        )
-      } else if (words.length === 2) {
-        // Two words: assume "First Last" or search each word
-        query = query.or(
-          `and(first_name.ilike.%${words[0]}%,last_name.ilike.%${words[1]}%),and(first_name.ilike.%${words[1]}%,last_name.ilike.%${words[0]}%),first_name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`
-        )
-      } else {
-        // Multiple words: search full query
-        query = query.or(
-          `first_name.ilike.%${searchQuery}%,last_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%`
-        )
-      }
-
-      const { data, error } = await query
+        .or(conditions.join(','))
         .order('created_at', { ascending: false })
         .limit(20)
 
