@@ -96,6 +96,9 @@ export interface Database {
           quickbooks_id: string | null
           mailchimp_id: string | null
           notes: string | null
+          potential_duplicate_group: string | null
+          potential_duplicate_reason: string | null
+          potential_duplicate_flagged_at: string | null
           deleted_at: string | null
           created_at: string
           updated_at: string

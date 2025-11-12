@@ -6,7 +6,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { formatName, getInitials } from '@/lib/utils'
-import { Mail, Phone, MapPin, Loader2 } from 'lucide-react'
+import { Mail, Phone, MapPin, Loader2, AlertTriangle } from 'lucide-react'
 import type { Database } from '@/lib/types/database'
 
 type Contact = Database['public']['Tables']['contacts']['Row']
@@ -190,13 +190,19 @@ export function ContactSearchResults({
             />
 
             <div className="flex-1 space-y-1 overflow-hidden">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-semibold">
                   {formatName(contact.first_name, contact.last_name)}
                 </h3>
                 {contact.email_subscribed && (
                   <Badge variant="secondary" className="text-xs">
                     Subscribed
+                  </Badge>
+                )}
+                {contact.potential_duplicate_group && (
+                  <Badge variant="outline" className="text-xs border-yellow-500 text-yellow-700 bg-yellow-50">
+                    <AlertTriangle className="h-3 w-3 mr-1" />
+                    Potential Duplicate
                   </Badge>
                 )}
               </div>
