@@ -52,7 +52,7 @@ staff: Can view/edit contacts only';
 
 INSERT INTO staff_members (email, role, added_by, notes)
 VALUES (
-    'your.email@thestarhouse.org',  -- ⚠️ REPLACE THIS WITH YOUR EMAIL
+    'support@thestarhouse.com',  -- Ed Burns - Initial Admin
     'admin',
     'system',
     'Initial admin - created during migration'
