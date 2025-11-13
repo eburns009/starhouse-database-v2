@@ -77,6 +77,10 @@ export interface Database {
           address_2: string | null
           shipping_address_line_1: string | null
           shipping_address_line_2: string | null
+          shipping_city: string | null
+          shipping_state: string | null
+          shipping_postal_code: string | null
+          shipping_country: string | null
           shipping_address_status: string | null
           city: string | null
           state: string | null

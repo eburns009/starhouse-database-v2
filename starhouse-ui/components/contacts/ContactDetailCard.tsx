@@ -236,7 +236,8 @@ function extractAddressVariants(contact: Contact): AddressVariant[] {
     contact.address_line_2 &&
     looksLikeCompleteAddress(contact.address_line_2) &&
     contact.address_line_1 &&
-    contact.address_line_2 !== contact.address_line_1
+    contact.address_line_2 !== contact.address_line_1 &&
+    contact.address_line_2.trim().toLowerCase() !== contact.address_line_1.trim().toLowerCase()
 
   // Primary address (address_line_1 only if line_2 is separate)
   if (contact.address_line_1) {
@@ -254,16 +255,27 @@ function extractAddressVariants(contact: Contact): AddressVariant[] {
 
   // If address_line_2 is a separate address, add it as alternate
   if (line2IsSeparateAddress) {
-    variants.push({
-      line_1: contact.address_line_2,
-      line_2: null,
-      city: contact.city,
-      state: contact.state,
-      postal_code: contact.postal_code,
-      country: contact.country,
-      source: contact.source_system,
-      label: 'Alternate Address (from line 2)',
-    })
+    // Check if shipping has the correct city/state/zip for this address
+    const hasShippingMatch =
+      contact.shipping_address_line_2 === contact.address_line_2 &&
+      contact.shipping_city &&
+      contact.shipping_state &&
+      contact.shipping_postal_code
+
+    if (hasShippingMatch) {
+      // Use shipping city/state/zip (correct!)
+      variants.push({
+        line_1: contact.address_line_2,
+        line_2: null,
+        city: contact.shipping_city,
+        state: contact.shipping_state,
+        postal_code: contact.shipping_postal_code,
+        country: contact.shipping_country,
+        source: 'shipping',
+        label: 'Alternate Address (from line 2)',
+      })
+    }
+    // else: Don't show as separate address if we don't have correct city/state/zip
   }
 
   // Additional alternate address fields (if different from above)
