@@ -405,55 +405,114 @@ export function ContactDetailCard({
     }
   }
 
+  /**
+   * Validate and normalize tag input
+   * FAANG Standard: Client-side validation before database call
+   */
+  const validateTag = (tag: string): { valid: boolean; normalized: string; error?: string } => {
+    const normalized = tag.trim().toLowerCase()
+
+    if (normalized.length === 0) {
+      return { valid: false, normalized: '', error: 'Tag cannot be empty' }
+    }
+
+    if (normalized.length > 50) {
+      return { valid: false, normalized: '', error: 'Tag cannot exceed 50 characters' }
+    }
+
+    // Check for duplicate (case-insensitive)
+    if (contactTags.some(existingTag => existingTag.toLowerCase() === normalized)) {
+      return { valid: false, normalized: '', error: 'Tag already exists' }
+    }
+
+    return { valid: true, normalized }
+  }
+
+  /**
+   * Add tag using atomic database operation
+   * FAANG Standard: Use PostgreSQL RPC to prevent race conditions
+   */
   const handleAddTag = async () => {
-    if (newTag.trim() && !contactTags.includes(newTag.trim())) {
-      const updatedTags = [...contactTags, newTag.trim()]
-      setContactTags(updatedTags)
-      setNewTag('')
+    const validation = validateTag(newTag)
 
-      // Save to database
-      try {
-        const supabase = createClient()
-        const { error } = await supabase
-          .from('contacts')
-          .update({ tags: updatedTags })
-          .eq('id', contactId)
-
-        if (error) {
-          console.error('Error saving tag:', error)
-          // Revert on error
-          setContactTags(contactTags)
-          alert('Failed to save tag. Please try again.')
-        }
-      } catch (err) {
-        console.error('Error saving tag:', err)
-        setContactTags(contactTags)
-        alert('Failed to save tag. Please try again.')
+    if (!validation.valid) {
+      if (validation.error) {
+        alert(validation.error)
       }
+      return
+    }
+
+    // Optimistic UI update
+    const optimisticTags = [...contactTags, validation.normalized]
+    setContactTags(optimisticTags)
+    setNewTag('')
+
+    try {
+      const supabase = createClient()
+
+      // Use atomic RPC function to prevent race conditions
+      const { data, error } = await supabase.rpc('add_contact_tag', {
+        p_contact_id: contactId,
+        p_new_tag: validation.normalized,
+      })
+
+      if (error) {
+        console.error('Error adding tag:', error)
+        // Revert optimistic update
+        setContactTags(contactTags)
+        setNewTag(newTag) // Restore input
+        alert(`Failed to add tag: ${error.message}`)
+        return
+      }
+
+      // Sync with actual database state to handle any normalization
+      if (data && data.tags) {
+        setContactTags(data.tags)
+      }
+    } catch (err) {
+      console.error('Error adding tag:', err)
+      // Revert optimistic update
+      setContactTags(contactTags)
+      setNewTag(newTag) // Restore input
+      alert('Failed to add tag. Please try again.')
     }
   }
 
+  /**
+   * Remove tag using atomic database operation
+   * FAANG Standard: Use PostgreSQL RPC to prevent race conditions
+   */
   const handleRemoveTag = async (tagToRemove: string) => {
-    const updatedTags = contactTags.filter((tag) => tag !== tagToRemove)
-    setContactTags(updatedTags)
+    // Optimistic UI update
+    const previousTags = [...contactTags]
+    const optimisticTags = contactTags.filter((tag) => tag !== tagToRemove)
+    setContactTags(optimisticTags)
 
-    // Save to database
     try {
       const supabase = createClient()
-      const { error } = await supabase
-        .from('contacts')
-        .update({ tags: updatedTags })
-        .eq('id', contactId)
+
+      // Use atomic RPC function to prevent race conditions
+      const { data, error } = await supabase.rpc('remove_contact_tag', {
+        p_contact_id: contactId,
+        p_tag_to_remove: tagToRemove,
+      })
 
       if (error) {
         console.error('Error removing tag:', error)
-        // Revert on error
-        setContactTags(contactTags)
-        alert('Failed to remove tag. Please try again.')
+        // Revert optimistic update
+        setContactTags(previousTags)
+        alert(`Failed to remove tag: ${error.message}`)
+        return
+      }
+
+      // Sync with actual database state
+      if (data && data.tags) {
+        setContactTags(data.tags)
       }
     } catch (err) {
       console.error('Error removing tag:', err)
-      setContactTags(contactTags)
+      // Revert optimistic update
+      setContactTags(previousTags)
       alert('Failed to remove tag. Please try again.')
     }
   }
