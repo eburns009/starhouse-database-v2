@@ -1,0 +1,1016 @@
+{
+  "generated_at": "2025-11-12T00:41:43.164152",
+  "total_queries": 17,
+  "successful_queries": 16,
+  "failed_queries": 1,
+  "queries": [
+    {
+      "name": "Q1.2: Subscription Status Breakdown",
+      "description": "What subscription statuses do we have and how many?",
+      "success": true,
+      "row_count": 3,
+      "results": [
+        {
+          "status": "active",
+          "count": 225,
+          "unique_contacts": 136,
+          "total_value": "18838.00"
+        },
+        {
+          "status": "canceled",
+          "count": 134,
+          "unique_contacts": 122,
+          "total_value": "12370.00"
+        },
+        {
+          "status": "expired",
+          "count": 51,
+          "unique_contacts": 50,
+          "total_value": "9741.00"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q1.3: Contacts with Multiple Active Subscriptions",
+      "description": "Do we have contacts with multiple active subscriptions?",
+      "success": true,
+      "row_count": 87,
+      "results": [
+        {
+          "email": "aquilanegra48@yahoo.com",
+          "name": "Garry Caudill",
+          "active_subscriptions": 3,
+          "subscriptions": "monthly $22.00, monthly $44.00, Month $22.00"
+        },
+        {
+          "email": "hildykane@yahoo.com",
+          "name": "Hildy Kane",
+          "active_subscriptions": 3,
+          "subscriptions": "Month $22.00, monthly $22.00, Month $12.00"
+        },
+        {
+          "email": "leilatalore@gmail.com",
+          "name": "Leila Gass",
+          "active_subscriptions": 3,
+          "subscriptions": "Month $12.00, monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "thruspirit@aol.com",
+          "name": "Scott Medina",
+          "active_subscriptions": 2,
+          "subscriptions": "annual $1089.00, annual $1089.00"
+        },
+        {
+          "email": "brookenoelke@me.com",
+          "name": "Brooke Noelke",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "sreamer1@gmail.com",
+          "name": "Shantelle Dreamer",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "xtrain9@gmail.com",
+          "name": "Laurel Miller",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "glethu@yahoo.com",
+          "name": "Glenda Thuener",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "jewels@becomingbioquantum.com",
+          "name": "Jewels Arnes",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $33.00, monthly $33.00"
+        },
+        {
+          "email": "hbwebb@google.com",
+          "name": "Heather Webb",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $33.00, Month $33.00"
+        },
+        {
+          "email": "kimbruceevans@yahoo.com",
+          "name": "Kimara Evans",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "fcmoure@sonic.net",
+          "name": "Federico Moure",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "zenithrising11@gmail.com",
+          "name": "Stacie Martin",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "daniel.kolman+us@gmail.com",
+          "name": "Daniel Kolman",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "methiasgold@gmail.com",
+          "name": "Dalila Orozco",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "catherine.boerder@gmail.com",
+          "name": "Catherine Boerder",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "kezha.hatier@gmail.com",
+          "name": "K\u00e9zha Undefined",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "robynronen@gmail.com",
+          "name": "Adele Ronen",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "clementinefeline@msn.com",
+          "name": "Nancy Williams",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "drsharonmontes@gmail.com",
+          "name": "Sharon Montes",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "snkovalchick@gmail.com",
+          "name": "Sasha Kovalchick",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "brittany@weareblackrose.com",
+          "name": "Brittany Weeden",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "patrice@spirit-evolving.com",
+          "name": "Patricia Fields",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "irene.a.tabas@gmail.com",
+          "name": "Irene Tabas",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "calbertine@gmail.com",
+          "name": "Carey Albertine",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "dtlynnebrown@gmail.com",
+          "name": "Lynne Brown",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $88.00, Month $88.00"
+        },
+        {
+          "email": "totalbeingreset@gmail.com",
+          "name": "Christine OBrien",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $88.00, Month $88.00"
+        },
+        {
+          "email": "katherine@resonancealchemy.com",
+          "name": "Katherine Parker",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "amwalsh432@gmail.com",
+          "name": "Anne Walsh",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "belovedbalance111@protonmail.com",
+          "name": "Ryan Loo",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $88.00, Month $88.00"
+        },
+        {
+          "email": "steele.holistics@gmail.com",
+          "name": "Vanessa Steele",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "katekristine@hotmail.com",
+          "name": "Katie Brown",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "emergingworld77@gmail.com",
+          "name": "Martin Kemple",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "gemmawilcox@gmail.com",
+          "name": "Gemma Wilcox",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "elliebelle17@mac.com",
+          "name": "Ellen Friedlander",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "mackensey@breathtosoul.com",
+          "name": "Mackensey Smith",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "vt@earthmagicacademy.com",
+          "name": "Vanessa Tavernetti",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "supegram@gmail.com",
+          "name": "Susan Pegram",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "artemisiaandrose@gmail.com",
+          "name": "Amanda Klenner",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $33.00, Month $33.00"
+        },
+        {
+          "email": "mason@sacredsons.com",
+          "name": "Mason Mostajo",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $33.00, monthly $33.00"
+        },
+        {
+          "email": "anemeraldearth@gmail.com",
+          "name": "Genevieve Ayala",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $33.00, Month $33.00"
+        },
+        {
+          "email": "dan@peacefulvibes.com",
+          "name": "Daniel Blanchard",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "wukitka@gmail.com",
+          "name": "Kimberley Wukitsch",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "amber@the360emergence.com",
+          "name": "Lynn Ryan",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "kate@katekripke.com",
+          "name": "Katherine Kripke",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "laura.k.bales@gmail.com",
+          "name": "Laura Bales",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $55.00, Month $55.00"
+        },
+        {
+          "email": "cgenevier@gmail.com",
+          "name": "Charlotte Wyman",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "thomas.droge@gmail.com",
+          "name": "Thomas Droge",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "danielapapi@gmail.com",
+          "name": "Daniela Papi",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "miranda@boulderriverside.com",
+          "name": "Miranda Clendening",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "laura@thestarhouse.org",
+          "name": "Laura Brown",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "carron.meaney@gmail.com",
+          "name": "Carron Meaney",
+          "active_subscriptions": 2,
+          "subscriptions": "annual $242.00, monthly $22.00"
+        },
+        {
+          "email": "caleybrooks@gmail.com",
+          "name": "Caley Brooks",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "heidirose4@me.com",
+          "name": "Heidi Robbins",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "iaingill.law@gmail.com",
+          "name": "Iain Gillespie",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $55.00, Month $55.00"
+        },
+        {
+          "email": "noradechant@gmail.com",
+          "name": "Norabell Dechant",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "ali@newlawbusinessmodel.com",
+          "name": "Ali Katz",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $88.00, monthly $88.00"
+        },
+        {
+          "email": "katharine@globalfamily.net",
+          "name": "Katharine Roske",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "annemarie@global-mosaic.com",
+          "name": "Annemarie Hayek",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "ottoisaac@gmail.com",
+          "name": "Isaac Miller",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "bjornleonards@gmail.com",
+          "name": "Bjorn Brie",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "skydancing1@aol.com",
+          "name": "Linda Kroll",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "earthybirthyamanda@gmail.com",
+          "name": "Amanda Moon",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "promisingtimes@outlook.com",
+          "name": "Ash Ganzoury",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "counselingwholelife@gmail.com",
+          "name": "Alana Warlop",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "susie@womenempower.us",
+          "name": "Susie Kincade",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "elangenegger@gmail.com",
+          "name": "Elissa Langenegger",
+          "active_subscriptions": 2,
+          "subscriptions": "Year $242.00, annual $242.00"
+        },
+        {
+          "email": "lisa_kieffer@yahoo.com",
+          "name": "Lisa Kieffer",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "info@pavanjeet.com",
+          "name": "Pavanjeet Undefined",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "lisa@freeyourmenopause.com",
+          "name": "Lisa Hunter",
+          "active_subscriptions": 2,
+          "subscriptions": "annual $242.00, annual $242.00"
+        },
+        {
+          "email": "sparklingstarlight1@gmail.com",
+          "name": "Lorene Wapotich",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "suki.sohn@gmail.com",
+          "name": "Suki Sohn",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "dweihnacht@gmail.com",
+          "name": "David Weihnacht",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "sdimig@comcast.net",
+          "name": "Shelli Dimig",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "dan.balgooyen@gmail.com",
+          "name": "Danny Balgooyen",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "lcookmitchell@gmail.com",
+          "name": "Lee Cook-Mitchell",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $88.00, monthly $88.00"
+        },
+        {
+          "email": "andreap@rightfromtheheart.com",
+          "name": "Andrea Pettit",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "lisajhershey@gmail.com",
+          "name": "Lisa Range",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $44.00, monthly $44.00"
+        },
+        {
+          "email": "natalie@ayurvedawellnesscoach.com",
+          "name": "Natalie Elghossain",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $33.00, monthly $33.00"
+        },
+        {
+          "email": "tk.bratches@gmail.com",
+          "name": "Taylor Bratches",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $33.00, monthly $33.00"
+        },
+        {
+          "email": "kmpapin@gmail.com",
+          "name": "Kristina Papin",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "shanaparker@comcast.net",
+          "name": "Shana Parker",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $12.00, monthly $12.00"
+        },
+        {
+          "email": "amysusynski@yahoo.com",
+          "name": "Amy Susynski",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        },
+        {
+          "email": "erome91@gmail.com",
+          "name": "Eleanor Rome",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $55.00, Month $55.00"
+        },
+        {
+          "email": "rushanthony@gmail.com",
+          "name": "Anthony Rush",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $22.00, Month $22.00"
+        },
+        {
+          "email": "lgerritsen@comcast.net",
+          "name": "Laine Gerritsen",
+          "active_subscriptions": 2,
+          "subscriptions": "Month $22.00, monthly $22.00"
+        },
+        {
+          "email": "kayhutch4@gmail.com",
+          "name": "Kay Hutcheson",
+          "active_subscriptions": 2,
+          "subscriptions": "monthly $12.00, Month $12.00"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q2.1: Transaction Breakdown by Source",
+      "description": "Why do we have ZERO Kajabi transactions?",
+      "success": true,
+      "row_count": 2,
+      "results": [
+        {
+          "source_system": "ticket_tailor",
+          "count": 4280,
+          "earliest": "2020-02-25 21:45:00+00:00",
+          "latest": "2025-11-07 14:28:00+00:00",
+          "total_amount": "114309.11"
+        },
+        {
+          "source_system": "paypal",
+          "count": 3797,
+          "earliest": "2024-01-01 05:30:48+00:00",
+          "latest": "2025-11-01 05:20:11+00:00",
+          "total_amount": "-5749.70"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q2.2: Revenue Reconciliation",
+      "description": "Compare transaction revenue vs subscription revenue",
+      "success": true,
+      "row_count": 3,
+      "results": [
+        {
+          "source": "Transactions (PayPal)",
+          "count": 3787,
+          "total_revenue": "-6538.70"
+        },
+        {
+          "source": "Subscriptions (Kajabi active)",
+          "count": 225,
+          "total_revenue": "18838.00"
+        },
+        {
+          "source": "Subscriptions (all Kajabi)",
+          "count": 410,
+          "total_revenue": "40949.00"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q3.1: Multi-Source Contact Enrichment",
+      "description": "How many contacts have data from multiple sources?",
+      "success": true,
+      "row_count": 10,
+      "results": [
+        {
+          "source_system": "kajabi",
+          "enrichment_type": "has_additional_email",
+          "count": 272
+        },
+        {
+          "source_system": "kajabi",
+          "enrichment_type": "no_additional_email",
+          "count": 5115
+        },
+        {
+          "source_system": "manual",
+          "enrichment_type": "has_additional_email",
+          "count": 45
+        },
+        {
+          "source_system": "manual",
+          "enrichment_type": "no_additional_email",
+          "count": 208
+        },
+        {
+          "source_system": "paypal",
+          "enrichment_type": "has_additional_email",
+          "count": 15
+        },
+        {
+          "source_system": "paypal",
+          "enrichment_type": "no_additional_email",
+          "count": 137
+        },
+        {
+          "source_system": "ticket_tailor",
+          "enrichment_type": "has_additional_email",
+          "count": 25
+        },
+        {
+          "source_system": "ticket_tailor",
+          "enrichment_type": "no_additional_email",
+          "count": 216
+        },
+        {
+          "source_system": "zoho",
+          "enrichment_type": "has_additional_email",
+          "count": 18
+        },
+        {
+          "source_system": "zoho",
+          "enrichment_type": "no_additional_email",
+          "count": 498
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q3.2: Zoho Linkage Status",
+      "description": "What's the Zoho linkage status across sources?",
+      "success": true,
+      "row_count": 5,
+      "results": [
+        {
+          "source_system": "kajabi",
+          "total": 5387,
+          "has_zoho_id": 1421,
+          "pct_linked": "26.38"
+        },
+        {
+          "source_system": "zoho",
+          "total": 516,
+          "has_zoho_id": 516,
+          "pct_linked": "100.00"
+        },
+        {
+          "source_system": "manual",
+          "total": 253,
+          "has_zoho_id": 14,
+          "pct_linked": "5.53"
+        },
+        {
+          "source_system": "ticket_tailor",
+          "total": 241,
+          "has_zoho_id": 0,
+          "pct_linked": "0.00"
+        },
+        {
+          "source_system": "paypal",
+          "total": 152,
+          "has_zoho_id": 4,
+          "pct_linked": "2.63"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q3.3: PayPal Enrichment Status",
+      "description": "What's the PayPal enrichment status across sources?",
+      "success": true,
+      "row_count": 5,
+      "results": [
+        {
+          "source_system": "kajabi",
+          "total": 5387,
+          "has_paypal_email": 278,
+          "has_paypal_subscription": 98,
+          "pct_paypal_enriched": "5.16"
+        },
+        {
+          "source_system": "zoho",
+          "total": 516,
+          "has_paypal_email": 0,
+          "has_paypal_subscription": 0,
+          "pct_paypal_enriched": "0.00"
+        },
+        {
+          "source_system": "manual",
+          "total": 253,
+          "has_paypal_email": 252,
+          "has_paypal_subscription": 32,
+          "pct_paypal_enriched": "99.60"
+        },
+        {
+          "source_system": "ticket_tailor",
+          "total": 241,
+          "has_paypal_email": 0,
+          "has_paypal_subscription": 0,
+          "pct_paypal_enriched": "0.00"
+        },
+        {
+          "source_system": "paypal",
+          "total": 152,
+          "has_paypal_email": 150,
+          "has_paypal_subscription": 0,
+          "pct_paypal_enriched": "98.68"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q4.1: Orphaned Subscriptions",
+      "description": "Are there orphaned subscriptions (no contact)?",
+      "success": true,
+      "row_count": 1,
+      "results": [
+        {
+          "orphaned_subscriptions": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q4.2: Orphaned Transactions",
+      "description": "Are there orphaned transactions (no contact)?",
+      "success": true,
+      "row_count": 1,
+      "results": [
+        {
+          "orphaned_transactions": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q4.3: Active Subscriptions Without Transactions",
+      "description": "Contacts with active subscriptions but no transactions",
+      "success": true,
+      "row_count": 5,
+      "results": [
+        {
+          "email": "kimgolden108@gmail.com",
+          "name": "Kim Golden",
+          "subscription_status": "active",
+          "subscription_amount": "12.00",
+          "transaction_count": 0
+        },
+        {
+          "email": "jenniechsu@icloud.com",
+          "name": "Jennie Hsu",
+          "subscription_status": "active",
+          "subscription_amount": "242.00",
+          "transaction_count": 0
+        },
+        {
+          "email": "alec@sacredsons.com",
+          "name": "Alec Rouben",
+          "subscription_status": "active",
+          "subscription_amount": "363.00",
+          "transaction_count": 0
+        },
+        {
+          "email": "fromwithin5527@gmail.com",
+          "name": "Shawn Allen",
+          "subscription_status": "active",
+          "subscription_amount": "968.00",
+          "transaction_count": 0
+        },
+        {
+          "email": "brenda@klontzconsulting.com",
+          "name": "Ted Klontz",
+          "subscription_status": "active",
+          "subscription_amount": "968.00",
+          "transaction_count": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q5.1a: Import/Backup Tables",
+      "description": "Check for any import tracking tables",
+      "success": true,
+      "row_count": 14,
+      "results": [
+        {
+          "table_name": "backup_legacy_program_partner_corrections"
+        },
+        {
+          "table_name": "backup_phone_duplicate_merge_20251109"
+        },
+        {
+          "table_name": "backup_program_partner_audit_log"
+        },
+        {
+          "table_name": "backup_program_partner_contacts"
+        },
+        {
+          "table_name": "backup_subscriptions_paypal_cleanup_20251109"
+        },
+        {
+          "table_name": "contact_emails_backup_20251110"
+        },
+        {
+          "table_name": "contacts_additions_backup"
+        },
+        {
+          "table_name": "contacts_cleanup_backup"
+        },
+        {
+          "table_name": "contacts_duplicate_cleanup_backup"
+        },
+        {
+          "table_name": "contacts_enrichment_backup"
+        },
+        {
+          "table_name": "contacts_merge_backup"
+        },
+        {
+          "table_name": "import_audit_log"
+        },
+        {
+          "table_name": "import_conflicts"
+        },
+        {
+          "table_name": "import_lock_rules"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q5.1b: Last Updated Timestamps",
+      "description": "When was the last import/update?",
+      "success": true,
+      "row_count": 3,
+      "results": [
+        {
+          "table_name": "contacts",
+          "last_update": "2025-11-11 02:34:54.575669+00:00",
+          "last_created": "2025-11-09 00:16:59.890621+00:00"
+        },
+        {
+          "table_name": "subscriptions",
+          "last_update": "2025-11-10 22:41:57.883190+00:00",
+          "last_created": "2025-11-04 16:33:16.032717+00:00"
+        },
+        {
+          "table_name": "transactions",
+          "last_update": "2025-11-10 22:41:57.883190+00:00",
+          "last_created": "2025-11-08 22:11:33.444174+00:00"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Q5.2: Recent Merge History",
+      "description": "How many merges have occurred recently?",
+      "success": true,
+      "row_count": 3,
+      "results": [
+        {
+          "merge_date": "2025-11-10",
+          "merges_that_day": 6
+        },
+        {
+          "merge_date": "2025-11-09",
+          "merges_that_day": 174
+        },
+        {
+          "merge_date": "2025-11-08",
+          "merges_that_day": 229
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Protection Levels Distribution",
+      "description": "Current protection level distribution",
+      "success": true,
+      "row_count": 3,
+      "results": [
+        {
+          "lock_level": "UNLOCKED",
+          "count": 3721,
+          "pct": "56.82"
+        },
+        {
+          "lock_level": "PARTIAL_LOCK",
+          "count": 1648,
+          "pct": "25.16"
+        },
+        {
+          "lock_level": "FULL_LOCK",
+          "count": 1180,
+          "pct": "18.02"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Subscription Protection Status",
+      "description": "Subscription protection breakdown",
+      "success": true,
+      "row_count": 2,
+      "results": [
+        {
+          "subscription_protected": false,
+          "count": 2791,
+          "subscribed": 0,
+          "unsubscribed": 2791
+        },
+        {
+          "subscription_protected": true,
+          "count": 3758,
+          "subscribed": 3757,
+          "unsubscribed": 1
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Contact Source Distribution",
+      "description": "Contact distribution by source with subscription status",
+      "success": true,
+      "row_count": 5,
+      "results": [
+        {
+          "source_system": "kajabi",
+          "count": 5387,
+          "subscribed": 3404,
+          "unsubscribed": 1983,
+          "pct_subscribed": "63.19"
+        },
+        {
+          "source_system": "zoho",
+          "count": 516,
+          "subscribed": 8,
+          "unsubscribed": 508,
+          "pct_subscribed": "1.55"
+        },
+        {
+          "source_system": "manual",
+          "count": 253,
+          "subscribed": 252,
+          "unsubscribed": 1,
+          "pct_subscribed": "99.60"
+        },
+        {
+          "source_system": "ticket_tailor",
+          "count": 241,
+          "subscribed": 50,
+          "unsubscribed": 191,
+          "pct_subscribed": "20.75"
+        },
+        {
+          "source_system": "paypal",
+          "count": 152,
+          "subscribed": 43,
+          "unsubscribed": 109,
+          "pct_subscribed": "28.29"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "Data Enrichment Overview",
+      "description": "Overall enrichment status across all contacts",
+      "success": false,
+      "row_count": 0,
+      "results": [],
+      "error": "column \"additional_contact_ids\" does not exist\nLINE 9:           COUNT(*) FILTER (WHERE additional_contact_ids IS N...\n                                         ^\n"
+    }
+  ]
+}

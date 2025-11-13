@@ -1,0 +1,1976 @@
+{
+  "timestamp": "2025-11-12T02:53:39.230059",
+  "mode": "EXECUTED",
+  "summary": {
+    "product_id_updates": 0,
+    "duplicates_removed": 84,
+    "no_product_mapping": 148
+  },
+  "details": {
+    "product_id_updates": [],
+    "duplicates_removed": [
+      {
+        "contact_id": "0a3126d8-7b83-4ce3-bd24-bec69a58b616",
+        "contact_name": "Kay Hutcheson",
+        "email": "kayhutch4@gmail.com",
+        "paypal_sub_id": "b8e89853-4c5e-4b6c-a310-a5e3ddc27f79",
+        "paypal_kajabi_id": "I-Y27XMK5WJ776",
+        "kajabi_sub_id": "fe87b433-039f-4d5e-b10a-94b2b86dd833",
+        "kajabi_kajabi_id": "2249861794",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "1470a44b-cb79-4420-bd0d-a916bc1c1c3f",
+        "contact_name": "Brooke Noelke",
+        "email": "brookenoelke@me.com",
+        "paypal_sub_id": "fbb022e3-c235-44ad-82cf-ce52c64100fb",
+        "paypal_kajabi_id": "I-TH4DVJY4RH8X",
+        "kajabi_sub_id": "928c2a33-4d92-45b1-ad13-beb7723df1ef",
+        "kajabi_kajabi_id": "2250230439",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "09ec45c7-d045-4c4c-aa35-28765bf5c2af",
+        "contact_name": "Laine Gerritsen",
+        "email": "lgerritsen@comcast.net",
+        "paypal_sub_id": "5cb32dce-3c9d-4b08-9480-28d204de826f",
+        "paypal_kajabi_id": "I-3Y1FL1X6CF2B",
+        "kajabi_sub_id": "c2d3895a-eb18-4e94-9203-3061dcc4f7d1",
+        "kajabi_kajabi_id": "2206173097",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "1568011e-92a2-4e6a-8c95-2398394ed901",
+        "contact_name": "Shantelle Dreamer",
+        "email": "sreamer1@gmail.com",
+        "paypal_sub_id": "13f160e6-52ad-4d48-be67-70ed96bbd8e7",
+        "paypal_kajabi_id": "I-VGLFTNSM0NY7",
+        "kajabi_sub_id": "b12d4633-06ad-4f1f-b98d-daa6033c66df",
+        "kajabi_kajabi_id": "2272981178",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "22fc956b-91f6-4086-a462-3b7a20c91eab",
+        "contact_name": "Laurel Miller",
+        "email": "xtrain9@gmail.com",
+        "paypal_sub_id": "3c9b03da-9203-4774-86a2-a20f37bb9b98",
+        "paypal_kajabi_id": "I-3E161BVX698L",
+        "kajabi_sub_id": "1414cb6d-0143-4964-82bd-2245370eef2c",
+        "kajabi_kajabi_id": "2263141123",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "07441593-55a5-4cf7-8536-b0ad911a03ac",
+        "contact_name": "Eleanor Rome",
+        "email": "erome91@gmail.com",
+        "paypal_sub_id": "4d8d290f-1ff0-464d-8f53-ea187686b5b1",
+        "paypal_kajabi_id": "I-1HU98LE515AM",
+        "kajabi_sub_id": "39f94ed0-1237-4339-b43c-1116663b721d",
+        "kajabi_kajabi_id": "2276551660",
+        "amount": 55.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "1d286806-a0e1-4317-abf0-ae6a15baa0a1",
+        "contact_name": "Hildy Kane",
+        "email": "hildykane@yahoo.com",
+        "paypal_sub_id": "48194755-985b-4959-94c5-1910d33d9040",
+        "paypal_kajabi_id": "I-P7B0N76MNKS6",
+        "kajabi_sub_id": "a6c433a3-042b-457e-9756-9b37a4d185cf",
+        "kajabi_kajabi_id": "2274241423",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6f5c0d40-f470-4c95-98e3-1457956f4886",
+        "contact_name": "Susan Pegram",
+        "email": "supegram@gmail.com",
+        "paypal_sub_id": "3bcff5e9-e819-4415-ba4b-7bf688f36bdf",
+        "paypal_kajabi_id": "I-5GN9RPXJUH96",
+        "kajabi_sub_id": "098b2199-7f86-4358-9297-784b90be2f81",
+        "kajabi_kajabi_id": "2273969961",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "779afe68-d70a-42f2-a1a4-13fbf56a09d2",
+        "contact_name": "Amanda Klenner",
+        "email": "artemisiaandrose@gmail.com",
+        "paypal_sub_id": "b9394657-6ec5-43e2-a101-bcb639430f72",
+        "paypal_kajabi_id": "I-YM0A43AU8W4E",
+        "kajabi_sub_id": "e37c1cec-88db-4f46-8cc3-a65ed121e87d",
+        "kajabi_kajabi_id": "2275245784",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "468d6e89-c674-4928-9841-fbb1c88c521a",
+        "contact_name": "Sharon Montes",
+        "email": "drsharonmontes@gmail.com",
+        "paypal_sub_id": "0ae9f078-21ef-4ee0-8127-66f43c83a297",
+        "paypal_kajabi_id": "I-M3367S4UKSDB",
+        "kajabi_sub_id": "b1896fd5-dc3d-4f50-be53-00df32d74eb2",
+        "kajabi_kajabi_id": "2205386344",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "964e0cb7-1fef-44d1-b081-42094a9b2b08",
+        "contact_name": "Heidi Robbins",
+        "email": "heidirose4@me.com",
+        "paypal_sub_id": "9ef6e1b1-05ed-4a63-a594-96db76f12154",
+        "paypal_kajabi_id": "I-NGYC1HED0ND1",
+        "kajabi_sub_id": "897e41cc-0532-4ada-b512-f64913c6e7cc",
+        "kajabi_kajabi_id": "2241987791",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "4ee7cadf-8c74-4fbc-b1fc-48a153e743ab",
+        "contact_name": "Patricia Fields",
+        "email": "patrice@spirit-evolving.com",
+        "paypal_sub_id": "ebe3eb12-85db-4f72-ba29-8e8a584640c7",
+        "paypal_kajabi_id": "I-VBB5YR2416SM",
+        "kajabi_sub_id": "bd0af1b0-d0c2-4d29-a02d-97d8e157c8c6",
+        "kajabi_kajabi_id": "2227373228",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "2cfa662c-e540-4544-a03a-37f58a2725c1",
+        "contact_name": "Glenda Thuener",
+        "email": "glethu@yahoo.com",
+        "paypal_sub_id": "c9235802-a497-44bf-82a6-b63a6ac15d69",
+        "paypal_kajabi_id": "I-HNK5MY2F9CSD",
+        "kajabi_sub_id": "cd96c183-9348-4eb3-9f05-260b70d0aa92",
+        "kajabi_kajabi_id": "2244588461",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "32c7bbb5-e38d-49d3-bddd-1688e61b16a6",
+        "contact_name": "Jewels Arnes",
+        "email": "jewels@becomingbioquantum.com",
+        "paypal_sub_id": "f4e3ba9b-0feb-4845-a33a-f53ca2c693f3",
+        "paypal_kajabi_id": "I-XN2PPGN5Y5K2",
+        "kajabi_sub_id": "e1b4d80e-0e3a-4b4d-aece-76d5ea4ee237",
+        "kajabi_kajabi_id": "2272966008",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "331a775d-9823-4426-8180-fa085b37ef42",
+        "contact_name": "Heather Webb",
+        "email": "hbwebb@google.com",
+        "paypal_sub_id": "1f5f18c5-f0f3-4f85-a949-edc57dd2ffef",
+        "paypal_kajabi_id": "I-AW1TP6RRPJKP",
+        "kajabi_sub_id": "c9f058e4-4b16-4963-ba17-bc707a2a2483",
+        "kajabi_kajabi_id": "2271415099",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "341232af-bbe8-40cb-87a8-06a325c6052b",
+        "contact_name": "Kimara Evans",
+        "email": "kimbruceevans@yahoo.com",
+        "paypal_sub_id": "510f7cdc-6405-45c5-8f06-4bb10a5ea4e0",
+        "paypal_kajabi_id": "I-4E0WV8VNYJ8N",
+        "kajabi_sub_id": "ab4290c3-4298-4597-813a-89dd075d2c66",
+        "kajabi_kajabi_id": "2153420908",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "354e10a3-1516-43fe-ae37-6d44173a43c1",
+        "contact_name": "Federico Moure",
+        "email": "fcmoure@sonic.net",
+        "paypal_sub_id": "691a7c2d-5522-4e80-a93c-7a1aa7233c82",
+        "paypal_kajabi_id": "I-S34XTP3EXD3F",
+        "kajabi_sub_id": "6d333eb2-b5f6-4c8c-81ec-4fb54617e93c",
+        "kajabi_kajabi_id": "2202989487",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "3954fda1-b746-4ec3-a261-7cddaba60bd8",
+        "contact_name": "Leila Gass",
+        "email": "leilatalore@gmail.com",
+        "paypal_sub_id": "eb66d026-2190-422a-a877-be2b158f171f",
+        "paypal_kajabi_id": "I-RJWM07BMBXMG",
+        "kajabi_sub_id": "a7b2de66-a360-41be-b728-4f04cc7d66c6",
+        "kajabi_kajabi_id": "2260034716",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "3954fda1-b746-4ec3-a261-7cddaba60bd8",
+        "contact_name": "Leila Gass",
+        "email": "leilatalore@gmail.com",
+        "paypal_sub_id": "8db6bbbc-18be-4119-9e8c-3f0bfbd10099",
+        "paypal_kajabi_id": "I-3PMHHCSR0AR3",
+        "kajabi_sub_id": "a7b2de66-a360-41be-b728-4f04cc7d66c6",
+        "kajabi_kajabi_id": "2260034716",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "3e0ff06a-8597-4268-a706-033881aa6aa7",
+        "contact_name": "Stacie Martin",
+        "email": "zenithrising11@gmail.com",
+        "paypal_sub_id": "fce9cbf9-7807-402a-90f5-ededf660cb23",
+        "paypal_kajabi_id": "I-3J19GJWF1DCW",
+        "kajabi_sub_id": "536f32a4-5859-4c51-953d-2455c1d509d0",
+        "kajabi_kajabi_id": "2205989412",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "3e5d8354-1d4c-4c6c-8b14-be82ee5ea34e",
+        "contact_name": "Daniel Kolman",
+        "email": "daniel.kolman+us@gmail.com",
+        "paypal_sub_id": "222427d9-1317-4a84-9871-8c3b873ea3c2",
+        "paypal_kajabi_id": "I-CUUWPFCW3V5K",
+        "kajabi_sub_id": "6213bc48-eea9-490e-aed4-0083890c2f17",
+        "kajabi_kajabi_id": "2245231226",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "3f826bda-ca5b-4a84-9b49-8d32b2f69eda",
+        "contact_name": "Dalila Orozco",
+        "email": "methiasgold@gmail.com",
+        "paypal_sub_id": "b11fb115-d54b-41ed-95f3-5ca190b51bf0",
+        "paypal_kajabi_id": "I-8LM3WWENVH6E",
+        "kajabi_sub_id": "85ef0c6a-9578-4f56-9fd2-5c1c7fe5042c",
+        "kajabi_kajabi_id": "2259553067",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "41f2b012-776a-475c-b5f8-b0450bdab9ba",
+        "contact_name": "K\u00e9zha Undefined",
+        "email": "kezha.hatier@gmail.com",
+        "paypal_sub_id": "24c54153-ffaa-419e-bfe9-b6891f1633c2",
+        "paypal_kajabi_id": "I-GWYFCE8K7465",
+        "kajabi_sub_id": "0b8798e3-022d-4a2d-8080-3c9af1420d4f",
+        "kajabi_kajabi_id": "2172284434",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "45841235-ccf3-48ca-aecd-4707426a8462",
+        "contact_name": "Adele Ronen",
+        "email": "robynronen@gmail.com",
+        "paypal_sub_id": "059a70dc-b788-4e48-b686-7411b60599aa",
+        "paypal_kajabi_id": "I-EXYWA8H7CUPN",
+        "kajabi_sub_id": "4fb488b9-6714-425d-8649-541ffe569853",
+        "kajabi_kajabi_id": "2273010651",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "45a6c56a-d44c-441f-8ed1-354277a43855",
+        "contact_name": "Nancy Williams",
+        "email": "clementinefeline@msn.com",
+        "paypal_sub_id": "349206f0-4ad7-47f8-bc52-6f6cb4e92c58",
+        "paypal_kajabi_id": "I-NNKKSH375FWT",
+        "kajabi_sub_id": "ede763d2-bd22-4897-9fa8-978eaa6c4112",
+        "kajabi_kajabi_id": "2251577768",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "4b8fc45b-833b-4ffe-b60f-90fd2f6395ff",
+        "contact_name": "Sasha Kovalchick",
+        "email": "snkovalchick@gmail.com",
+        "paypal_sub_id": "60e4962b-fcf0-4d4b-8198-fc0931f47e0e",
+        "paypal_kajabi_id": "I-9915DCCFJPA2",
+        "kajabi_sub_id": "7432554b-46d5-4a66-a78a-3c909d314934",
+        "kajabi_kajabi_id": "2210034677",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "4c820981-c100-47d3-8156-973cccd16e50",
+        "contact_name": "Brittany Weeden",
+        "email": "brittany@weareblackrose.com",
+        "paypal_sub_id": "e4a482b3-3d1e-4334-a986-c4d97c281c41",
+        "paypal_kajabi_id": "I-EHD76GJSVRPD",
+        "kajabi_sub_id": "a0c1aaee-c80d-4ae6-a60d-9ba5e95ab57a",
+        "kajabi_kajabi_id": "2205103588",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "50eca2d1-c4eb-4d4d-8844-38bd34bcc075",
+        "contact_name": "Irene Tabas",
+        "email": "irene.a.tabas@gmail.com",
+        "paypal_sub_id": "27a66115-6c59-4ab9-8909-f37301256b95",
+        "paypal_kajabi_id": "I-E84KFDARWH1S",
+        "kajabi_sub_id": "263837c0-48ed-4da5-af14-724bb87c0f07",
+        "kajabi_kajabi_id": "2259593679",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "5590f522-4f05-406f-9e0c-59316de75746",
+        "contact_name": "Carey Albertine",
+        "email": "calbertine@gmail.com",
+        "paypal_sub_id": "90c983e6-1861-4454-b8c5-4c79bd570422",
+        "paypal_kajabi_id": "I-4GNLTKXUMA96",
+        "kajabi_sub_id": "f8f96478-3dc1-4d7a-bea1-f3e810a3b3eb",
+        "kajabi_kajabi_id": "2179888861",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "55fb54ea-aa43-41b7-8d82-60665638e76c",
+        "contact_name": "Lynne Brown",
+        "email": "dtlynnebrown@gmail.com",
+        "paypal_sub_id": "5649f8ad-f7ae-416e-9b16-395f68c20ccf",
+        "paypal_kajabi_id": "I-58EEN6WKB3SK",
+        "kajabi_sub_id": "98f44a12-c02d-4737-85d2-5d95066f8439",
+        "kajabi_kajabi_id": "2257608392",
+        "amount": 88.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "5b8b04b6-602f-491e-af73-a9f8c88623fc",
+        "contact_name": "Christine OBrien",
+        "email": "totalbeingreset@gmail.com",
+        "paypal_sub_id": "59ea9010-b79d-4b77-8b29-5ca20bc7ae6b",
+        "paypal_kajabi_id": "I-SE6MJKH401Y9",
+        "kajabi_sub_id": "aa4e412b-a835-4d7a-9f98-e0e39b6f01c5",
+        "kajabi_kajabi_id": "2234042996",
+        "amount": 88.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "5c55c503-8d58-45b8-8ac3-a6ce0d76e8a3",
+        "contact_name": "Katherine Parker",
+        "email": "katherine@resonancealchemy.com",
+        "paypal_sub_id": "e43d7905-220b-4cdc-97ba-160aba3a1e2c",
+        "paypal_kajabi_id": "I-VG8Y3CDFJ3JH",
+        "kajabi_sub_id": "d9b01cd9-1c80-427b-862d-429f371787e5",
+        "kajabi_kajabi_id": "2156098125",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6211f8e5-7fb2-4cc5-b9aa-aecc18470cd6",
+        "contact_name": "Anne Walsh",
+        "email": "amwalsh432@gmail.com",
+        "paypal_sub_id": "c0ab7583-1373-425b-83a9-210dce673e00",
+        "paypal_kajabi_id": "I-UH47F3YGF98X",
+        "kajabi_sub_id": "8c187537-f2b3-447c-8f5a-4e661141922a",
+        "kajabi_kajabi_id": "2269480712",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "621acab9-c1b0-4006-b31b-74de7fed2f6d",
+        "contact_name": "Ryan Loo",
+        "email": "belovedbalance111@protonmail.com",
+        "paypal_sub_id": "0d4a679d-5402-4f32-9480-d9183ac0e270",
+        "paypal_kajabi_id": "I-E5E2PB0BDNUS",
+        "kajabi_sub_id": "ce664113-2c11-4097-86aa-cee3a8e97f0a",
+        "kajabi_kajabi_id": "2199165325",
+        "amount": 88.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "63902257-8e2e-46e6-8ccb-36febb881bad",
+        "contact_name": "Vanessa Steele",
+        "email": "steele.holistics@gmail.com",
+        "paypal_sub_id": "59b9f0e9-e6c6-408e-9ccb-cadc174d1649",
+        "paypal_kajabi_id": "I-CDY5D0CR9BGG",
+        "kajabi_sub_id": "2f18e68b-bfd2-47f0-9d97-344b341e492e",
+        "kajabi_kajabi_id": "2237179166",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "63f4eeb9-3a23-4927-afab-4dad789be611",
+        "contact_name": "Katie Brown",
+        "email": "katekristine@hotmail.com",
+        "paypal_sub_id": "8f2e5ef5-fdc4-44f7-820c-5e8881b56b7f",
+        "paypal_kajabi_id": "I-XTNSA1N35AG7",
+        "kajabi_sub_id": "117f49ea-5f37-493e-bd88-35f2d2ac1f91",
+        "kajabi_kajabi_id": "2227999582",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "656be934-ac09-4103-9221-59bb77837664",
+        "contact_name": "Martin Kemple",
+        "email": "emergingworld77@gmail.com",
+        "paypal_sub_id": "973872ec-a694-43e3-b490-88d764449fde",
+        "paypal_kajabi_id": "I-M7JJ3X71F51C",
+        "kajabi_sub_id": "6b07e710-c755-4a21-9ee9-da4ba446ae33",
+        "kajabi_kajabi_id": "2201808572",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6b388558-1fed-4623-aaaf-80d407d2cee8",
+        "contact_name": "Gemma Wilcox",
+        "email": "gemmawilcox@gmail.com",
+        "paypal_sub_id": "d08d4124-9dd7-49e2-bfab-962a99e90900",
+        "paypal_kajabi_id": "I-RUVTU428G517",
+        "kajabi_sub_id": "2ebc8baf-b01e-481f-8359-4402e91c5a61",
+        "kajabi_kajabi_id": "2194023945",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6c70bfc5-502c-4d85-a034-36777efb0224",
+        "contact_name": "Ellen Friedlander",
+        "email": "elliebelle17@mac.com",
+        "paypal_sub_id": "7902d637-b4f0-44fb-b535-a1fa62a2a7ed",
+        "paypal_kajabi_id": "I-D75GBVVLGFYM",
+        "kajabi_sub_id": "1e50b5e6-a47f-4502-829f-1b84fe2ecd00",
+        "kajabi_kajabi_id": "2170428370",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6cfad42e-de59-4b10-a599-7643046b0093",
+        "contact_name": "Mackensey Smith",
+        "email": "mackensey@breathtosoul.com",
+        "paypal_sub_id": "723c8df6-449b-4cf3-ae90-c6e13c78cc5b",
+        "paypal_kajabi_id": "I-AL03PU6AS9Y8",
+        "kajabi_sub_id": "3c42feec-34d8-4a28-bdc1-222dd4f06981",
+        "kajabi_kajabi_id": "2243947636",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "6e3db36c-4d12-43f0-ba52-2ae7b925f3fb",
+        "contact_name": "Vanessa Tavernetti",
+        "email": "vt@earthmagicacademy.com",
+        "paypal_sub_id": "d1494a7c-5747-4756-9e32-018344d262bd",
+        "paypal_kajabi_id": "I-UBXMNKH842HY",
+        "kajabi_sub_id": "f0510841-3949-40cb-b8c5-7a6808f1013a",
+        "kajabi_kajabi_id": "2194208227",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "7810b0e6-dbfa-47d3-8c3f-151b7976197d",
+        "contact_name": "Mason Mostajo",
+        "email": "mason@sacredsons.com",
+        "paypal_sub_id": "035b1c20-eebb-46a1-bc43-1ce5384db034",
+        "paypal_kajabi_id": "I-5E7D06C7WFKT",
+        "kajabi_sub_id": "76487867-cf84-4008-95e8-f8f06e8434ca",
+        "kajabi_kajabi_id": "2270734580",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "7a35b98d-cd6d-41eb-b0c0-b600f102b525",
+        "contact_name": "Genevieve Ayala",
+        "email": "anemeraldearth@gmail.com",
+        "paypal_sub_id": "445d5f97-c5fb-41fa-b669-8cd1513b48df",
+        "paypal_kajabi_id": "I-20S980SL5B9Y",
+        "kajabi_sub_id": "1140aeab-7429-483e-a477-425db9cdfb41",
+        "kajabi_kajabi_id": "2255610614",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "7b3d95b8-b421-436c-98c8-2971bab69ebc",
+        "contact_name": "Daniel Blanchard",
+        "email": "dan@peacefulvibes.com",
+        "paypal_sub_id": "100318bd-c4a7-4420-bdc0-6260fec202ea",
+        "paypal_kajabi_id": "I-WFWBBVVF8GCR",
+        "kajabi_sub_id": "5c326526-3737-4343-9faf-f97d3c72820a",
+        "kajabi_kajabi_id": "2258533600",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "4104adbe-3ba0-4810-837d-cb54c9ce4f58",
+        "contact_name": "Catherine Boerder",
+        "email": "catherine.boerder@gmail.com",
+        "paypal_sub_id": "83230309-c23c-4652-a0ec-3afb31ba7349",
+        "paypal_kajabi_id": "I-FSK9ETUWPUH6",
+        "kajabi_sub_id": "8408c048-5125-47f5-a4f5-6f52cecbe42d",
+        "kajabi_kajabi_id": "2186625553",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "7f4a2392-b0a0-4c2a-892e-8e1f1526c717",
+        "contact_name": "Kimberley Wukitsch",
+        "email": "wukitka@gmail.com",
+        "paypal_sub_id": "e2824522-f6a6-4324-bbdc-191610f12511",
+        "paypal_kajabi_id": "I-XF7DWH3203CG",
+        "kajabi_sub_id": "91dbb92e-9bd8-46b7-88c5-6a052d24ef3e",
+        "kajabi_kajabi_id": "2262364714",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "8109792b-9bcb-4cef-87e4-0fb658fe372e",
+        "contact_name": "Lynn Ryan",
+        "email": "amber@the360emergence.com",
+        "paypal_sub_id": "3110144e-d7ea-4e62-a22b-408369c23740",
+        "paypal_kajabi_id": "I-7TD85F9D245V",
+        "kajabi_sub_id": "9daae074-705e-4f3b-badf-b4ea359b7b5b",
+        "kajabi_kajabi_id": "2166310748",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "8928c333-b108-49e9-bf88-3ded50096616",
+        "contact_name": "Katherine Kripke",
+        "email": "kate@katekripke.com",
+        "paypal_sub_id": "404fb6f9-89b6-4c4a-8a81-1e96fd5a67c0",
+        "paypal_kajabi_id": "I-JV92ELNM98FC",
+        "kajabi_sub_id": "2f940f01-5590-418a-a799-61ea0081675b",
+        "kajabi_kajabi_id": "2198350992",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "8cb90e7c-c97f-49de-ac3c-fa31e42ab9be",
+        "contact_name": "Laura Bales",
+        "email": "laura.k.bales@gmail.com",
+        "paypal_sub_id": "1ec479df-9fbc-4a86-ad8d-479b1a4ec63d",
+        "paypal_kajabi_id": "I-LDUY0DP7DLW0",
+        "kajabi_sub_id": "a00478bb-82ce-4e4c-945b-a3e884370a0d",
+        "kajabi_kajabi_id": "2264706698",
+        "amount": 55.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "90c36085-72aa-49e6-aab6-845e31cb8cc8",
+        "contact_name": "Charlotte Wyman",
+        "email": "cgenevier@gmail.com",
+        "paypal_sub_id": "082d9c7f-7f68-41e2-8227-62192cb2a3e4",
+        "paypal_kajabi_id": "I-0AG963FRJ9R5",
+        "kajabi_sub_id": "7091111c-c7b4-42bb-9bf7-dc4d55af3c49",
+        "kajabi_kajabi_id": "2206418878",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "91ca67e9-5a7d-4f6d-aa7f-42c3eb8ec6a1",
+        "contact_name": "Thomas Droge",
+        "email": "thomas.droge@gmail.com",
+        "paypal_sub_id": "fb05a69a-b3d4-4da8-8243-a1aab9aaf403",
+        "paypal_kajabi_id": "I-49GY6V5H7PM3",
+        "kajabi_sub_id": "b0fe9b9e-02f1-4692-9782-0030cecfff63",
+        "kajabi_kajabi_id": "2218973444",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "921562ea-2a47-4782-baa7-a07ef7df0989",
+        "contact_name": "Daniela Papi",
+        "email": "danielapapi@gmail.com",
+        "paypal_sub_id": "3316afc8-367a-414f-a93e-b2dc5f3214e3",
+        "paypal_kajabi_id": "I-20S5JWSPLB9Y",
+        "kajabi_sub_id": "f6c5678f-aab8-4989-8a45-dadfea0dabb6",
+        "kajabi_kajabi_id": "2265546234",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "9222d476-a325-4667-89c2-1a4509825892",
+        "contact_name": "Miranda Clendening",
+        "email": "miranda@boulderriverside.com",
+        "paypal_sub_id": "fcebb341-a7f8-4b7b-8096-b0abd29dec94",
+        "paypal_kajabi_id": "I-TA0APLPFR0E3",
+        "kajabi_sub_id": "76a278d4-8257-4173-b8e2-5cbafca54ed0",
+        "kajabi_kajabi_id": "2265548184",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "931895ab-f451-4e14-9201-3cc5de36e472",
+        "contact_name": "Laura Brown",
+        "email": "laura@thestarhouse.org",
+        "paypal_sub_id": "565ce8d5-9569-4d20-8a28-c7b5fc458e6f",
+        "paypal_kajabi_id": "I-VNW8BSCHGP4N",
+        "kajabi_sub_id": "a5c55059-a48b-44b6-b4a0-e3c2e47e9a04",
+        "kajabi_kajabi_id": "2259031343",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "957bee99-cbd3-4dca-808b-ac7a6e37e4e1",
+        "contact_name": "Caley Brooks",
+        "email": "caleybrooks@gmail.com",
+        "paypal_sub_id": "6541e56e-3aff-4212-9fbb-61e31d7d7c39",
+        "paypal_kajabi_id": "I-RHEW1AS7EW3N",
+        "kajabi_sub_id": "f07bd40e-90b0-4172-a88f-c0b78ddec01f",
+        "kajabi_kajabi_id": "2185147540",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "99e0b8b7-e99b-4dd0-9cb0-f032430dbe57",
+        "contact_name": "Iain Gillespie",
+        "email": "iaingill.law@gmail.com",
+        "paypal_sub_id": "116e8e3d-c2bc-4ac2-9ae6-cc6c32f51319",
+        "paypal_kajabi_id": "I-4JEEY6XD12W1",
+        "kajabi_sub_id": "91eaafba-541e-4424-8695-cad8442bf599",
+        "kajabi_kajabi_id": "2259150385",
+        "amount": 55.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "9b8c9b82-a368-4414-bd43-ee8876df1815",
+        "contact_name": "Norabell Dechant",
+        "email": "noradechant@gmail.com",
+        "paypal_sub_id": "28f8edcb-f969-4ff4-8c28-dc604aa3fe67",
+        "paypal_kajabi_id": "I-VBBVSY2J9FSM",
+        "kajabi_sub_id": "a52d306c-de37-41b3-bfce-36dc4152684d",
+        "kajabi_kajabi_id": "2240837767",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "9c05c219-b397-4128-ad1e-7ff0ea38927f",
+        "contact_name": "Ali Katz",
+        "email": "ali@newlawbusinessmodel.com",
+        "paypal_sub_id": "95ac0e61-676d-4821-82de-9a19ae5e9353",
+        "paypal_kajabi_id": "I-0XM3CKAPCGDH",
+        "kajabi_sub_id": "6fd01d0a-e13e-4a10-84c1-5f7246477f62",
+        "kajabi_kajabi_id": "2245640507",
+        "amount": 88.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "9d9477b8-2d8f-4125-a4e7-45874f6656cc",
+        "contact_name": "Katharine Roske",
+        "email": "katharine@globalfamily.net",
+        "paypal_sub_id": "35d8fdda-ff67-43a3-b2a6-1972ab1a76ea",
+        "paypal_kajabi_id": "I-X6HKCV77CMEV",
+        "kajabi_sub_id": "c3cd310b-ebfd-42a0-985f-497722b1d5ea",
+        "kajabi_kajabi_id": "2196661906",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a29f6aad-5f3e-4f77-b1ad-519de5ba6d65",
+        "contact_name": "Annemarie Hayek",
+        "email": "annemarie@global-mosaic.com",
+        "paypal_sub_id": "b9402185-c695-4f1b-bf10-7449469b0ffd",
+        "paypal_kajabi_id": "I-A7EHHEVUW1BX",
+        "kajabi_sub_id": "5468a3bc-8888-4690-b2ff-f6ca84f89e34",
+        "kajabi_kajabi_id": "2253022151",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a4fc72ae-ed54-4899-9306-75f986080fad",
+        "contact_name": "Isaac Miller",
+        "email": "ottoisaac@gmail.com",
+        "paypal_sub_id": "2d3cd6bc-e736-4177-90c3-cdb812341432",
+        "paypal_kajabi_id": "I-1DAUXL4CNMG4",
+        "kajabi_sub_id": "af59e760-34f0-4634-b7ea-531b57f7fd1e",
+        "kajabi_kajabi_id": "2228667870",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a54ef0e2-168f-4b4f-a59c-ca9564f74dbb",
+        "contact_name": "Bjorn Brie",
+        "email": "bjornleonards@gmail.com",
+        "paypal_sub_id": "182ece26-90fa-44e5-b0f1-8f64acf90f58",
+        "paypal_kajabi_id": "I-WNJWHBMC4MDF",
+        "kajabi_sub_id": "fed0ec91-c0c8-4c79-9156-1393193796c4",
+        "kajabi_kajabi_id": "2182427555",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a585ca73-91f0-4d4d-a0bd-a9d3db511d01",
+        "contact_name": "Linda Kroll",
+        "email": "skydancing1@aol.com",
+        "paypal_sub_id": "7040f747-267b-4bee-aa21-806850cbc048",
+        "paypal_kajabi_id": "I-0GHAT926J4K2",
+        "kajabi_sub_id": "273b3d3b-763b-4a78-9282-8800f4e27219",
+        "kajabi_kajabi_id": "2270675971",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a649db1b-0e92-467e-811e-39d032d6f09f",
+        "contact_name": "Amanda Moon",
+        "email": "earthybirthyamanda@gmail.com",
+        "paypal_sub_id": "9d434eb6-6c78-46f4-8f51-c03736149987",
+        "paypal_kajabi_id": "I-VPFGGNWGEJ30",
+        "kajabi_sub_id": "1fcda937-d814-4edb-b0c1-4af1b9cf2068",
+        "kajabi_kajabi_id": "2160674193",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "a8048565-c5a6-460d-8d81-254c605ce080",
+        "contact_name": "Ash Ganzoury",
+        "email": "promisingtimes@outlook.com",
+        "paypal_sub_id": "0914f662-fd60-4f0e-9253-a2bf35ea0cf5",
+        "paypal_kajabi_id": "I-P1XRS6F0R6S3",
+        "kajabi_sub_id": "1ba88bbd-6631-469b-9ec0-43de0e97885f",
+        "kajabi_kajabi_id": "2192847989",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "aa795f9d-858a-41b2-897a-2300c2a3a360",
+        "contact_name": "Alana Warlop",
+        "email": "counselingwholelife@gmail.com",
+        "paypal_sub_id": "904c7777-5d61-4b75-9fb9-896673bdc262",
+        "paypal_kajabi_id": "I-BCTBDPP1WMK8",
+        "kajabi_sub_id": "c214db7c-b145-422c-a720-fb2c04e3f7c2",
+        "kajabi_kajabi_id": "2171004003",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "b05b7bab-0355-4393-b47e-cf73bfd3a6ab",
+        "contact_name": "Susie Kincade",
+        "email": "susie@womenempower.us",
+        "paypal_sub_id": "90473efc-8535-4612-96ea-40205dda0d91",
+        "paypal_kajabi_id": "I-EKL0SNTYU603",
+        "kajabi_sub_id": "f191a387-cc42-42f5-98e2-4f6ab7400a25",
+        "kajabi_kajabi_id": "40534822",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "b8b3634c-df66-4194-adf4-8e8c0c50a9b7",
+        "contact_name": "Lisa Kieffer",
+        "email": "lisa_kieffer@yahoo.com",
+        "paypal_sub_id": "d6517495-0ebe-4221-8f2c-f2b88610bdc1",
+        "paypal_kajabi_id": "I-UN4HBN4WSBLW",
+        "kajabi_sub_id": "b30dca03-1231-4dd5-9d42-a527bb995914",
+        "kajabi_kajabi_id": "2236459559",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "b8d0e025-9b61-487b-bb9f-24b27f5e6a5c",
+        "contact_name": "Pavanjeet Undefined",
+        "email": "info@pavanjeet.com",
+        "paypal_sub_id": "04505d66-dbf3-4dbf-9afc-ed9a5a850d1d",
+        "paypal_kajabi_id": "I-D58WLBH3PFC0",
+        "kajabi_sub_id": "fb2a853d-3a94-469d-832d-3cf52cb13a7c",
+        "kajabi_kajabi_id": "2148403790",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "c3815ccb-54f6-4d5f-9f65-9ddb1d7626eb",
+        "contact_name": "Lorene Wapotich",
+        "email": "sparklingstarlight1@gmail.com",
+        "paypal_sub_id": "e5ca9141-078b-4bbc-bfdb-cee850a556dc",
+        "paypal_kajabi_id": "I-3X7H6501M14X",
+        "kajabi_sub_id": "70c710f8-98a6-4e94-970c-6a35a9f99584",
+        "kajabi_kajabi_id": "2164557283",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "c6ebff85-90d3-43da-8215-639659bc8696",
+        "contact_name": "Suki Sohn",
+        "email": "suki.sohn@gmail.com",
+        "paypal_sub_id": "53a118dd-1358-4db4-acaf-8fc23fdf7c59",
+        "paypal_kajabi_id": "I-BKWLVW28B05A",
+        "kajabi_sub_id": "4bacef97-cf7f-40d3-8ac0-fcbbbb9e7f89",
+        "kajabi_kajabi_id": "2203628312",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "cd5a9598-4ca5-41a6-a348-12b5cda694e7",
+        "contact_name": "David Weihnacht",
+        "email": "dweihnacht@gmail.com",
+        "paypal_sub_id": "940f7214-2744-4544-a29a-6fe7da32dd85",
+        "paypal_kajabi_id": "I-SVR3NWY0CMCK",
+        "kajabi_sub_id": "4bdabcdd-4b73-443e-ab0d-7406ce7a5b7e",
+        "kajabi_kajabi_id": "2250052094",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "d9535838-3644-468c-ba4e-01e597e060fe",
+        "contact_name": "Shelli Dimig",
+        "email": "sdimig@comcast.net",
+        "paypal_sub_id": "d72395c1-a89f-4ea7-b037-167529fa5f78",
+        "paypal_kajabi_id": "I-1MSPBHFK3SVX",
+        "kajabi_sub_id": "610700ac-8126-4455-a40d-51930e594ed9",
+        "kajabi_kajabi_id": "2272147048",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "db55968d-dcad-44d7-9a7b-8cb824f1d9f9",
+        "contact_name": "Danny Balgooyen",
+        "email": "dan.balgooyen@gmail.com",
+        "paypal_sub_id": "817cfae8-2cee-43f6-8fc1-6dd065e20c37",
+        "paypal_kajabi_id": "I-SS0SJT0BT3MC",
+        "kajabi_sub_id": "8b93595e-659c-43a8-b030-6d28ebe62e7f",
+        "kajabi_kajabi_id": "2169895172",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "df732153-7579-436e-9bb3-b0992aa6c100",
+        "contact_name": "Lee Cook-Mitchell",
+        "email": "lcookmitchell@gmail.com",
+        "paypal_sub_id": "a0bcfa0f-ce4f-4249-b622-9aa9a2159672",
+        "paypal_kajabi_id": "I-DV0J9GM0767P",
+        "kajabi_sub_id": "7d02c49e-a5c5-408e-b804-cb1a68ca9bc1",
+        "kajabi_kajabi_id": "2159054862",
+        "amount": 88.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "e2d72643-949f-44cb-86e0-642522c5824d",
+        "contact_name": "Garry Caudill",
+        "email": "aquilanegra48@yahoo.com",
+        "paypal_sub_id": "13c64db2-9860-489a-8b20-1db12e57f18e",
+        "paypal_kajabi_id": "I-YKSMUNAYC0KW",
+        "kajabi_sub_id": "eddd8ead-58fe-4a79-871c-fe6655ffee2f",
+        "kajabi_kajabi_id": "2256281720",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "e3495e27-8973-4f19-a537-d43ddc08c701",
+        "contact_name": "Andrea Pettit",
+        "email": "andreap@rightfromtheheart.com",
+        "paypal_sub_id": "6ff6857e-cace-4250-b52a-a72363862f91",
+        "paypal_kajabi_id": "I-XBWRKVY7W5YB",
+        "kajabi_sub_id": "8fe91bf5-142d-4fc1-a951-80d263cd5531",
+        "kajabi_kajabi_id": "2268807674",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "e540dcce-7a8d-4ad6-b559-30eb63b866f7",
+        "contact_name": "Lisa Range",
+        "email": "lisajhershey@gmail.com",
+        "paypal_sub_id": "360d3af7-6f94-4a06-a87c-557cf450098a",
+        "paypal_kajabi_id": "I-SV5PS05AB0YA",
+        "kajabi_sub_id": "a45f2512-2950-406c-adcb-8771b3246ffc",
+        "kajabi_kajabi_id": "2196115090",
+        "amount": 44.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "e8e1cd86-57e0-4dc6-bb97-887f40cdfa3e",
+        "contact_name": "Natalie Elghossain",
+        "email": "natalie@ayurvedawellnesscoach.com",
+        "paypal_sub_id": "ea0424ca-8e64-43a1-a922-5e1f47994016",
+        "paypal_kajabi_id": "I-UH46MT5AEWEX",
+        "kajabi_sub_id": "3a320b67-e396-409a-8662-06c6143a854b",
+        "kajabi_kajabi_id": "2261489015",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "f439becf-fad6-4a26-8f3b-c6ff69e12a6f",
+        "contact_name": "Taylor Bratches",
+        "email": "tk.bratches@gmail.com",
+        "paypal_sub_id": "14492676-0fdc-4010-9ce0-a21ec66e8dfa",
+        "paypal_kajabi_id": "I-TBKNYFU0LGCL",
+        "kajabi_sub_id": "ee240c14-544e-48d9-8449-234d4e988b94",
+        "kajabi_kajabi_id": "2255565634",
+        "amount": 33.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "f46e9e97-c812-42e3-8846-312233c36e48",
+        "contact_name": "Kristina Papin",
+        "email": "kmpapin@gmail.com",
+        "paypal_sub_id": "00145245-6e95-4cc0-9b9e-22d9ae46e938",
+        "paypal_kajabi_id": "I-H51JY7GES7WX",
+        "kajabi_sub_id": "9d37d6f8-4127-4b56-8d52-aa4f4665d733",
+        "kajabi_kajabi_id": "2208194002",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "f9aac0f2-75d6-4230-b712-416b731c297f",
+        "contact_name": "Shana Parker",
+        "email": "shanaparker@comcast.net",
+        "paypal_sub_id": "bba4775b-9044-431b-8f87-6a32d7886825",
+        "paypal_kajabi_id": "I-W6KJBJUHUR8V",
+        "kajabi_sub_id": "1be49706-e143-46cc-b705-b76db20d3e13",
+        "kajabi_kajabi_id": "2268218512",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "fd29317f-7077-42f1-88d6-892d392b44f9",
+        "contact_name": "Amy Susynski",
+        "email": "amysusynski@yahoo.com",
+        "paypal_sub_id": "75b8eb22-108b-48d8-b157-7b8712f1a089",
+        "paypal_kajabi_id": "I-H7AM8X8WM5JY",
+        "kajabi_sub_id": "66415fa2-c82d-4d82-b9be-8f7b8387a0f4",
+        "kajabi_kajabi_id": "2265720965",
+        "amount": 12.0,
+        "billing_cycle": "Month"
+      },
+      {
+        "contact_id": "fe263918-9a48-4dbf-a05f-b7a37532b939",
+        "contact_name": "Anthony Rush",
+        "email": "rushanthony@gmail.com",
+        "paypal_sub_id": "ffe48c02-18db-4b88-91b8-a72da29711fb",
+        "paypal_kajabi_id": "I-925P9NT5DVKS",
+        "kajabi_sub_id": "a39c3fc6-1b96-4986-ac14-f3fb440aaffa",
+        "kajabi_kajabi_id": "2246656523",
+        "amount": 22.0,
+        "billing_cycle": "Month"
+      }
+    ],
+    "no_product_mapping": [
+      {
+        "subscription_id": "74a3d5d7-3605-4b4b-aa7b-18d1c27e3a8a",
+        "kajabi_subscription_id": "I-3EGRVB085SRA",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "9e4139cb-c64f-40bf-881f-41a46f86f266"
+      },
+      {
+        "subscription_id": "c19994d5-2ad4-4cc1-a1ba-4fbb6f4b7019",
+        "kajabi_subscription_id": "I-YU69KHVRH4N3",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "f0f13ddb-a876-4c00-9b16-78325f1e400b"
+      },
+      {
+        "subscription_id": "c5f2843c-672e-415c-a67f-e85c585c07d8",
+        "kajabi_subscription_id": "I-N65N3M989NA3",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "75588792-434f-465e-99b9-b4c6551cae3e"
+      },
+      {
+        "subscription_id": "459215dc-e2e5-40f7-9988-6f38f45ec5d2",
+        "kajabi_subscription_id": "I-EXAD21KJ2LT8",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "08decd68-0748-4270-83a1-1a33e8369442"
+      },
+      {
+        "subscription_id": "76eb709b-ad48-4bc2-b395-d937b5f73336",
+        "kajabi_subscription_id": "I-YJKC81M7G0BH",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "a6929e79-3afe-4122-b7c8-fc208d71498f"
+      },
+      {
+        "subscription_id": "f7bb1801-a136-48e5-a018-c18672aefb8c",
+        "kajabi_subscription_id": "I-1A45SF6845C6",
+        "amount": 45.0,
+        "billing_cycle": "Month",
+        "contact_id": "06bfe216-e449-4b6d-b876-7963874c85c7"
+      },
+      {
+        "subscription_id": "52014df6-6282-40cb-b67f-9210fbc0d47c",
+        "kajabi_subscription_id": "I-81ALM9R293ED",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "3cbc2b36-3f70-4dfa-84fe-f5262d20cfcc"
+      },
+      {
+        "subscription_id": "7e1ba4bb-98ca-46c2-bf80-3c2b3f9b3142",
+        "kajabi_subscription_id": "I-K4562DDA1XAA",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "19e19d24-3715-44c4-9d71-64d9ceb304a8"
+      },
+      {
+        "subscription_id": "b166eaf0-c88f-4c21-bdf5-8052471b766a",
+        "kajabi_subscription_id": "I-AB69UDS2L5RX",
+        "amount": 165.0,
+        "billing_cycle": "Year",
+        "contact_id": "f06ec62d-6db8-4caf-ba9b-9d268b961fe6"
+      },
+      {
+        "subscription_id": "d0c90d13-7ead-48fc-ae09-526a47320f15",
+        "kajabi_subscription_id": "I-X988BGSUXE4H",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "b6bcaf7f-4294-4d9d-8fa1-cc7551cc0bee"
+      },
+      {
+        "subscription_id": "decef664-e4b0-4372-9ca8-b27ecb0dfcf2",
+        "kajabi_subscription_id": "I-2HFBUBWVRC1G",
+        "amount": 363.0,
+        "billing_cycle": "Year",
+        "contact_id": "8d76378e-ba29-4b12-897e-fe781318104d"
+      },
+      {
+        "subscription_id": "65f18cef-7441-4ac0-9bd8-0cf3953d8362",
+        "kajabi_subscription_id": "I-J542DWH7SRK1",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "1eac0cad-04cf-4a1f-b1b2-b87e748bb524"
+      },
+      {
+        "subscription_id": "b8e89853-4c5e-4b6c-a310-a5e3ddc27f79",
+        "kajabi_subscription_id": "I-Y27XMK5WJ776",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "0a3126d8-7b83-4ce3-bd24-bec69a58b616"
+      },
+      {
+        "subscription_id": "4a4581b4-c717-4fcc-a46b-9325bf708fff",
+        "kajabi_subscription_id": "I-BK6JT5VH6L3W",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "51bc5c83-e048-4037-869d-5fec1188d9cf"
+      },
+      {
+        "subscription_id": "26dba927-65c7-4ec2-aba0-0e4cadd99fc3",
+        "kajabi_subscription_id": "I-09YPF9325SWA",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "30f4df0c-5a2e-4b21-9343-ac650345f060"
+      },
+      {
+        "subscription_id": "76775cad-f197-49ee-b852-1e08f04666e5",
+        "kajabi_subscription_id": "I-GEEF7WX3T9J3",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "5f079d51-8cda-4d26-b20a-ea61390d85f6"
+      },
+      {
+        "subscription_id": "6e9df3d2-27d6-4088-bdac-234124d48afd",
+        "kajabi_subscription_id": "I-NJP2ABA8R4RR",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "4088bf80-23f6-4ae9-b631-6bef3036327c"
+      },
+      {
+        "subscription_id": "c6fc343f-385e-4254-9c73-5285a5fbbd1a",
+        "kajabi_subscription_id": "I-CN89SKVNR872",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "94f9c9f5-68b1-429e-a567-f3238030ae85"
+      },
+      {
+        "subscription_id": "fbb022e3-c235-44ad-82cf-ce52c64100fb",
+        "kajabi_subscription_id": "I-TH4DVJY4RH8X",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "1470a44b-cb79-4420-bd0d-a916bc1c1c3f"
+      },
+      {
+        "subscription_id": "2ac71c9e-d429-4b0d-8e4f-2544acb15200",
+        "kajabi_subscription_id": "I-A23T0X7HBSCG",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4d71dc88-9140-48a1-be86-0282e9d6936a"
+      },
+      {
+        "subscription_id": "8394aa12-3b19-4647-8b88-32a56b06f9fa",
+        "kajabi_subscription_id": "I-HPW0LXHEETMU",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "bf137233-1a16-4a59-bf25-4d84bcd227ca"
+      },
+      {
+        "subscription_id": "2d4ab9ef-aa32-479e-90ee-b27440c25c55",
+        "kajabi_subscription_id": "I-7YBS5B2WP4HK",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "a826f05b-e0cc-4d2c-845c-5ca39f46f5d3"
+      },
+      {
+        "subscription_id": "7588fde2-c6fa-4351-8986-554528bb9aa8",
+        "kajabi_subscription_id": "I-P99U8D4KU4Y4",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4aea8db2-3b3e-4d77-8395-6aa277d7ba87"
+      },
+      {
+        "subscription_id": "d2d9396f-3b00-4f91-bd9f-a9bf1b1b4fdb",
+        "kajabi_subscription_id": "I-A5P18VG1659V",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "2e961c2d-030d-4561-b5d7-305cb851bc20"
+      },
+      {
+        "subscription_id": "96c467d4-0ebe-44a1-9863-3d1e7f0431e0",
+        "kajabi_subscription_id": "I-9FMYY81LDWL0",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "770d3340-4426-4a12-83d4-42ec8a60b9c0"
+      },
+      {
+        "subscription_id": "3cf1c596-b8c4-4a0c-8b39-da6913e6926d",
+        "kajabi_subscription_id": "I-0RSWX2WK15WK",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "99e0b8b7-e99b-4dd0-9cb0-f032430dbe57"
+      },
+      {
+        "subscription_id": "f370621e-9594-4c11-afd0-e9f9ad1fa795",
+        "kajabi_subscription_id": "I-XNFJNL0RDA71",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "0c44dd72-5f03-4c92-83f2-f616594ff8f1"
+      },
+      {
+        "subscription_id": "5cb32dce-3c9d-4b08-9480-28d204de826f",
+        "kajabi_subscription_id": "I-3Y1FL1X6CF2B",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "09ec45c7-d045-4c4c-aa35-28765bf5c2af"
+      },
+      {
+        "subscription_id": "33c97803-8414-4c54-aaff-06028aa290d4",
+        "kajabi_subscription_id": "I-BAXKGEFCAAME",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "8cb90e7c-c97f-49de-ac3c-fa31e42ab9be"
+      },
+      {
+        "subscription_id": "7728f696-7a21-4029-a86d-d0eefad66742",
+        "kajabi_subscription_id": "I-F1W34CCMA01R",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "39c65e5b-0cff-4387-bffe-bd19450fae35"
+      },
+      {
+        "subscription_id": "78657899-e83f-45f0-a21b-229890727c27",
+        "kajabi_subscription_id": "I-8P0BS7LYE9A3",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "8af1f999-3bb9-4bbf-bd09-73c6d487400a"
+      },
+      {
+        "subscription_id": "8c23f90e-4fb5-4c9b-bdbf-e11ccd95fab4",
+        "kajabi_subscription_id": "I-925CC1T1J7KS",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "cb173a0c-0fed-4b1f-a92a-8e76b2bfcc1c"
+      },
+      {
+        "subscription_id": "bf9bd561-61ae-4d87-8bc9-9d1d6a6db424",
+        "kajabi_subscription_id": "I-4LXV8WCX66DD",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "bb232caf-5732-4c4e-b311-7c6afc0c54ea"
+      },
+      {
+        "subscription_id": "0a6c8314-7f65-4c93-a921-d442b3dd52d0",
+        "kajabi_subscription_id": "I-Y07ES1F2GAX9",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "9cea9f31-8d85-4074-8527-aeae81fa5ea2"
+      },
+      {
+        "subscription_id": "e0a08882-75aa-44d3-9690-84858bf14435",
+        "kajabi_subscription_id": "I-LB5V4UVMFVY1",
+        "amount": 165.0,
+        "billing_cycle": "Year",
+        "contact_id": "b45b1597-ffbb-48ec-93aa-8bb79aa2d41d"
+      },
+      {
+        "subscription_id": "08112047-948a-44e4-8fa4-f6d0aae057dc",
+        "kajabi_subscription_id": "I-9S4KM6EVGT59",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "6584dd9c-e950-4a47-869a-d68cd9e57aae"
+      },
+      {
+        "subscription_id": "f396185b-6d49-40e6-a0fd-a1a91ef15131",
+        "kajabi_subscription_id": "I-J1DRBYSESCUU",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "9cea9f31-8d85-4074-8527-aeae81fa5ea2"
+      },
+      {
+        "subscription_id": "f320ad73-8b60-4ac0-a17e-c26cdc484943",
+        "kajabi_subscription_id": "I-33K0BE27YR7P",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "ac2d6551-a9bd-45bc-8bb9-7e4b811cf47b"
+      },
+      {
+        "subscription_id": "5af1f0dc-8938-49cc-9ba4-87fc1002797d",
+        "kajabi_subscription_id": "I-0N9TFBCG2CPM",
+        "amount": 165.0,
+        "billing_cycle": "Year",
+        "contact_id": "efab697e-7382-4b98-b3dc-aafec7f75a2d"
+      },
+      {
+        "subscription_id": "ddb5b269-b16f-4d4c-883a-a4fa35e19e19",
+        "kajabi_subscription_id": "I-HWRSRF8A0UJ2",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "e2d72643-949f-44cb-86e0-642522c5824d"
+      },
+      {
+        "subscription_id": "3442f49b-adb2-417b-ba83-3634f5fa7c1b",
+        "kajabi_subscription_id": "I-GV120F1ABM0V",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "8928c333-b108-49e9-bf88-3ded50096616"
+      },
+      {
+        "subscription_id": "eeeb4a6d-7c01-488b-bb38-4fa2492d7c8b",
+        "kajabi_subscription_id": "I-SJWS8B69055D",
+        "amount": 275.0,
+        "billing_cycle": "Year",
+        "contact_id": "6b17d97d-5058-460e-95ca-136309cdd156"
+      },
+      {
+        "subscription_id": "c5ff0fcb-e976-4bb3-9a19-4c0098ee20ae",
+        "kajabi_subscription_id": "I-FKSDK67NS42U",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "543beed7-8716-4ea4-88e0-e0d63c4f3960"
+      },
+      {
+        "subscription_id": "deae52b1-6395-4ea8-a859-08e0e87348bd",
+        "kajabi_subscription_id": "I-TTKSECE0NDBT",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "1d286806-a0e1-4317-abf0-ae6a15baa0a1"
+      },
+      {
+        "subscription_id": "975d6f4f-feb3-4648-8e23-ce723c27bb89",
+        "kajabi_subscription_id": "I-X9YSAL0GMBT1",
+        "amount": 45.0,
+        "billing_cycle": "Month",
+        "contact_id": "981211d9-1f37-4a4e-8f01-294b37b0ef37"
+      },
+      {
+        "subscription_id": "040eb444-8499-43a7-9a49-7b42a2066d82",
+        "kajabi_subscription_id": "I-127N8G69SM32",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "fe62d884-7cf1-4462-a7d6-64a9886ff1ed"
+      },
+      {
+        "subscription_id": "4ad1cc2c-7a15-4071-bde2-48b77370eb99",
+        "kajabi_subscription_id": "I-GBRG7WA89WL6",
+        "amount": 968.0,
+        "billing_cycle": "Year",
+        "contact_id": "6b24e67f-172b-469c-a298-4f3fe8a2d6b7"
+      },
+      {
+        "subscription_id": "c69b2637-1f29-4ba0-bd91-b695c634b350",
+        "kajabi_subscription_id": "I-G39NDLNJ5WMA",
+        "amount": 968.0,
+        "billing_cycle": "Year",
+        "contact_id": "73323c67-02a6-4efe-a64a-cb2c35f7f719"
+      },
+      {
+        "subscription_id": "9cab710a-ac2d-4677-94a1-9f98c1452e77",
+        "kajabi_subscription_id": "I-62U99C0HGHKG",
+        "amount": 968.0,
+        "billing_cycle": "Year",
+        "contact_id": "01f70d7c-ce45-4b6b-8516-75bf646f6ea9"
+      },
+      {
+        "subscription_id": "47b509bd-9155-41ed-a048-1f1cedabfb7c",
+        "kajabi_subscription_id": "I-VELFPXNT2U2V",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "e2fee89a-4863-42cc-ae1a-47a7a0f93746"
+      },
+      {
+        "subscription_id": "9e5e863f-7853-4af3-b02a-64f14012e08e",
+        "kajabi_subscription_id": "I-CH5DWR1RRPTR",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "3d7cd345-5551-4a94-bb25-b4a4768fa514"
+      },
+      {
+        "subscription_id": "0f94e994-d91f-484b-b6e0-971fe78d0734",
+        "kajabi_subscription_id": "I-EXV33295EMF6",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "82ae34ff-75d2-4b0d-955d-b687ec065e3b"
+      },
+      {
+        "subscription_id": "fcf81c1a-ed55-4893-b52a-187c28c84478",
+        "kajabi_subscription_id": "I-HPGTASGK1VVN",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "dec88f19-c809-4935-987f-b5ce0f1a4518"
+      },
+      {
+        "subscription_id": "88d6459f-304c-4957-a4ce-eff6681c80fe",
+        "kajabi_subscription_id": "I-548H9XNYVY07",
+        "amount": 99.0,
+        "billing_cycle": "Month",
+        "contact_id": "8e890b98-5748-46d6-adc7-d09bc5b907c3"
+      },
+      {
+        "subscription_id": "0a175cbd-0b6e-4e7a-927f-deb25fc7665d",
+        "kajabi_subscription_id": "I-YKRSU5EJFWKG",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "8aa79227-2021-4608-a7ad-45b1caae16f8"
+      },
+      {
+        "subscription_id": "b10fe469-0807-40d3-b43e-42b8d8c999c5",
+        "kajabi_subscription_id": "I-KSEGHNWMPL43",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "a76f65d5-4135-4637-a670-671e8f6a2493"
+      },
+      {
+        "subscription_id": "c31af159-495e-4c46-9eff-3017048e6734",
+        "kajabi_subscription_id": "I-SU8YWE85FSM0",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "fcbaa4b2-cab6-4c02-bf6c-e37ab021ea3a"
+      },
+      {
+        "subscription_id": "59abc3d3-01b0-4bbc-b7b9-48ac53bcc3d3",
+        "kajabi_subscription_id": "I-7PKG5XK9HHBW",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "dea94bb4-c01a-4ca8-b49b-cf42302c2467"
+      },
+      {
+        "subscription_id": "35d3c686-a7be-4177-99f4-b905077944f9",
+        "kajabi_subscription_id": "I-TKV5DJW2HS0R",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "4f0872e2-8708-421e-96ac-12c7fa4c507c"
+      },
+      {
+        "subscription_id": "9b391f68-6a09-43e4-ac47-4610ad3c510d",
+        "kajabi_subscription_id": "I-ATA2VGD5EA4H",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "43d5f4bb-77ef-489c-8da2-13811cf1bb33"
+      },
+      {
+        "subscription_id": "43154c4d-b343-4ec2-abfc-4821dfdd474c",
+        "kajabi_subscription_id": "I-G2LT5XA19AU4",
+        "amount": 144.0,
+        "billing_cycle": "Year",
+        "contact_id": "ed745490-00ca-497d-8fc6-6e87c424943f"
+      },
+      {
+        "subscription_id": "6d83b7dc-85bf-40f9-8d06-d6c81605ee24",
+        "kajabi_subscription_id": "I-9CD592M40LSC",
+        "amount": 968.0,
+        "billing_cycle": "Year",
+        "contact_id": "c5776563-4682-4616-a29a-5470ac7bfbe6"
+      },
+      {
+        "subscription_id": "13f160e6-52ad-4d48-be67-70ed96bbd8e7",
+        "kajabi_subscription_id": "I-VGLFTNSM0NY7",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "1568011e-92a2-4e6a-8c95-2398394ed901"
+      },
+      {
+        "subscription_id": "3c9b03da-9203-4774-86a2-a20f37bb9b98",
+        "kajabi_subscription_id": "I-3E161BVX698L",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "22fc956b-91f6-4086-a462-3b7a20c91eab"
+      },
+      {
+        "subscription_id": "99a7a454-97d4-4b19-922e-6c613ae156d5",
+        "kajabi_subscription_id": "I-X4DW2G6PJCL3",
+        "amount": 450.0,
+        "billing_cycle": "Year",
+        "contact_id": "8c4f6690-f249-4171-b7f3-16ab6a4525ec"
+      },
+      {
+        "subscription_id": "4d8d290f-1ff0-464d-8f53-ea187686b5b1",
+        "kajabi_subscription_id": "I-1HU98LE515AM",
+        "amount": 55.0,
+        "billing_cycle": "Month",
+        "contact_id": "07441593-55a5-4cf7-8536-b0ad911a03ac"
+      },
+      {
+        "subscription_id": "48194755-985b-4959-94c5-1910d33d9040",
+        "kajabi_subscription_id": "I-P7B0N76MNKS6",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "1d286806-a0e1-4317-abf0-ae6a15baa0a1"
+      },
+      {
+        "subscription_id": "3bcff5e9-e819-4415-ba4b-7bf688f36bdf",
+        "kajabi_subscription_id": "I-5GN9RPXJUH96",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "6f5c0d40-f470-4c95-98e3-1457956f4886"
+      },
+      {
+        "subscription_id": "b9394657-6ec5-43e2-a101-bcb639430f72",
+        "kajabi_subscription_id": "I-YM0A43AU8W4E",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "779afe68-d70a-42f2-a1a4-13fbf56a09d2"
+      },
+      {
+        "subscription_id": "79b0cb29-5503-4edf-929d-ebb05f9ef788",
+        "kajabi_subscription_id": "I-RJ9GH72CMLFB",
+        "amount": 242.0,
+        "billing_cycle": "Year",
+        "contact_id": "b1ddc16b-8c97-44b5-a2b2-155c3cec7b0f"
+      },
+      {
+        "subscription_id": "9ef6e1b1-05ed-4a63-a594-96db76f12154",
+        "kajabi_subscription_id": "I-NGYC1HED0ND1",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "964e0cb7-1fef-44d1-b081-42094a9b2b08"
+      },
+      {
+        "subscription_id": "c9235802-a497-44bf-82a6-b63a6ac15d69",
+        "kajabi_subscription_id": "I-HNK5MY2F9CSD",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "2cfa662c-e540-4544-a03a-37f58a2725c1"
+      },
+      {
+        "subscription_id": "f4e3ba9b-0feb-4845-a33a-f53ca2c693f3",
+        "kajabi_subscription_id": "I-XN2PPGN5Y5K2",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "32c7bbb5-e38d-49d3-bddd-1688e61b16a6"
+      },
+      {
+        "subscription_id": "1f5f18c5-f0f3-4f85-a949-edc57dd2ffef",
+        "kajabi_subscription_id": "I-AW1TP6RRPJKP",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "331a775d-9823-4426-8180-fa085b37ef42"
+      },
+      {
+        "subscription_id": "510f7cdc-6405-45c5-8f06-4bb10a5ea4e0",
+        "kajabi_subscription_id": "I-4E0WV8VNYJ8N",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "341232af-bbe8-40cb-87a8-06a325c6052b"
+      },
+      {
+        "subscription_id": "691a7c2d-5522-4e80-a93c-7a1aa7233c82",
+        "kajabi_subscription_id": "I-S34XTP3EXD3F",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "354e10a3-1516-43fe-ae37-6d44173a43c1"
+      },
+      {
+        "subscription_id": "eb66d026-2190-422a-a877-be2b158f171f",
+        "kajabi_subscription_id": "I-RJWM07BMBXMG",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "3954fda1-b746-4ec3-a261-7cddaba60bd8"
+      },
+      {
+        "subscription_id": "8db6bbbc-18be-4119-9e8c-3f0bfbd10099",
+        "kajabi_subscription_id": "I-3PMHHCSR0AR3",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "3954fda1-b746-4ec3-a261-7cddaba60bd8"
+      },
+      {
+        "subscription_id": "fce9cbf9-7807-402a-90f5-ededf660cb23",
+        "kajabi_subscription_id": "I-3J19GJWF1DCW",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "3e0ff06a-8597-4268-a706-033881aa6aa7"
+      },
+      {
+        "subscription_id": "222427d9-1317-4a84-9871-8c3b873ea3c2",
+        "kajabi_subscription_id": "I-CUUWPFCW3V5K",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "3e5d8354-1d4c-4c6c-8b14-be82ee5ea34e"
+      },
+      {
+        "subscription_id": "b11fb115-d54b-41ed-95f3-5ca190b51bf0",
+        "kajabi_subscription_id": "I-8LM3WWENVH6E",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "3f826bda-ca5b-4a84-9b49-8d32b2f69eda"
+      },
+      {
+        "subscription_id": "24c54153-ffaa-419e-bfe9-b6891f1633c2",
+        "kajabi_subscription_id": "I-GWYFCE8K7465",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "41f2b012-776a-475c-b5f8-b0450bdab9ba"
+      },
+      {
+        "subscription_id": "059a70dc-b788-4e48-b686-7411b60599aa",
+        "kajabi_subscription_id": "I-EXYWA8H7CUPN",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "45841235-ccf3-48ca-aecd-4707426a8462"
+      },
+      {
+        "subscription_id": "349206f0-4ad7-47f8-bc52-6f6cb4e92c58",
+        "kajabi_subscription_id": "I-NNKKSH375FWT",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "45a6c56a-d44c-441f-8ed1-354277a43855"
+      },
+      {
+        "subscription_id": "0ae9f078-21ef-4ee0-8127-66f43c83a297",
+        "kajabi_subscription_id": "I-M3367S4UKSDB",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "468d6e89-c674-4928-9841-fbb1c88c521a"
+      },
+      {
+        "subscription_id": "60e4962b-fcf0-4d4b-8198-fc0931f47e0e",
+        "kajabi_subscription_id": "I-9915DCCFJPA2",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4b8fc45b-833b-4ffe-b60f-90fd2f6395ff"
+      },
+      {
+        "subscription_id": "e4a482b3-3d1e-4334-a986-c4d97c281c41",
+        "kajabi_subscription_id": "I-EHD76GJSVRPD",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4c820981-c100-47d3-8156-973cccd16e50"
+      },
+      {
+        "subscription_id": "ebe3eb12-85db-4f72-ba29-8e8a584640c7",
+        "kajabi_subscription_id": "I-VBB5YR2416SM",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4ee7cadf-8c74-4fbc-b1fc-48a153e743ab"
+      },
+      {
+        "subscription_id": "27a66115-6c59-4ab9-8909-f37301256b95",
+        "kajabi_subscription_id": "I-E84KFDARWH1S",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "50eca2d1-c4eb-4d4d-8844-38bd34bcc075"
+      },
+      {
+        "subscription_id": "90c983e6-1861-4454-b8c5-4c79bd570422",
+        "kajabi_subscription_id": "I-4GNLTKXUMA96",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "5590f522-4f05-406f-9e0c-59316de75746"
+      },
+      {
+        "subscription_id": "5649f8ad-f7ae-416e-9b16-395f68c20ccf",
+        "kajabi_subscription_id": "I-58EEN6WKB3SK",
+        "amount": 88.0,
+        "billing_cycle": "Month",
+        "contact_id": "55fb54ea-aa43-41b7-8d82-60665638e76c"
+      },
+      {
+        "subscription_id": "59ea9010-b79d-4b77-8b29-5ca20bc7ae6b",
+        "kajabi_subscription_id": "I-SE6MJKH401Y9",
+        "amount": 88.0,
+        "billing_cycle": "Month",
+        "contact_id": "5b8b04b6-602f-491e-af73-a9f8c88623fc"
+      },
+      {
+        "subscription_id": "e43d7905-220b-4cdc-97ba-160aba3a1e2c",
+        "kajabi_subscription_id": "I-VG8Y3CDFJ3JH",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "5c55c503-8d58-45b8-8ac3-a6ce0d76e8a3"
+      },
+      {
+        "subscription_id": "c0ab7583-1373-425b-83a9-210dce673e00",
+        "kajabi_subscription_id": "I-UH47F3YGF98X",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "6211f8e5-7fb2-4cc5-b9aa-aecc18470cd6"
+      },
+      {
+        "subscription_id": "0d4a679d-5402-4f32-9480-d9183ac0e270",
+        "kajabi_subscription_id": "I-E5E2PB0BDNUS",
+        "amount": 88.0,
+        "billing_cycle": "Month",
+        "contact_id": "621acab9-c1b0-4006-b31b-74de7fed2f6d"
+      },
+      {
+        "subscription_id": "59b9f0e9-e6c6-408e-9ccb-cadc174d1649",
+        "kajabi_subscription_id": "I-CDY5D0CR9BGG",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "63902257-8e2e-46e6-8ccb-36febb881bad"
+      },
+      {
+        "subscription_id": "8f2e5ef5-fdc4-44f7-820c-5e8881b56b7f",
+        "kajabi_subscription_id": "I-XTNSA1N35AG7",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "63f4eeb9-3a23-4927-afab-4dad789be611"
+      },
+      {
+        "subscription_id": "973872ec-a694-43e3-b490-88d764449fde",
+        "kajabi_subscription_id": "I-M7JJ3X71F51C",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "656be934-ac09-4103-9221-59bb77837664"
+      },
+      {
+        "subscription_id": "d08d4124-9dd7-49e2-bfab-962a99e90900",
+        "kajabi_subscription_id": "I-RUVTU428G517",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "6b388558-1fed-4623-aaaf-80d407d2cee8"
+      },
+      {
+        "subscription_id": "7902d637-b4f0-44fb-b535-a1fa62a2a7ed",
+        "kajabi_subscription_id": "I-D75GBVVLGFYM",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "6c70bfc5-502c-4d85-a034-36777efb0224"
+      },
+      {
+        "subscription_id": "723c8df6-449b-4cf3-ae90-c6e13c78cc5b",
+        "kajabi_subscription_id": "I-AL03PU6AS9Y8",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "6cfad42e-de59-4b10-a599-7643046b0093"
+      },
+      {
+        "subscription_id": "d1494a7c-5747-4756-9e32-018344d262bd",
+        "kajabi_subscription_id": "I-UBXMNKH842HY",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "6e3db36c-4d12-43f0-ba52-2ae7b925f3fb"
+      },
+      {
+        "subscription_id": "569dea27-0f18-47e0-b53d-fd7ee479362f",
+        "kajabi_subscription_id": "I-GYVAD93R90R3",
+        "amount": 968.0,
+        "billing_cycle": "Year",
+        "contact_id": "dfa0b190-2fb2-410a-9364-8d10b0277500"
+      },
+      {
+        "subscription_id": "035b1c20-eebb-46a1-bc43-1ce5384db034",
+        "kajabi_subscription_id": "I-5E7D06C7WFKT",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "7810b0e6-dbfa-47d3-8c3f-151b7976197d"
+      },
+      {
+        "subscription_id": "445d5f97-c5fb-41fa-b669-8cd1513b48df",
+        "kajabi_subscription_id": "I-20S980SL5B9Y",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "7a35b98d-cd6d-41eb-b0c0-b600f102b525"
+      },
+      {
+        "subscription_id": "100318bd-c4a7-4420-bdc0-6260fec202ea",
+        "kajabi_subscription_id": "I-WFWBBVVF8GCR",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "7b3d95b8-b421-436c-98c8-2971bab69ebc"
+      },
+      {
+        "subscription_id": "83230309-c23c-4652-a0ec-3afb31ba7349",
+        "kajabi_subscription_id": "I-FSK9ETUWPUH6",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "4104adbe-3ba0-4810-837d-cb54c9ce4f58"
+      },
+      {
+        "subscription_id": "e2824522-f6a6-4324-bbdc-191610f12511",
+        "kajabi_subscription_id": "I-XF7DWH3203CG",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "7f4a2392-b0a0-4c2a-892e-8e1f1526c717"
+      },
+      {
+        "subscription_id": "3110144e-d7ea-4e62-a22b-408369c23740",
+        "kajabi_subscription_id": "I-7TD85F9D245V",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "8109792b-9bcb-4cef-87e4-0fb658fe372e"
+      },
+      {
+        "subscription_id": "404fb6f9-89b6-4c4a-8a81-1e96fd5a67c0",
+        "kajabi_subscription_id": "I-JV92ELNM98FC",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "8928c333-b108-49e9-bf88-3ded50096616"
+      },
+      {
+        "subscription_id": "1ec479df-9fbc-4a86-ad8d-479b1a4ec63d",
+        "kajabi_subscription_id": "I-LDUY0DP7DLW0",
+        "amount": 55.0,
+        "billing_cycle": "Month",
+        "contact_id": "8cb90e7c-c97f-49de-ac3c-fa31e42ab9be"
+      },
+      {
+        "subscription_id": "082d9c7f-7f68-41e2-8227-62192cb2a3e4",
+        "kajabi_subscription_id": "I-0AG963FRJ9R5",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "90c36085-72aa-49e6-aab6-845e31cb8cc8"
+      },
+      {
+        "subscription_id": "fb05a69a-b3d4-4da8-8243-a1aab9aaf403",
+        "kajabi_subscription_id": "I-49GY6V5H7PM3",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "91ca67e9-5a7d-4f6d-aa7f-42c3eb8ec6a1"
+      },
+      {
+        "subscription_id": "3316afc8-367a-414f-a93e-b2dc5f3214e3",
+        "kajabi_subscription_id": "I-20S5JWSPLB9Y",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "921562ea-2a47-4782-baa7-a07ef7df0989"
+      },
+      {
+        "subscription_id": "fcebb341-a7f8-4b7b-8096-b0abd29dec94",
+        "kajabi_subscription_id": "I-TA0APLPFR0E3",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "9222d476-a325-4667-89c2-1a4509825892"
+      },
+      {
+        "subscription_id": "565ce8d5-9569-4d20-8a28-c7b5fc458e6f",
+        "kajabi_subscription_id": "I-VNW8BSCHGP4N",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "931895ab-f451-4e14-9201-3cc5de36e472"
+      },
+      {
+        "subscription_id": "6541e56e-3aff-4212-9fbb-61e31d7d7c39",
+        "kajabi_subscription_id": "I-RHEW1AS7EW3N",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "957bee99-cbd3-4dca-808b-ac7a6e37e4e1"
+      },
+      {
+        "subscription_id": "116e8e3d-c2bc-4ac2-9ae6-cc6c32f51319",
+        "kajabi_subscription_id": "I-4JEEY6XD12W1",
+        "amount": 55.0,
+        "billing_cycle": "Month",
+        "contact_id": "99e0b8b7-e99b-4dd0-9cb0-f032430dbe57"
+      },
+      {
+        "subscription_id": "28f8edcb-f969-4ff4-8c28-dc604aa3fe67",
+        "kajabi_subscription_id": "I-VBBVSY2J9FSM",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "9b8c9b82-a368-4414-bd43-ee8876df1815"
+      },
+      {
+        "subscription_id": "95ac0e61-676d-4821-82de-9a19ae5e9353",
+        "kajabi_subscription_id": "I-0XM3CKAPCGDH",
+        "amount": 88.0,
+        "billing_cycle": "Month",
+        "contact_id": "9c05c219-b397-4128-ad1e-7ff0ea38927f"
+      },
+      {
+        "subscription_id": "35d8fdda-ff67-43a3-b2a6-1972ab1a76ea",
+        "kajabi_subscription_id": "I-X6HKCV77CMEV",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "9d9477b8-2d8f-4125-a4e7-45874f6656cc"
+      },
+      {
+        "subscription_id": "b9402185-c695-4f1b-bf10-7449469b0ffd",
+        "kajabi_subscription_id": "I-A7EHHEVUW1BX",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "a29f6aad-5f3e-4f77-b1ad-519de5ba6d65"
+      },
+      {
+        "subscription_id": "2d3cd6bc-e736-4177-90c3-cdb812341432",
+        "kajabi_subscription_id": "I-1DAUXL4CNMG4",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "a4fc72ae-ed54-4899-9306-75f986080fad"
+      },
+      {
+        "subscription_id": "182ece26-90fa-44e5-b0f1-8f64acf90f58",
+        "kajabi_subscription_id": "I-WNJWHBMC4MDF",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "a54ef0e2-168f-4b4f-a59c-ca9564f74dbb"
+      },
+      {
+        "subscription_id": "7040f747-267b-4bee-aa21-806850cbc048",
+        "kajabi_subscription_id": "I-0GHAT926J4K2",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "a585ca73-91f0-4d4d-a0bd-a9d3db511d01"
+      },
+      {
+        "subscription_id": "9d434eb6-6c78-46f4-8f51-c03736149987",
+        "kajabi_subscription_id": "I-VPFGGNWGEJ30",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "a649db1b-0e92-467e-811e-39d032d6f09f"
+      },
+      {
+        "subscription_id": "0914f662-fd60-4f0e-9253-a2bf35ea0cf5",
+        "kajabi_subscription_id": "I-P1XRS6F0R6S3",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "a8048565-c5a6-460d-8d81-254c605ce080"
+      },
+      {
+        "subscription_id": "904c7777-5d61-4b75-9fb9-896673bdc262",
+        "kajabi_subscription_id": "I-BCTBDPP1WMK8",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "aa795f9d-858a-41b2-897a-2300c2a3a360"
+      },
+      {
+        "subscription_id": "90473efc-8535-4612-96ea-40205dda0d91",
+        "kajabi_subscription_id": "I-EKL0SNTYU603",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "b05b7bab-0355-4393-b47e-cf73bfd3a6ab"
+      },
+      {
+        "subscription_id": "d6517495-0ebe-4221-8f2c-f2b88610bdc1",
+        "kajabi_subscription_id": "I-UN4HBN4WSBLW",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "b8b3634c-df66-4194-adf4-8e8c0c50a9b7"
+      },
+      {
+        "subscription_id": "04505d66-dbf3-4dbf-9afc-ed9a5a850d1d",
+        "kajabi_subscription_id": "I-D58WLBH3PFC0",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "b8d0e025-9b61-487b-bb9f-24b27f5e6a5c"
+      },
+      {
+        "subscription_id": "e5ca9141-078b-4bbc-bfdb-cee850a556dc",
+        "kajabi_subscription_id": "I-3X7H6501M14X",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "c3815ccb-54f6-4d5f-9f65-9ddb1d7626eb"
+      },
+      {
+        "subscription_id": "53a118dd-1358-4db4-acaf-8fc23fdf7c59",
+        "kajabi_subscription_id": "I-BKWLVW28B05A",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "c6ebff85-90d3-43da-8215-639659bc8696"
+      },
+      {
+        "subscription_id": "940f7214-2744-4544-a29a-6fe7da32dd85",
+        "kajabi_subscription_id": "I-SVR3NWY0CMCK",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "cd5a9598-4ca5-41a6-a348-12b5cda694e7"
+      },
+      {
+        "subscription_id": "d72395c1-a89f-4ea7-b037-167529fa5f78",
+        "kajabi_subscription_id": "I-1MSPBHFK3SVX",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "d9535838-3644-468c-ba4e-01e597e060fe"
+      },
+      {
+        "subscription_id": "817cfae8-2cee-43f6-8fc1-6dd065e20c37",
+        "kajabi_subscription_id": "I-SS0SJT0BT3MC",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "db55968d-dcad-44d7-9a7b-8cb824f1d9f9"
+      },
+      {
+        "subscription_id": "a0bcfa0f-ce4f-4249-b622-9aa9a2159672",
+        "kajabi_subscription_id": "I-DV0J9GM0767P",
+        "amount": 88.0,
+        "billing_cycle": "Month",
+        "contact_id": "df732153-7579-436e-9bb3-b0992aa6c100"
+      },
+      {
+        "subscription_id": "13c64db2-9860-489a-8b20-1db12e57f18e",
+        "kajabi_subscription_id": "I-YKSMUNAYC0KW",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "e2d72643-949f-44cb-86e0-642522c5824d"
+      },
+      {
+        "subscription_id": "6ff6857e-cace-4250-b52a-a72363862f91",
+        "kajabi_subscription_id": "I-XBWRKVY7W5YB",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "e3495e27-8973-4f19-a537-d43ddc08c701"
+      },
+      {
+        "subscription_id": "360d3af7-6f94-4a06-a87c-557cf450098a",
+        "kajabi_subscription_id": "I-SV5PS05AB0YA",
+        "amount": 44.0,
+        "billing_cycle": "Month",
+        "contact_id": "e540dcce-7a8d-4ad6-b559-30eb63b866f7"
+      },
+      {
+        "subscription_id": "ea0424ca-8e64-43a1-a922-5e1f47994016",
+        "kajabi_subscription_id": "I-UH46MT5AEWEX",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "e8e1cd86-57e0-4dc6-bb97-887f40cdfa3e"
+      },
+      {
+        "subscription_id": "14492676-0fdc-4010-9ce0-a21ec66e8dfa",
+        "kajabi_subscription_id": "I-TBKNYFU0LGCL",
+        "amount": 33.0,
+        "billing_cycle": "Month",
+        "contact_id": "f439becf-fad6-4a26-8f3b-c6ff69e12a6f"
+      },
+      {
+        "subscription_id": "00145245-6e95-4cc0-9b9e-22d9ae46e938",
+        "kajabi_subscription_id": "I-H51JY7GES7WX",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "f46e9e97-c812-42e3-8846-312233c36e48"
+      },
+      {
+        "subscription_id": "bba4775b-9044-431b-8f87-6a32d7886825",
+        "kajabi_subscription_id": "I-W6KJBJUHUR8V",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "f9aac0f2-75d6-4230-b712-416b731c297f"
+      },
+      {
+        "subscription_id": "75b8eb22-108b-48d8-b157-7b8712f1a089",
+        "kajabi_subscription_id": "I-H7AM8X8WM5JY",
+        "amount": 12.0,
+        "billing_cycle": "Month",
+        "contact_id": "fd29317f-7077-42f1-88d6-892d392b44f9"
+      },
+      {
+        "subscription_id": "ffe48c02-18db-4b88-91b8-a72da29711fb",
+        "kajabi_subscription_id": "I-925P9NT5DVKS",
+        "amount": 22.0,
+        "billing_cycle": "Month",
+        "contact_id": "fe263918-9a48-4dbf-a05f-b7a37532b939"
+      },
+      {
+        "subscription_id": "394fdf33-ea7b-4f5b-b862-cc8dace947e2",
+        "kajabi_subscription_id": null,
+        "amount": 1089.0,
+        "billing_cycle": "annual",
+        "contact_id": "0e5b1c73-17d8-4014-bd8d-5e19bf8cafcc"
+      },
+      {
+        "subscription_id": "d1713e4f-8592-454a-ba19-6ac62bc1c8b5",
+        "kajabi_subscription_id": "I-TTR35G7G41TK",
+        "amount": 165.0,
+        "billing_cycle": "Year",
+        "contact_id": "843768d2-c2d1-4e38-bbe4-3f9630423960"
+      }
+    ]
+  }
+}

@@ -1,0 +1,584 @@
+{
+  "timestamp": "2025-11-12T02:54:27.836912",
+  "summary": {
+    "total_without_product_id": 64,
+    "by_status": {
+      "canceled": 4,
+      "expired": 51,
+      "active": 9
+    },
+    "paypal_only": 63,
+    "kajabi_numeric": 0,
+    "no_kajabi_id": 1
+  },
+  "paypal_only_subscriptions": [
+    {
+      "subscription_id": "74a3d5d7-3605-4b4b-aa7b-18d1c27e3a8a",
+      "contact_name": "Anthony Smith",
+      "email": "anthony@crowninternational.us",
+      "paypal_subscription_id": "I-3EGRVB085SRA",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "canceled"
+    },
+    {
+      "subscription_id": "c19994d5-2ad4-4cc1-a1ba-4fbb6f4b7019",
+      "contact_name": "Diane Caracciolo",
+      "email": "d.caracciolo0808@gmail.com",
+      "paypal_subscription_id": "I-YU69KHVRH4N3",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "c5f2843c-672e-415c-a67f-e85c585c07d8",
+      "contact_name": "Yuval Tarsi",
+      "email": "ytarsi@hotmail.com",
+      "paypal_subscription_id": "I-N65N3M989NA3",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "459215dc-e2e5-40f7-9988-6f38f45ec5d2",
+      "contact_name": "Holly Melohn",
+      "email": "home8900@colorado.edu",
+      "paypal_subscription_id": "I-EXAD21KJ2LT8",
+      "amount": 44.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "76eb709b-ad48-4bc2-b395-d937b5f73336",
+      "contact_name": "Deborah Burns",
+      "email": "onevoice4peace3@msn.com",
+      "paypal_subscription_id": "I-YJKC81M7G0BH",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "f7bb1801-a136-48e5-a018-c18672aefb8c",
+      "contact_name": "Amy Garnsey",
+      "email": "abzgarnsey@bellsouth.net",
+      "paypal_subscription_id": "I-1A45SF6845C6",
+      "amount": 45.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "52014df6-6282-40cb-b67f-9210fbc0d47c",
+      "contact_name": "Dana Harden",
+      "email": "danaharden1@gmail.com",
+      "paypal_subscription_id": "I-81ALM9R293ED",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "7e1ba4bb-98ca-46c2-bf80-3c2b3f9b3142",
+      "contact_name": "Lauren Spencer",
+      "email": "lauren@divinereality.net",
+      "paypal_subscription_id": "I-K4562DDA1XAA",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "b166eaf0-c88f-4c21-bdf5-8052471b766a",
+      "contact_name": "Mike Cohen",
+      "email": "mcohen1966@gmail.com",
+      "paypal_subscription_id": "I-AB69UDS2L5RX",
+      "amount": 165.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "d0c90d13-7ead-48fc-ae09-526a47320f15",
+      "contact_name": "Mina Lucks",
+      "email": "minalucks@gmail.com",
+      "paypal_subscription_id": "I-X988BGSUXE4H",
+      "amount": 44.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "decef664-e4b0-4372-9ca8-b27ecb0dfcf2",
+      "contact_name": "Drew Davis",
+      "email": "drewgdavis@gmail.com",
+      "paypal_subscription_id": "I-2HFBUBWVRC1G",
+      "amount": 363.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "65f18cef-7441-4ac0-9bd8-0cf3953d8362",
+      "contact_name": "Brigitte Kelso",
+      "email": "kelsobrigitte@gmail.com",
+      "paypal_subscription_id": "I-J542DWH7SRK1",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "4a4581b4-c717-4fcc-a46b-9325bf708fff",
+      "contact_name": "Leah Carpenter",
+      "email": "carpenterleahs@gmail.com",
+      "paypal_subscription_id": "I-BK6JT5VH6L3W",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "26dba927-65c7-4ec2-aba0-0e4cadd99fc3",
+      "contact_name": "Sara Kaiser",
+      "email": "sara.liana.kaiser@gmail.com",
+      "paypal_subscription_id": "I-09YPF9325SWA",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "76775cad-f197-49ee-b852-1e08f04666e5",
+      "contact_name": "Debbie Burns",
+      "email": "debbie@thestarhouse.org",
+      "paypal_subscription_id": "I-GEEF7WX3T9J3",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "6e9df3d2-27d6-4088-bdac-234124d48afd",
+      "contact_name": "Marella Colyvas",
+      "email": "marcelthewriter@gmail.com",
+      "paypal_subscription_id": "I-NJP2ABA8R4RR",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "c6fc343f-385e-4254-9c73-5285a5fbbd1a",
+      "contact_name": "Carron Meaney",
+      "email": "carron.meaney@gmail.com",
+      "paypal_subscription_id": "I-CN89SKVNR872",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "2ac71c9e-d429-4b0d-8e4f-2544acb15200",
+      "contact_name": "Chris Loving-Campos",
+      "email": "chris@inspire.graphics",
+      "paypal_subscription_id": "I-A23T0X7HBSCG",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "canceled"
+    },
+    {
+      "subscription_id": "8394aa12-3b19-4647-8b88-32a56b06f9fa",
+      "contact_name": "Dionisia Hatzis",
+      "email": "denisehatzis@gmail.com",
+      "paypal_subscription_id": "I-HPW0LXHEETMU",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "canceled"
+    },
+    {
+      "subscription_id": "2d4ab9ef-aa32-479e-90ee-b27440c25c55",
+      "contact_name": "Cristina Sajovich",
+      "email": "cristina@sajovich.com",
+      "paypal_subscription_id": "I-7YBS5B2WP4HK",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "7588fde2-c6fa-4351-8986-554528bb9aa8",
+      "contact_name": "Jennifer Sparks",
+      "email": "jenrsparks@gmail.com",
+      "paypal_subscription_id": "I-P99U8D4KU4Y4",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "d2d9396f-3b00-4f91-bd9f-a9bf1b1b4fdb",
+      "contact_name": "Llc Aligned Body Integration",
+      "email": "alignedbodyintegration@gmail.com",
+      "paypal_subscription_id": "I-A5P18VG1659V",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "96c467d4-0ebe-44a1-9863-3d1e7f0431e0",
+      "contact_name": "Virginia Anderson",
+      "email": "vlanderson@ecentral.com",
+      "paypal_subscription_id": "I-9FMYY81LDWL0",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "3cf1c596-b8c4-4a0c-8b39-da6913e6926d",
+      "contact_name": "Iain Gillespie",
+      "email": "iaingill.law@gmail.com",
+      "paypal_subscription_id": "I-0RSWX2WK15WK",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "f370621e-9594-4c11-afd0-e9f9ad1fa795",
+      "contact_name": "Alanna Bell",
+      "email": "llamabell@hotmail.com",
+      "paypal_subscription_id": "I-XNFJNL0RDA71",
+      "amount": 44.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "33c97803-8414-4c54-aaff-06028aa290d4",
+      "contact_name": "Laura Bales",
+      "email": "laura.k.bales@gmail.com",
+      "paypal_subscription_id": "I-BAXKGEFCAAME",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "7728f696-7a21-4029-a86d-d0eefad66742",
+      "contact_name": "Angelika Drake",
+      "email": "connect@angelikaalana.com",
+      "paypal_subscription_id": "I-F1W34CCMA01R",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "78657899-e83f-45f0-a21b-229890727c27",
+      "contact_name": "Serin Silva LLC None",
+      "email": "serin@serinsilva.com",
+      "paypal_subscription_id": "I-8P0BS7LYE9A3",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "8c23f90e-4fb5-4c9b-bdbf-e11ccd95fab4",
+      "contact_name": "Stephanie Chen",
+      "email": "stephanie.chen2015@gmail.com",
+      "paypal_subscription_id": "I-925CC1T1J7KS",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "bf9bd561-61ae-4d87-8bc9-9d1d6a6db424",
+      "contact_name": "Teresa Kennedy",
+      "email": "tessekennedy514@gmail.com",
+      "paypal_subscription_id": "I-4LXV8WCX66DD",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "0a6c8314-7f65-4c93-a921-d442b3dd52d0",
+      "contact_name": "Kimberly Massale",
+      "email": "kimberlymassale@gmail.com",
+      "paypal_subscription_id": "I-Y07ES1F2GAX9",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "e0a08882-75aa-44d3-9690-84858bf14435",
+      "contact_name": "Ben Levi",
+      "email": "ben@dialogue.org",
+      "paypal_subscription_id": "I-LB5V4UVMFVY1",
+      "amount": 165.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "08112047-948a-44e4-8fa4-f6d0aae057dc",
+      "contact_name": "Journeyon LLC",
+      "email": "christy@journeyon-coaching.com",
+      "paypal_subscription_id": "I-9S4KM6EVGT59",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "f396185b-6d49-40e6-a0fd-a1a91ef15131",
+      "contact_name": "Kimberly Massale",
+      "email": "kimberlymassale@gmail.com",
+      "paypal_subscription_id": "I-J1DRBYSESCUU",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "f320ad73-8b60-4ac0-a17e-c26cdc484943",
+      "contact_name": "Shaun Diaz",
+      "email": "payments@shaunpaul.com",
+      "paypal_subscription_id": "I-33K0BE27YR7P",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "5af1f0dc-8938-49cc-9ba4-87fc1002797d",
+      "contact_name": "Howard Alt",
+      "email": "howard_alt@yahoo.com",
+      "paypal_subscription_id": "I-0N9TFBCG2CPM",
+      "amount": 165.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "ddb5b269-b16f-4d4c-883a-a4fa35e19e19",
+      "contact_name": "Garry Caudill",
+      "email": "aquilanegra48@yahoo.com",
+      "paypal_subscription_id": "I-HWRSRF8A0UJ2",
+      "amount": 44.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "3442f49b-adb2-417b-ba83-3634f5fa7c1b",
+      "contact_name": "Katherine Kripke",
+      "email": "kate@katekripke.com",
+      "paypal_subscription_id": "I-GV120F1ABM0V",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "eeeb4a6d-7c01-488b-bb38-4fa2492d7c8b",
+      "contact_name": "Amy Giggey",
+      "email": "akgiggey@gmail.com",
+      "paypal_subscription_id": "I-SJWS8B69055D",
+      "amount": 275.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "c5ff0fcb-e976-4bb3-9a19-4c0098ee20ae",
+      "contact_name": "Summer Hayes",
+      "email": "djlee7379@gmail.com",
+      "paypal_subscription_id": "I-FKSDK67NS42U",
+      "amount": 22.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "deae52b1-6395-4ea8-a859-08e0e87348bd",
+      "contact_name": "Hildy Kane",
+      "email": "hildykane@yahoo.com",
+      "paypal_subscription_id": "I-TTKSECE0NDBT",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "canceled"
+    },
+    {
+      "subscription_id": "975d6f4f-feb3-4648-8e23-ce723c27bb89",
+      "contact_name": "John Hazekamp",
+      "email": "johnhazekamp@yahoo.com",
+      "paypal_subscription_id": "I-X9YSAL0GMBT1",
+      "amount": 45.0,
+      "billing_cycle": "Month",
+      "status": "active"
+    },
+    {
+      "subscription_id": "040eb444-8499-43a7-9a49-7b42a2066d82",
+      "contact_name": "Sharmila Mann",
+      "email": "sharmila.basu.mann@gmail.com",
+      "paypal_subscription_id": "I-127N8G69SM32",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "4ad1cc2c-7a15-4071-bde2-48b77370eb99",
+      "contact_name": "Pc Dermatology Specialists Of Boulder",
+      "email": "sallen.dsb@gmail.com",
+      "paypal_subscription_id": "I-GBRG7WA89WL6",
+      "amount": 968.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "c69b2637-1f29-4ba0-bd91-b695c634b350",
+      "contact_name": "Margarita De La Torriente",
+      "email": "beyondyourimpossible@gmail.com",
+      "paypal_subscription_id": "I-G39NDLNJ5WMA",
+      "amount": 968.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "9cab710a-ac2d-4677-94a1-9f98c1452e77",
+      "contact_name": "Michael Ilseman",
+      "email": "michael.ilseman@gmail.com",
+      "paypal_subscription_id": "I-62U99C0HGHKG",
+      "amount": 968.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "47b509bd-9155-41ed-a048-1f1cedabfb7c",
+      "contact_name": "Tony Howard",
+      "email": "zukidreams@pm.me",
+      "paypal_subscription_id": "I-VELFPXNT2U2V",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "9e5e863f-7853-4af3-b02a-64f14012e08e",
+      "contact_name": "Harwood Ferguson",
+      "email": "harwood.ferguson+paypal@gmail.com",
+      "paypal_subscription_id": "I-CH5DWR1RRPTR",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "0f94e994-d91f-484b-b6e0-971fe78d0734",
+      "contact_name": "Annemari None",
+      "email": "sunshineanniem@hotmail.com",
+      "paypal_subscription_id": "I-EXV33295EMF6",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "fcf81c1a-ed55-4893-b52a-187c28c84478",
+      "contact_name": "Mary Manuel",
+      "email": "merinamoonair@gmail.com",
+      "paypal_subscription_id": "I-HPGTASGK1VVN",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "88d6459f-304c-4957-a4ce-eff6681c80fe",
+      "contact_name": "Dustin Ostrander",
+      "email": "dustinocs1@gmail.com",
+      "paypal_subscription_id": "I-548H9XNYVY07",
+      "amount": 99.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "0a175cbd-0b6e-4e7a-927f-deb25fc7665d",
+      "contact_name": "Stephanie Duffy",
+      "email": "stephanie-duffy@hotmail.com",
+      "paypal_subscription_id": "I-YKRSU5EJFWKG",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "b10fe469-0807-40d3-b43e-42b8d8c999c5",
+      "contact_name": "Jessica Akselrad",
+      "email": "jessicaakselrad@gmail.com",
+      "paypal_subscription_id": "I-KSEGHNWMPL43",
+      "amount": 12.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "c31af159-495e-4c46-9eff-3017048e6734",
+      "contact_name": "Jennifer Miller",
+      "email": "jmjuniper@yahoo.com",
+      "paypal_subscription_id": "I-SU8YWE85FSM0",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "59abc3d3-01b0-4bbc-b7b9-48ac53bcc3d3",
+      "contact_name": "Mmkarol Undefined",
+      "email": "mmkarol@hotmail.com",
+      "paypal_subscription_id": "I-7PKG5XK9HHBW",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "35d3c686-a7be-4177-99f4-b905077944f9",
+      "contact_name": "Jewels Arnes LLC None",
+      "email": "activatedmt@becomingbioquantum.com",
+      "paypal_subscription_id": "I-TKV5DJW2HS0R",
+      "amount": 33.0,
+      "billing_cycle": "Month",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "9b391f68-6a09-43e4-ac47-4610ad3c510d",
+      "contact_name": "Jeanie Manchester",
+      "email": "yoginijeanie@gmail.com",
+      "paypal_subscription_id": "I-ATA2VGD5EA4H",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "43154c4d-b343-4ec2-abfc-4821dfdd474c",
+      "contact_name": "Cindy Michel",
+      "email": "cindy_michel@yahoo.com",
+      "paypal_subscription_id": "I-G2LT5XA19AU4",
+      "amount": 144.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "6d83b7dc-85bf-40f9-8d06-d6c81605ee24",
+      "contact_name": "Marjorie Kieselhorst-Eckart",
+      "email": "ravenr@humboldt1.com",
+      "paypal_subscription_id": "I-9CD592M40LSC",
+      "amount": 968.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "99a7a454-97d4-4b19-922e-6c613ae156d5",
+      "contact_name": "Tova Jacober",
+      "email": "tovajacober@gmail.com",
+      "paypal_subscription_id": "I-X4DW2G6PJCL3",
+      "amount": 450.0,
+      "billing_cycle": "Year",
+      "status": "active"
+    },
+    {
+      "subscription_id": "79b0cb29-5503-4edf-929d-ebb05f9ef788",
+      "contact_name": "Elissa Langenegger",
+      "email": "elangenegger@gmail.com",
+      "paypal_subscription_id": "I-RJ9GH72CMLFB",
+      "amount": 242.0,
+      "billing_cycle": "Year",
+      "status": "active"
+    },
+    {
+      "subscription_id": "569dea27-0f18-47e0-b53d-fd7ee479362f",
+      "contact_name": "Songya Kesler",
+      "email": "songyakesler@gmail.com",
+      "paypal_subscription_id": "I-GYVAD93R90R3",
+      "amount": 968.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    },
+    {
+      "subscription_id": "d1713e4f-8592-454a-ba19-6ac62bc1c8b5",
+      "contact_name": "Lisa Devine",
+      "email": "lisa.devine@bigpond.com",
+      "paypal_subscription_id": "I-TTR35G7G41TK",
+      "amount": 165.0,
+      "billing_cycle": "Year",
+      "status": "expired"
+    }
+  ],
+  "kajabi_without_product_id": []
+}

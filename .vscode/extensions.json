@@ -1,0 +1,24 @@
+{
+  "recommendations": [
+    // Python Development
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+
+    // SQL and Database
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+
+    // Git Integration
+    "eamodio.gitlens",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+
+    // General Development
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker"
+  ],
+
+  "unwantedRecommendations": []
+}

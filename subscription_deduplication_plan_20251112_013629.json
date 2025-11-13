@@ -1,0 +1,28 @@
+{
+  "safe_to_remove": [
+    {
+      "contact_id": "0e5b1c73-17d8-4014-bd8d-5e19bf8cafcc",
+      "contact_email": "thruspirit@aol.com",
+      "contact_name": "Scott Medina",
+      "canonical_subscription_id": "b7bdfbb2-417a-4a54-aa50-184309a7e852",
+      "canonical_source": "kajabi_only",
+      "subscriptions_to_remove": [
+        {
+          "id": "394fdf33-ea7b-4f5b-b862-cc8dace947e2",
+          "source": "paypal_only",
+          "amount": 1089.0,
+          "kajabi_subscription_id": null,
+          "paypal_subscription_reference": "I-62RBW0RK1J8L",
+          "created_at": "2025-11-04T16:33:16.032717+00:00"
+        }
+      ],
+      "reason": "Safe: Clear Kajabi-PayPal duplicate"
+    }
+  ],
+  "needs_review": [],
+  "statistics": {
+    "total_to_remove": 1,
+    "total_to_keep": 1,
+    "estimated_time_seconds": 0.1
+  }
+}

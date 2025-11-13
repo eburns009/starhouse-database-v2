@@ -1,0 +1,63 @@
+{
+  // Terminal Configuration
+  "terminal.integrated.enablePersistentSessions": true,
+  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+
+  // Disable terminal relaunch prompts
+  "terminal.integrated.environmentChangesRelaunch": false,
+  "terminal.integrated.environmentChangesIndicator": "off",
+
+  // Shell Integration - helps extensions properly set environment variables
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
+  "terminal.integrated.shellIntegration.suggestEnabled": false,
+
+  // Python Terminal Environment Activation
+  // Prevents issues with Python extension terminal activation
+  "python.terminal.activateEnvironment": true,
+  "python.terminal.activateEnvInCurrentTerminal": false,
+
+  // Git Configuration
+  "git.enabled": true,
+  "git.autorefresh": true,
+
+  // Extension Recommendations
+  "extensions.ignoreRecommendations": false,
+
+  // Files
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true,
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/.mypy_cache/**": true,
+    "**/.ruff_cache/**": true
+  },
+
+  // Python Configuration
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+
+  // Editor
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // Files Association
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    }
+  },
+
+  // SQL Files
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  }
+}

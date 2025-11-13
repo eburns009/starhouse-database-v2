@@ -1,0 +1,18 @@
+{
+  "total_contacts_with_duplicates": 1,
+  "total_subscriptions_involved": 2,
+  "total_duplicate_records": 1,
+  "patterns": {
+    "kajabi_paypal_collision": 1,
+    "paypal_only_duplicates": 0,
+    "kajabi_only_duplicates": 0
+  },
+  "source_distribution": {
+    "kajabi_only": 1,
+    "paypal_only": 1
+  },
+  "root_cause": {
+    "misplaced_paypal_ids": 0,
+    "description": "Genuine duplicates"
+  }
+}

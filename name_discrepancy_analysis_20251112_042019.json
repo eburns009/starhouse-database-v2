@@ -1,0 +1,324 @@
+{
+  "generated_at": "2025-11-12T04:20:20.875016",
+  "total_discrepancies": 12,
+  "summary": {
+    "critical": 0,
+    "needs_middle_name": 1,
+    "needs_update": 5
+  },
+  "discrepancies": [
+    {
+      "email": "womenstentix@gmail.com",
+      "kajabi_id": "115572375",
+      "db_id": "1c1b64a3-ccc5-42c6-b26d-4e61dfd413a9",
+      "kajabi_full_name": "Ixeeya Lin",
+      "kajabi_first_name": "Ixeeya",
+      "kajabi_last_name": "Lin",
+      "db_first_name": "Ixeeya",
+      "db_last_name": "Lin Beacher",
+      "db_additional_name": "Womens Tent",
+      "db_full_name": "Ixeeya Lin Beacher",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Lin Beacher' vs 'Lin'"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": "Ixeeya",
+        "update_last_name": "Lin",
+        "update_additional_name": null,
+        "reasoning": "Updating to match Kajabi: first_name='Ixeeya', last_name='Lin'"
+      }
+    },
+    {
+      "email": "kezha.hatier@gmail.com",
+      "kajabi_id": "115575617",
+      "db_id": "41f2b012-776a-475c-b5f8-b0450bdab9ba",
+      "kajabi_full_name": "K\u00e9zha",
+      "kajabi_first_name": "K\u00e9zha",
+      "kajabi_last_name": "",
+      "db_first_name": "K\u00e9zha",
+      "db_last_name": "Undefined",
+      "db_additional_name": "Kezha Hatier-Riess",
+      "db_full_name": "K\u00e9zha Undefined",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Undefined' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "info@pavanjeet.com",
+      "kajabi_id": "115582525",
+      "db_id": "b8d0e025-9b61-487b-bb9f-24b27f5e6a5c",
+      "kajabi_full_name": "Pavanjeet",
+      "kajabi_first_name": "Pavanjeet",
+      "kajabi_last_name": "",
+      "db_first_name": "Pavanjeet",
+      "db_last_name": "Undefined",
+      "db_additional_name": "Pavanjeet Singh",
+      "db_full_name": "Pavanjeet Undefined",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Undefined' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "shannon.okane@gmail.com",
+      "kajabi_id": "115583257",
+      "db_id": "51ea42c0-d6a0-4cea-9360-36801e701e17",
+      "kajabi_full_name": "Shannon OKane",
+      "kajabi_first_name": "Shannon",
+      "kajabi_last_name": "OKane",
+      "db_first_name": "Shannon",
+      "db_last_name": "O'Kane",
+      "db_additional_name": "Shannon Okane",
+      "db_full_name": "Shannon O'Kane",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'O'Kane' vs 'OKane'"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": "Shannon",
+        "update_last_name": "OKane",
+        "update_additional_name": null,
+        "reasoning": "Updating to match Kajabi: first_name='Shannon', last_name='OKane'"
+      }
+    },
+    {
+      "email": "megann.hudson21@gmail.com",
+      "kajabi_id": "115592411",
+      "db_id": "430b8038-6e3f-43c3-ba23-5f6bef8bfaad",
+      "kajabi_full_name": "Megann",
+      "kajabi_first_name": "Megann",
+      "kajabi_last_name": "",
+      "db_first_name": "Megann",
+      "db_last_name": "Hudson21",
+      "db_additional_name": "",
+      "db_full_name": "Megann Hudson21",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Hudson21' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "ms.rachelcosta@gmail.com",
+      "kajabi_id": "115592469",
+      "db_id": "8be7bb80-29a5-49d2-80d0-9a3a6b5635c8",
+      "kajabi_full_name": "Ms.Rachelcosta",
+      "kajabi_first_name": "Rachelcosta",
+      "kajabi_last_name": "",
+      "db_first_name": "Rachelcosta",
+      "db_last_name": "Rachelcosta",
+      "db_additional_name": "",
+      "db_full_name": "Rachelcosta Rachelcosta",
+      "analysis": {
+        "type": "different_first_name",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "Full name doesn't start with first name",
+          "DB last name differs from Kajabi: 'Rachelcosta' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "rachel.cobb@colorado.edu",
+      "kajabi_id": "115771817",
+      "db_id": "052445b1-618b-498a-a02e-99717defc33c",
+      "kajabi_full_name": "Rachel",
+      "kajabi_first_name": "Rachel",
+      "kajabi_last_name": "",
+      "db_first_name": "Rachel",
+      "db_last_name": "Cobb",
+      "db_additional_name": "",
+      "db_full_name": "Rachel Cobb",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Cobb' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "susana.escalante@seagate.com",
+      "kajabi_id": "115771875",
+      "db_id": "f6e122ef-3d82-4aa8-9891-592e09bcb0ae",
+      "kajabi_full_name": "Susana",
+      "kajabi_first_name": "Susana",
+      "kajabi_last_name": "",
+      "db_first_name": "Susana",
+      "db_last_name": "Escalante",
+      "db_additional_name": "",
+      "db_full_name": "Susana Escalante",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Escalante' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "kate@katekripke.com",
+      "kajabi_id": "2381359143",
+      "db_id": "8928c333-b108-49e9-bf88-3ded50096616",
+      "kajabi_full_name": "Kate Kripke",
+      "kajabi_first_name": "Kate",
+      "kajabi_last_name": "Kripke",
+      "db_first_name": "Katherine",
+      "db_last_name": "Kripke",
+      "db_additional_name": "Katherine Kripke",
+      "db_full_name": "Katherine Kripke",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB first name differs from Kajabi: 'Katherine' vs 'Kate'"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": "Kate",
+        "update_last_name": "Kripke",
+        "update_additional_name": null,
+        "reasoning": "Updating to match Kajabi: first_name='Kate', last_name='Kripke'"
+      }
+    },
+    {
+      "email": "cyndilarson@yahoo.com",
+      "kajabi_id": "2461579718",
+      "db_id": "e7c36b97-d917-4eeb-8c41-343c09f9416e",
+      "kajabi_full_name": "cindy bedell",
+      "kajabi_first_name": "Cindy",
+      "kajabi_last_name": "Bedell",
+      "db_first_name": "Cynthia",
+      "db_last_name": "Bedell",
+      "db_additional_name": "",
+      "db_full_name": "Cynthia Bedell",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB first name differs from Kajabi: 'Cynthia' vs 'Cindy'"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": "Cindy",
+        "update_last_name": "Bedell",
+        "update_additional_name": null,
+        "reasoning": "Updating to match Kajabi: first_name='Cindy', last_name='Bedell'"
+      }
+    },
+    {
+      "email": "lisa@freeyourmenopause.com",
+      "kajabi_id": "2519182255",
+      "db_id": "b9c276a7-c0bd-4ee8-9468-957f06060e4e",
+      "kajabi_full_name": "Lisa",
+      "kajabi_first_name": "Lisa",
+      "kajabi_last_name": "",
+      "db_first_name": "Lisa",
+      "db_last_name": "Hunter",
+      "db_additional_name": "Lisa Hunter",
+      "db_full_name": "Lisa Hunter",
+      "analysis": {
+        "type": "unknown",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB last name differs from Kajabi: 'Hunter' vs ''"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": null,
+        "update_last_name": null,
+        "update_additional_name": null,
+        "reasoning": ""
+      }
+    },
+    {
+      "email": "healthandawareness@gmail.com",
+      "kajabi_id": "2524313864",
+      "db_id": "855d6db5-fdb1-4eb7-b894-c992b8a4e932",
+      "kajabi_full_name": "Martha E Wingeier",
+      "kajabi_first_name": "Martha",
+      "kajabi_last_name": "Wingeier",
+      "db_first_name": "Emily",
+      "db_last_name": "Wingeier",
+      "db_additional_name": "",
+      "db_full_name": "Emily Wingeier",
+      "analysis": {
+        "type": "middle_name_or_multi_word",
+        "missing_words": [],
+        "extra_words": [],
+        "notes": [
+          "DB first name differs from Kajabi: 'Emily' vs 'Martha'"
+        ]
+      },
+      "proposed_fix": {
+        "update_first_name": "Martha",
+        "update_last_name": "Wingeier",
+        "update_additional_name": "E",
+        "reasoning": "Full name 'Martha E Wingeier' appears to be First Middle Last. Setting additional_name='E'"
+      }
+    }
+  ]
+}
