@@ -38,8 +38,14 @@ BEGIN
     RAISE EXCEPTION 'Tag cannot exceed 50 characters';
   END IF;
 
+  -- Check max tags limit (prevent unbounded growth)
+  IF (SELECT array_length(tags, 1) FROM contacts WHERE id = p_contact_id) >= 50 THEN
+    RAISE EXCEPTION 'Maximum 50 tags per contact';
+  END IF;
+
   -- Atomic update: Add tag only if it doesn't already exist
   -- This prevents race conditions when multiple requests add the same tag
+  -- RLS policies automatically enforce staff permissions
   UPDATE contacts
   SET
     tags = CASE
@@ -51,9 +57,9 @@ BEGIN
   WHERE id = p_contact_id
   RETURNING * INTO v_updated_row;
 
-  -- Check if contact exists
+  -- Check if contact exists or permission denied (RLS enforces this)
   IF NOT FOUND THEN
-    RAISE EXCEPTION 'Contact not found: %', p_contact_id;
+    RAISE EXCEPTION 'Contact not found or permission denied';
   END IF;
 
   -- Return the updated tags array for UI sync
@@ -63,7 +69,7 @@ BEGIN
     'added', v_normalized_tag
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;  -- Removed SECURITY DEFINER (RLS handles permissions)
 
 COMMENT ON FUNCTION add_contact_tag IS
 'Atomically adds a tag to a contact. Prevents duplicates and race conditions. Returns updated tags array.';
@@ -87,6 +93,7 @@ BEGIN
 
   -- Atomic update: Remove all instances of the tag
   -- array_remove handles the case where tag doesn't exist
+  -- RLS policies automatically enforce staff permissions
   UPDATE contacts
   SET
     tags = array_remove(tags, v_normalized_tag),
@@ -94,9 +101,9 @@ BEGIN
   WHERE id = p_contact_id
   RETURNING * INTO v_updated_row;
 
-  -- Check if contact exists
+  -- Check if contact exists or permission denied (RLS enforces this)
   IF NOT FOUND THEN
-    RAISE EXCEPTION 'Contact not found: %', p_contact_id;
+    RAISE EXCEPTION 'Contact not found or permission denied';
   END IF;
 
   -- Return the updated tags array for UI sync
@@ -106,7 +113,7 @@ BEGIN
     'removed', v_normalized_tag
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;  -- Removed SECURITY DEFINER (RLS handles permissions)
 
 COMMENT ON FUNCTION remove_contact_tag IS
 'Atomically removes a tag from a contact. Returns updated tags array.';
@@ -160,7 +167,7 @@ BEGIN
     'added_count', array_length(v_normalized_tags, 1)
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;  -- Removed SECURITY DEFINER (RLS handles permissions)
 
 COMMENT ON FUNCTION bulk_add_contact_tags IS
 'Atomically adds multiple tags to a contact. Prevents duplicates. Returns updated tags array.';

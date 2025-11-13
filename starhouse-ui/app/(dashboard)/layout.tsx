@@ -23,6 +23,7 @@ export default function DashboardLayout({
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -33,6 +34,7 @@ export default function DashboardLayout({
       } else {
         window.location.href = '/login'
       }
+      setLoading(false)
     }
     checkUser()
   }, [])
@@ -42,6 +44,19 @@ export default function DashboardLayout({
       return pathname === href
     }
     return pathname.startsWith(href)
+  }
+
+  // Show loading state while checking auth
+  // Prevents flash of protected content before redirect
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+          <p className="mt-4 text-sm text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
