@@ -405,17 +405,57 @@ export function ContactDetailCard({
     }
   }
 
-  const handleAddTag = () => {
+  const handleAddTag = async () => {
     if (newTag.trim() && !contactTags.includes(newTag.trim())) {
-      setContactTags([...contactTags, newTag.trim()])
+      const updatedTags = [...contactTags, newTag.trim()]
+      setContactTags(updatedTags)
       setNewTag('')
-      // TODO: Save to database when tags field is added to contacts table
+
+      // Save to database
+      try {
+        const supabase = createClient()
+        const { error } = await supabase
+          .from('contacts')
+          .update({ tags: updatedTags })
+          .eq('id', contactId)
+
+        if (error) {
+          console.error('Error saving tag:', error)
+          // Revert on error
+          setContactTags(contactTags)
+          alert('Failed to save tag. Please try again.')
+        }
+      } catch (err) {
+        console.error('Error saving tag:', err)
+        setContactTags(contactTags)
+        alert('Failed to save tag. Please try again.')
+      }
     }
   }
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setContactTags(contactTags.filter((tag) => tag !== tagToRemove))
-    // TODO: Save to database when tags field is added to contacts table
+  const handleRemoveTag = async (tagToRemove: string) => {
+    const updatedTags = contactTags.filter((tag) => tag !== tagToRemove)
+    setContactTags(updatedTags)
+
+    // Save to database
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('contacts')
+        .update({ tags: updatedTags })
+        .eq('id', contactId)
+
+      if (error) {
+        console.error('Error removing tag:', error)
+        // Revert on error
+        setContactTags(contactTags)
+        alert('Failed to remove tag. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error removing tag:', err)
+      setContactTags(contactTags)
+      alert('Failed to remove tag. Please try again.')
+    }
   }
 
   useEffect(() => {
@@ -501,6 +541,11 @@ export function ContactDetailCard({
         setTransactions(transactionsData || [])
         setSubscriptions(subscriptionsData || [])
         setNotes(notesData || [])
+
+        // Load tags from contact data
+        if (contactData.tags && Array.isArray(contactData.tags)) {
+          setContactTags(contactData.tags)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load contact')
         console.error('Error loading contact:', err)
