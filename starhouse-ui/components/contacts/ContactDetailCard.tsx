@@ -12,9 +12,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Calendar,
-  DollarSign,
-  CreditCard,
   Loader2,
   User,
   Copy,
@@ -344,6 +341,8 @@ export function ContactDetailCard({
   const [savingNote, setSavingNote] = useState(false)
   const [showProducts, setShowProducts] = useState(false)
   const [showTags, setShowTags] = useState(false)
+  const [showTransactions, setShowTransactions] = useState(false)
+  const [showSubscriptions, setShowSubscriptions] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
 
@@ -622,6 +621,30 @@ export function ContactDetailCard({
                     {contact.source_system.replace('_', ' ')}
                   </Badge>
                 </div>
+
+                {/* Inline Stats */}
+                <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4 pt-3 border-t border-border/50">
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground mb-1">Total Revenue</div>
+                    <div className="font-bold text-sm sm:text-base">{formatCurrency(totalRevenue)}</div>
+                    <div className="text-xs text-muted-foreground">{totalTransactionCount} txns</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground mb-1">
+                      {activeSubscriptions.length > 0
+                        ? activeSubscriptions.map(s => s.products?.name).filter(Boolean).join(', ').substring(0, 20) + (activeSubscriptions.length > 1 ? '...' : '')
+                        : 'No Active Memberships'
+                      }
+                    </div>
+                    <div className="font-bold text-sm sm:text-base">{activeSubscriptions.length}</div>
+                    <div className="text-xs text-muted-foreground">active</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground mb-1">Friend Since</div>
+                    <div className="font-bold text-sm sm:text-base">{formatDate(contact.created_at)}</div>
+                    <div className="text-xs text-muted-foreground">{contact.source_system}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -637,10 +660,10 @@ export function ContactDetailCard({
             setShowProducts(!showProducts)
             if (showTags) setShowTags(false)
           }}
-          className="flex-1 transition-all h-10 sm:h-9"
+          className={`flex-1 transition-all h-10 sm:h-9 ${showProducts ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0' : 'border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950/30'}`}
         >
           <Package className="h-4 w-4 mr-2" />
-          Products
+          Products ({subscriptions.length})
           {showProducts ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
         </Button>
         <Button
@@ -650,10 +673,10 @@ export function ContactDetailCard({
             setShowTags(!showTags)
             if (showProducts) setShowProducts(false)
           }}
-          className="flex-1 transition-all h-10 sm:h-9"
+          className={`flex-1 transition-all h-10 sm:h-9 ${showTags ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0' : 'border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950/30'}`}
         >
           <Tag className="h-4 w-4 mr-2" />
-          Tags
+          Tags ({contactTags.length})
           {showTags ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
         </Button>
       </div>
@@ -771,67 +794,113 @@ export function ContactDetailCard({
         </Card>
       )}
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card
-          className={totalTransactionCount > 0 ? 'cursor-pointer hover:bg-accent/50 transition-colors' : ''}
-          onClick={() => {
-            if (totalTransactionCount > 0) {
-              document.getElementById('transactions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            }
-          }}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">
-                Total Revenue
-              </span>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+      {/* Notes */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">Notes</CardTitle>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowAddNote(!showAddNote)}
+          >
+            {showAddNote ? 'Cancel' : '+ Add Note'}
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {/* Add Note Form */}
+          {showAddNote && (
+            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-3 sm:p-4">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">
+                  Subject (3-5 words)
+                </label>
+                <input
+                  type="text"
+                  value={newNoteSubject}
+                  onChange={(e) => setNewNoteSubject(e.target.value)}
+                  placeholder="e.g., Follow up needed"
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm"
+                  maxLength={50}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">
+                  Note Content
+                </label>
+                <textarea
+                  value={newNoteContent}
+                  onChange={(e) => setNewNoteContent(e.target.value)}
+                  placeholder="Enter your note here..."
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm resize-y min-h-[100px]"
+                  rows={4}
+                />
+              </div>
+              <Button
+                size="sm"
+                onClick={handleSaveNote}
+                disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
+                className="w-full sm:w-auto h-10 sm:h-9"
+              >
+                {savingNote ? 'Saving...' : 'Save Note'}
+              </Button>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalRevenue)}</div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {totalTransactionCount}{' '}
-              {totalTransactionCount === 1 ? 'transaction' : 'transactions'}
-            </p>
-          </CardContent>
-        </Card>
+          )}
 
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">
-                Active Member
-              </span>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activeSubscriptions.length}</div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {subscriptions.length} total
-            </p>
-          </CardContent>
-        </Card>
+          {/* Notes List */}
+          {notes.length === 0 && !showAddNote && (
+            <p className="text-sm text-muted-foreground">No notes yet. Add your first note!</p>
+          )}
 
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">
-                StarHouse Friend Since
-              </span>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatDate(contact.created_at)}</div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Source: {contact.source_system}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+          {notes.map((note) => {
+            const isExpanded = expandedNoteIds.has(note.id)
+            const summary = note.subject || note.content.split(' ').slice(0, 3).join(' ')
+
+            return (
+              <div
+                key={note.id}
+                className="rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
+              >
+                <div
+                  className="flex cursor-pointer items-start justify-between"
+                  onClick={() => toggleNoteExpand(note.id)}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">
+                        {summary}
+                      </span>
+                      {note.is_pinned && (
+                        <Badge variant="secondary" className="text-xs">
+                          Pinned
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(note.created_at)} • {note.author_name}
+                    </p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {isExpanded ? '▼' : '▶'}
+                  </span>
+                </div>
+
+                {isExpanded && (
+                  <div className="mt-3 border-t border-border/50 pt-3">
+                    <p className="whitespace-pre-wrap text-sm text-foreground">
+                      {note.content}
+                    </p>
+                    {note.note_type !== 'general' && (
+                      <Badge variant="outline" className="mt-2 text-xs">
+                        {note.note_type}
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </CardContent>
+      </Card>
 
       {/* Contact Information Sections */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -1010,8 +1079,21 @@ export function ContactDetailCard({
         )}
       </div>
 
-      {/* Recent Transactions */}
+      {/* Recent Transactions Button */}
       {transactions.length > 0 && (
+        <Button
+          variant={showTransactions ? "default" : "outline"}
+          size="sm"
+          onClick={() => setShowTransactions(!showTransactions)}
+          className="w-full h-10 sm:h-9"
+        >
+          Recent Transactions ({transactions.length})
+          {showTransactions ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+        </Button>
+      )}
+
+      {/* Recent Transactions */}
+      {transactions.length > 0 && showTransactions && (
         <Card id="transactions">
           <CardHeader>
             <CardTitle className="text-base">Recent Transactions</CardTitle>
@@ -1061,8 +1143,21 @@ export function ContactDetailCard({
         </Card>
       )}
 
-      {/* Active Subscriptions */}
+      {/* Active Subscriptions Button */}
       {activeSubscriptions.length > 0 && (
+        <Button
+          variant={showSubscriptions ? "default" : "outline"}
+          size="sm"
+          onClick={() => setShowSubscriptions(!showSubscriptions)}
+          className="w-full h-10 sm:h-9"
+        >
+          Active Subscriptions ({activeSubscriptions.length})
+          {showSubscriptions ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
+        </Button>
+      )}
+
+      {/* Active Subscriptions */}
+      {activeSubscriptions.length > 0 && showSubscriptions && (
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Active Subscriptions</CardTitle>
@@ -1106,113 +1201,6 @@ export function ContactDetailCard({
         </Card>
       )}
 
-      {/* Notes */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Notes</CardTitle>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowAddNote(!showAddNote)}
-          >
-            {showAddNote ? 'Cancel' : '+ Add Note'}
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {/* Add Note Form */}
-          {showAddNote && (
-            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-3 sm:p-4">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">
-                  Subject (3-5 words)
-                </label>
-                <input
-                  type="text"
-                  value={newNoteSubject}
-                  onChange={(e) => setNewNoteSubject(e.target.value)}
-                  placeholder="e.g., Follow up needed"
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm"
-                  maxLength={50}
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">
-                  Note Content
-                </label>
-                <textarea
-                  value={newNoteContent}
-                  onChange={(e) => setNewNoteContent(e.target.value)}
-                  placeholder="Enter your note here..."
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm resize-y min-h-[100px]"
-                  rows={4}
-                />
-              </div>
-              <Button
-                size="sm"
-                onClick={handleSaveNote}
-                disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
-                className="w-full sm:w-auto h-10 sm:h-9"
-              >
-                {savingNote ? 'Saving...' : 'Save Note'}
-              </Button>
-            </div>
-          )}
-
-          {/* Notes List */}
-          {notes.length === 0 && !showAddNote && (
-            <p className="text-sm text-muted-foreground">No notes yet. Add your first note!</p>
-          )}
-
-          {notes.map((note) => {
-            const isExpanded = expandedNoteIds.has(note.id)
-            const summary = note.subject || note.content.split(' ').slice(0, 3).join(' ')
-
-            return (
-              <div
-                key={note.id}
-                className="rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
-              >
-                <div
-                  className="flex cursor-pointer items-start justify-between"
-                  onClick={() => toggleNoteExpand(note.id)}
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">
-                        {summary}
-                      </span>
-                      {note.is_pinned && (
-                        <Badge variant="secondary" className="text-xs">
-                          Pinned
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(note.created_at)} • {note.author_name}
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {isExpanded ? '▼' : '▶'}
-                  </span>
-                </div>
-
-                {isExpanded && (
-                  <div className="mt-3 border-t border-border/50 pt-3">
-                    <p className="whitespace-pre-wrap text-sm text-foreground">
-                      {note.content}
-                    </p>
-                    {note.note_type !== 'general' && (
-                      <Badge variant="outline" className="mt-2 text-xs">
-                        {note.note_type}
-                      </Badge>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
 
     </div>
   )
