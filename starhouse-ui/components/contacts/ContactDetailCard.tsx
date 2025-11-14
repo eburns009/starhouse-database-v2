@@ -23,7 +23,9 @@ import {
   Plus,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from 'lucide-react'
+import { AlmondButton } from './AlmondButton'
 import type {
   Contact,
   Transaction,
@@ -33,7 +35,6 @@ import type {
 } from '@/lib/types/contact'
 import type { MailingListData, RankedAddress, RankedEmail } from '@/lib/types/mailing'
 import { EMAIL_SCORE_WEIGHTS, EMAIL_SOURCE_PRIORITY, getConfidenceDisplay } from '@/lib/constants/scoring'
-import { MailingListQuality } from './MailingListQuality'
 
 // Note type for contact notes
 interface ContactNote {
@@ -392,6 +393,10 @@ export function ContactDetailCard({
   const [showTags, setShowTags] = useState(false)
   const [showTransactions, setShowTransactions] = useState(false)
   const [showSubscriptions, setShowSubscriptions] = useState(false)
+  const [showAdditionalNames, setShowAdditionalNames] = useState(false)
+  const [showOtherEmails, setShowOtherEmails] = useState(false)
+  const [showPhones, setShowPhones] = useState(false)
+  const [showAddresses, setShowAddresses] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
@@ -838,157 +843,18 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Quick Action Buttons - Products & Tags */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-        <Button
-          variant={showProducts ? "default" : "outline"}
-          size="sm"
-          onClick={() => {
-            setShowProducts(!showProducts)
-            if (showTags) setShowTags(false)
-          }}
-          className={`flex-1 transition-all h-10 sm:h-9 ${showProducts ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0' : 'border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950/30'}`}
-        >
-          <Package className="h-4 w-4 mr-2" />
-          Products ({subscriptions.length})
-          {showProducts ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
-        </Button>
-        <Button
-          variant={showTags ? "default" : "outline"}
-          size="sm"
-          onClick={() => {
-            setShowTags(!showTags)
-            if (showProducts) setShowProducts(false)
-          }}
-          className={`flex-1 transition-all h-10 sm:h-9 ${showTags ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0' : 'border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950/30'}`}
-        >
-          <Tag className="h-4 w-4 mr-2" />
-          Tags ({contactTags.length})
-          {showTags ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
-        </Button>
-      </div>
-
-      {/* Products Expandable Section */}
-      {showProducts && (
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              Products & Subscriptions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {subscriptions.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">No products or subscriptions yet</p>
-            ) : (
-              <div className="grid gap-3">
-                {subscriptions.map((subscription) => (
-                  <div
-                    key={subscription.id}
-                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm p-3 sm:p-4 transition-all hover:shadow-md hover:border-primary/30"
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium text-sm">
-                          {subscription.products?.name || 'Unknown Product'}
-                        </span>
-                        <Badge
-                          variant={subscription.status === 'active' ? 'default' : 'outline'}
-                          className="text-xs"
-                        >
-                          {subscription.status}
-                        </Badge>
-                      </div>
-                      {subscription.products?.product_type && (
-                        <p className="text-xs text-muted-foreground capitalize">
-                          {subscription.products.product_type}
-                        </p>
-                      )}
-                    </div>
-                    {subscription.amount && (
-                      <div className="text-left sm:text-right flex-shrink-0">
-                        <div className="font-semibold text-sm">
-                          {formatCurrency(Number(subscription.amount))}
-                          <span className="text-xs text-muted-foreground font-normal ml-1">
-                            / {subscription.billing_cycle}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Tags Expandable Section */}
-      {showTags && (
-        <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/50 to-transparent dark:from-purple-950/20 dark:border-purple-800/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Tag className="h-4 w-4" />
-              Contact Tags
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Add Tag Input */}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
-                placeholder="Add a tag..."
-                className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2.5 sm:py-2 text-sm focus:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:focus:border-purple-700 dark:focus:ring-purple-900"
-              />
-              <Button
-                size="sm"
-                onClick={handleAddTag}
-                disabled={!newTag.trim()}
-                className="rounded-full px-4 sm:px-4 h-10 sm:h-9 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 flex-shrink-0"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* Tags Display */}
-            {contactTags.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic text-center py-4">
-                No tags yet. Add your first tag above!
-              </p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {contactTags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="rounded-full px-3 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-900 border-purple-200 dark:from-purple-900/30 dark:to-pink-900/30 dark:text-purple-200 dark:border-purple-800 hover:shadow-md transition-all"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => handleRemoveTag(tag)}
-                      className="ml-2 hover:text-destructive transition-colors"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Notes */}
-      <Card>
+      {/* Notes Section - Moved to Top with Soft Background */}
+      <Card className="bg-gradient-to-br from-rose-50/40 via-lavender-50/30 to-purple-50/40 border-rose-200/30 dark:from-rose-950/10 dark:via-lavender-950/10 dark:to-purple-950/10 dark:border-rose-800/20">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Notes</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <FileText className="h-4 w-4 text-rose-600" />
+            Notes
+          </CardTitle>
           <Button
             size="sm"
             variant="outline"
             onClick={() => setShowAddNote(!showAddNote)}
+            className="border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300"
           >
             {showAddNote ? 'Cancel' : '+ Add Note'}
           </Button>
@@ -996,7 +862,7 @@ export function ContactDetailCard({
         <CardContent className="space-y-3">
           {/* Add Note Form */}
           {showAddNote && (
-            <div className="space-y-3 rounded-lg border border-border/50 bg-muted/30 p-3 sm:p-4">
+            <div className="space-y-3 rounded-lg border border-rose-200/50 bg-white/50 backdrop-blur-sm p-3 sm:p-4 dark:bg-black/20 dark:border-rose-800/30">
               <div>
                 <label className="text-xs font-medium text-muted-foreground">
                   Subject (3-5 words)
@@ -1026,7 +892,7 @@ export function ContactDetailCard({
                 size="sm"
                 onClick={handleSaveNote}
                 disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
-                className="w-full sm:w-auto h-10 sm:h-9"
+                className="w-full sm:w-auto h-10 sm:h-9 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
               >
                 {savingNote ? 'Saving...' : 'Save Note'}
               </Button>
@@ -1035,7 +901,9 @@ export function ContactDetailCard({
 
           {/* Notes List */}
           {notes.length === 0 && !showAddNote && (
-            <p className="text-sm text-muted-foreground">No notes yet. Add your first note!</p>
+            <p className="text-sm text-muted-foreground italic text-center py-4">
+              No notes yet. Add your first note!
+            </p>
           )}
 
           {notes.map((note) => {
@@ -1045,7 +913,7 @@ export function ContactDetailCard({
             return (
               <div
                 key={note.id}
-                className="rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/50"
+                className="rounded-lg border border-rose-200/50 bg-white/50 backdrop-blur-sm p-3 transition-all hover:bg-white/70 hover:shadow-sm dark:bg-black/20 dark:border-rose-800/30 dark:hover:bg-black/30"
               >
                 <div
                   className="flex cursor-pointer items-start justify-between"
@@ -1057,7 +925,7 @@ export function ContactDetailCard({
                         {summary}
                       </span>
                       {note.is_pinned && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:border-rose-800">
                           Pinned
                         </Badge>
                       )}
@@ -1072,7 +940,7 @@ export function ContactDetailCard({
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-3 border-t border-border/50 pt-3">
+                  <div className="mt-3 border-t border-rose-200/50 pt-3 dark:border-rose-800/30">
                     <p className="whitespace-pre-wrap text-sm text-foreground">
                       {note.content}
                     </p>
@@ -1089,314 +957,430 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Contact Information Sections */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Names */}
-        {nameVariants.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <User className="h-4 w-4" />
-                Names
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {nameVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-muted/30 p-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-sm">
-                        {formatName(variant.first_name, variant.last_name)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {variant.label} • {variant.source}
-                      </p>
+      {/* Almond-Shaped Expandable Buttons */}
+      <div className="space-y-3">
+        {/* Additional Names Button */}
+        {nameVariants.length > 1 && (
+          <>
+            <AlmondButton
+              icon={User}
+              label="Additional Names"
+              count={nameVariants.length - 1}
+              isExpanded={showAdditionalNames}
+              onClick={() => setShowAdditionalNames(!showAdditionalNames)}
+              gradientFrom="from-rose-100"
+              gradientTo="to-pink-100"
+            />
+
+            {showAdditionalNames && (
+              <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
+                <CardContent className="pt-4 space-y-2">
+                  {nameVariants.slice(1).map((variant, idx) => (
+                    <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="font-medium text-sm">
+                            {formatName(variant.first_name, variant.last_name)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {variant.label} • {variant.source}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    {idx === 0 && (
-                      <Badge variant="secondary" className="text-xs py-0">
-                        Primary
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
 
-        {/* Emails - Ranked with Scores */}
-        {rankedEmails.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Mail className="h-4 w-4" />
-                Email Addresses
-              </CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Ranked by deliverability for email campaigns
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {rankedEmails.map((email, idx) => {
-                const confidence = getConfidenceDisplay(email.score)
+        {/* Other Emails Button */}
+        {rankedEmails.length > 1 && (
+          <>
+            <AlmondButton
+              icon={Mail}
+              label="Other Emails"
+              count={rankedEmails.length - 1}
+              isExpanded={showOtherEmails}
+              onClick={() => setShowOtherEmails(!showOtherEmails)}
+              gradientFrom="from-purple-100"
+              gradientTo="to-lavender-100"
+            />
 
-                return (
-                  <div
-                    key={idx}
-                    className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
-                      email.isRecommended
-                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
-                        : 'border-border/50 bg-muted/30'
-                    }`}
-                  >
-                    {/* Recommended Badge Ribbon */}
-                    {email.isRecommended && (
-                      <div className="absolute -right-1 -top-1">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
-                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
-                            <Mail className="h-3 w-3" />
-                            Use for Campaign
-                          </div>
-                        </div>
-                      </div>
-                    )}
+            {showOtherEmails && (
+              <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
+                <CardHeader className="pb-3">
+                  <p className="text-xs text-muted-foreground">
+                    Ranked by deliverability for email campaigns
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {rankedEmails.slice(1).map((email, idx) => {
+                    const confidence = getConfidenceDisplay(email.score)
 
-                    <div className="space-y-2">
-                      {/* Header Row */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className={`rounded-lg ${email.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-1.5`}>
-                            <Mail className={`h-4 w-4 ${email.isRecommended ? 'text-primary' : 'text-muted-foreground'}`} />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-sm">{email.label}</h4>
-                            <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
-                          </div>
-                        </div>
-
-                        {/* Score Badge */}
-                        <div className="flex flex-col items-end gap-1">
-                          <div className="flex items-center gap-2">
-                            <div className="text-right">
-                              <div className="text-lg font-bold">{email.score}</div>
-                              <div className="text-xs text-muted-foreground leading-none">/ 100</div>
+                    return (
+                      <div
+                        key={idx}
+                        className="relative overflow-hidden rounded-xl border-2 border-purple-200/50 bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20 dark:border-purple-800/30"
+                      >
+                        <div className="space-y-2">
+                          {/* Header Row */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="rounded-lg bg-purple-100 p-1.5 dark:bg-purple-900/30">
+                                <Mail className="h-4 w-4 text-purple-600 dark:text-purple-300" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm">{email.label}</h4>
+                                <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
+                              </div>
                             </div>
-                            <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
+
+                            {/* Score Badge */}
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center gap-2">
+                                <div className="text-right">
+                                  <div className="text-lg font-bold">{email.score}</div>
+                                  <div className="text-xs text-muted-foreground leading-none">/ 100</div>
+                                </div>
+                                <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
+                              </div>
+                              <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
+                                {confidence.label}
+                              </Badge>
+                            </div>
                           </div>
-                          <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
-                            {confidence.label}
-                          </Badge>
+
+                          {/* Email Address */}
+                          <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
+                            <a
+                              href={`mailto:${email.email}`}
+                              className="font-medium text-sm hover:text-primary break-all"
+                            >
+                              {email.email}
+                            </a>
+                          </div>
+
+                          {/* Status Badges */}
+                          <div className="flex flex-wrap gap-1.5">
+                            {email.isSubscribed && (
+                              <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
+                                <CheckCircle className="mr-1 h-3 w-3" />
+                                Subscribed
+                              </Badge>
+                            )}
+                            {!email.isSubscribed && (
+                              <Badge variant="outline" className="text-xs text-muted-foreground py-0">
+                                Not Subscribed
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
+                    )
+                  })}
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
 
-                      {/* Email Address */}
-                      <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
-                        <a
-                          href={`mailto:${email.email}`}
-                          className="font-medium text-sm hover:text-primary break-all"
-                        >
-                          {email.email}
-                        </a>
-                      </div>
+        {/* Phone Numbers Button */}
+        {phoneVariants.length > 0 && (
+          <>
+            <AlmondButton
+              icon={Phone}
+              label="Phone Numbers"
+              count={phoneVariants.length}
+              isExpanded={showPhones}
+              onClick={() => setShowPhones(!showPhones)}
+              gradientFrom="from-blue-100"
+              gradientTo="to-cyan-100"
+            />
 
-                      {/* Status Badges */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {email.isPrimary && (
-                          <Badge className="bg-blue-500/10 text-blue-700 border-blue-500/20 text-xs py-0">
-                            <CheckCircle className="mr-1 h-3 w-3" />
+            {showPhones && (
+              <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
+                <CardContent className="pt-4 space-y-2">
+                  {phoneVariants.map((variant, idx) => (
+                    <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <a
+                            href={`tel:${variant.number}`}
+                            className="font-medium text-sm hover:text-primary"
+                          >
+                            {variant.number}
+                          </a>
+                          <p className="text-xs text-muted-foreground">
+                            {variant.label} • {variant.source}
+                            {variant.country_code && ` • ${variant.country_code}`}
+                          </p>
+                        </div>
+                        {idx === 0 && (
+                          <Badge variant="secondary" className="text-xs py-0 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
                             Primary
                           </Badge>
                         )}
-                        {email.isSubscribed && (
-                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
-                            <CheckCircle className="mr-1 h-3 w-3" />
-                            Subscribed
-                          </Badge>
-                        )}
-                        {!email.isSubscribed && (
-                          <Badge variant="outline" className="text-xs text-muted-foreground py-0">
-                            Not Subscribed
-                          </Badge>
-                        )}
                       </div>
                     </div>
-                  </div>
-                )
-              })}
-            </CardContent>
-          </Card>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
 
-        {/* Phones */}
-        {phoneVariants.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Phone className="h-4 w-4" />
-                Phone Numbers
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {phoneVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-muted/30 p-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <a
-                        href={`tel:${variant.number}`}
-                        className="font-medium text-sm hover:text-primary"
-                      >
-                        {variant.number}
-                      </a>
-                      <p className="text-xs text-muted-foreground">
-                        {variant.label} • {variant.source}
-                        {variant.country_code && ` • ${variant.country_code}`}
-                      </p>
-                    </div>
-                    {idx === 0 && (
-                      <Badge variant="secondary" className="text-xs py-0">
-                        Primary
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Addresses - Ranked with Scores */}
+        {/* Addresses Button */}
         {rankedAddresses.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <MapPin className="h-4 w-4" />
-                Addresses
-              </CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Ranked by quality for mailing campaigns
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {rankedAddresses.map((address, idx) => {
-                const confidence = getConfidenceDisplay(address.score)
-                const hasCompleteAddress = address.line_1 || address.city
+          <>
+            <AlmondButton
+              icon={MapPin}
+              label="Addresses"
+              count={rankedAddresses.length}
+              isExpanded={showAddresses}
+              onClick={() => setShowAddresses(!showAddresses)}
+              gradientFrom="from-emerald-100"
+              gradientTo="to-teal-100"
+            />
 
-                return (
-                  <div
-                    key={idx}
-                    className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
-                      address.isRecommended
-                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
-                        : 'border-border/50 bg-muted/30'
-                    }`}
-                  >
-                    {/* Recommended Badge Ribbon */}
-                    {address.isRecommended && (
-                      <div className="absolute -right-1 -top-1">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
-                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
-                            <Mail className="h-3 w-3" />
-                            Use for Campaign
-                          </div>
-                        </div>
-                      </div>
-                    )}
+            {showAddresses && (
+              <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
+                <CardHeader className="pb-3">
+                  <p className="text-xs text-muted-foreground">
+                    Ranked by quality for mailing campaigns
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {rankedAddresses.map((address, idx) => {
+                    const confidence = getConfidenceDisplay(address.score)
+                    const hasCompleteAddress = address.line_1 || address.city
 
-                    <div className="space-y-2">
-                      {/* Header Row */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-1.5`}>
-                            <MapPin className={`h-4 w-4 ${address.isRecommended ? 'text-primary' : 'text-muted-foreground'}`} />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-sm">{address.label}</h4>
-                            <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
-                          </div>
-                        </div>
-
-                        {/* Score Badge */}
-                        {address.score > 0 && (
-                          <div className="flex flex-col items-end gap-1">
-                            <div className="flex items-center gap-2">
-                              <div className="text-right">
-                                <div className="text-lg font-bold">{address.score}</div>
-                                <div className="text-xs text-muted-foreground leading-none">/ 100</div>
+                    return (
+                      <div
+                        key={idx}
+                        className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
+                          address.isRecommended
+                            ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
+                            : 'border-emerald-200/50 bg-white/50 backdrop-blur-sm dark:bg-black/20 dark:border-emerald-800/30'
+                        }`}
+                      >
+                        {/* Recommended Badge Ribbon */}
+                        {address.isRecommended && (
+                          <div className="absolute -right-1 -top-1">
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
+                              <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
+                                <Mail className="h-3 w-3" />
+                                Use for Campaign
                               </div>
-                              <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
                             </div>
-                            <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
-                              {confidence.label}
-                            </Badge>
                           </div>
                         )}
-                      </div>
 
-                      {/* Address Details */}
-                      {hasCompleteAddress ? (
-                        <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
-                          {address.line_1 && (
-                            <p className="font-medium text-sm">{address.line_1}</p>
-                          )}
-                          {address.line_2 && (
-                            <p className="text-sm">{address.line_2}</p>
-                          )}
-                          {(address.city || address.state || address.postal_code) && (
-                            <p className="text-sm text-muted-foreground">
-                              {[
-                                address.city,
-                                address.state,
-                                address.postal_code,
-                              ].filter(Boolean).join(', ')}
+                        <div className="space-y-2">
+                          {/* Header Row */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-emerald-100 dark:bg-emerald-900/30'} p-1.5`}>
+                                <MapPin className={`h-4 w-4 ${address.isRecommended ? 'text-primary' : 'text-emerald-600 dark:text-emerald-300'}`} />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-sm">{address.label}</h4>
+                                <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
+                              </div>
+                            </div>
+
+                            {/* Score Badge */}
+                            {address.score > 0 && (
+                              <div className="flex flex-col items-end gap-1">
+                                <div className="flex items-center gap-2">
+                                  <div className="text-right">
+                                    <div className="text-lg font-bold">{address.score}</div>
+                                    <div className="text-xs text-muted-foreground leading-none">/ 100</div>
+                                  </div>
+                                  <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
+                                </div>
+                                <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
+                                  {confidence.label}
+                                </Badge>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Address Details */}
+                          {hasCompleteAddress ? (
+                            <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
+                              {address.line_1 && (
+                                <p className="font-medium text-sm">{address.line_1}</p>
+                              )}
+                              {address.line_2 && (
+                                <p className="text-sm">{address.line_2}</p>
+                              )}
+                              {(address.city || address.state || address.postal_code) && (
+                                <p className="text-sm text-muted-foreground">
+                                  {[
+                                    address.city,
+                                    address.state,
+                                    address.postal_code,
+                                  ].filter(Boolean).join(', ')}
+                                </p>
+                              )}
+                              {address.country && address.country !== 'US' && (
+                                <p className="text-sm text-muted-foreground">{address.country}</p>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-sm italic text-muted-foreground">
+                              No address on file
                             </p>
                           )}
-                          {address.country && address.country !== 'US' && (
-                            <p className="text-sm text-muted-foreground">{address.country}</p>
-                          )}
-                        </div>
-                      ) : (
-                        <p className="text-sm italic text-muted-foreground">
-                          No address on file
-                        </p>
-                      )}
 
-                      {/* Status Badges */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {address.uspsValidated && (
-                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
-                            <CheckCircle className="mr-1 h-3 w-3" />
-                            USPS Validated
+                          {/* Status Badges */}
+                          <div className="flex flex-wrap gap-1.5">
+                            {address.uspsValidated && (
+                              <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
+                                <CheckCircle className="mr-1 h-3 w-3" />
+                                USPS Validated
+                              </Badge>
+                            )}
+                            {!address.uspsValidated && address.score > 0 && (
+                              <Badge variant="outline" className="text-xs text-muted-foreground py-0">
+                                Not Validated
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
+
+        {/* Tags Button */}
+        <AlmondButton
+          icon={Tag}
+          label="Tags"
+          count={contactTags.length}
+          isExpanded={showTags}
+          onClick={() => setShowTags(!showTags)}
+          gradientFrom="from-violet-100"
+          gradientTo="to-purple-100"
+        />
+
+        {showTags && (
+          <Card className="border-violet-200/50 bg-gradient-to-br from-violet-50/30 to-transparent dark:border-violet-800/30">
+            <CardContent className="pt-4 space-y-4">
+              {/* Add Tag Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                  placeholder="Add a tag..."
+                  className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2.5 sm:py-2 text-sm focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-200 dark:focus:border-violet-700 dark:focus:ring-violet-900"
+                />
+                <Button
+                  size="sm"
+                  onClick={handleAddTag}
+                  disabled={!newTag.trim()}
+                  className="rounded-full px-4 h-10 sm:h-9 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 flex-shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Tags Display */}
+              {contactTags.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic text-center py-4">
+                  No tags yet. Add your first tag above!
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {contactTags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="rounded-full px-3 py-1 text-xs font-medium bg-gradient-to-r from-violet-100 to-purple-100 text-violet-900 border-violet-200 dark:from-violet-900/30 dark:to-purple-900/30 dark:text-violet-200 dark:border-violet-800 hover:shadow-md transition-all"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => handleRemoveTag(tag)}
+                        className="ml-2 hover:text-destructive transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Products & Subscriptions Button */}
+        <AlmondButton
+          icon={Package}
+          label="Products & Subscriptions"
+          count={subscriptions.length}
+          isExpanded={showProducts}
+          onClick={() => setShowProducts(!showProducts)}
+          gradientFrom="from-fuchsia-100"
+          gradientTo="to-pink-100"
+        />
+
+        {showProducts && (
+          <Card className="border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50/30 to-transparent dark:border-fuchsia-800/30">
+            <CardContent className="pt-4 space-y-3">
+              {subscriptions.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic text-center py-4">No products or subscriptions yet</p>
+              ) : (
+                <div className="grid gap-3">
+                  {subscriptions.map((subscription) => (
+                    <div
+                      key={subscription.id}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-fuchsia-200/50 bg-white/50 backdrop-blur-sm p-3 sm:p-4 transition-all hover:shadow-md hover:border-fuchsia-300/50 dark:bg-black/20 dark:border-fuchsia-800/30"
+                    >
+                      <div className="space-y-1 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-medium text-sm">
+                            {subscription.products?.name || 'Unknown Product'}
+                          </span>
+                          <Badge
+                            variant={subscription.status === 'active' ? 'default' : 'outline'}
+                            className="text-xs"
+                          >
+                            {subscription.status}
                           </Badge>
-                        )}
-                        {!address.uspsValidated && address.score > 0 && (
-                          <Badge variant="outline" className="text-xs text-muted-foreground py-0">
-                            Not Validated
-                          </Badge>
+                        </div>
+                        {subscription.products?.product_type && (
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {subscription.products.product_type}
+                          </p>
                         )}
                       </div>
+                      {subscription.amount && (
+                        <div className="text-left sm:text-right flex-shrink-0">
+                          <div className="font-semibold text-sm">
+                            {formatCurrency(Number(subscription.amount))}
+                            <span className="text-xs text-muted-foreground font-normal ml-1">
+                              / {subscription.billing_cycle}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )
-              })}
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
       </div>
-
-      {/* Mailing List Quality */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Mail className="h-4 w-4" />
-            Mailing List Quality
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <MailingListQuality contactId={contact.id} />
-        </CardContent>
-      </Card>
 
       {/* Recent Transactions Button */}
       {transactions.length > 0 && (
