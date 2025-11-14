@@ -13,17 +13,12 @@ import {
   Phone,
   MapPin,
   Loader2,
-  User,
   Copy,
   Check,
   CheckCircle,
-  Tag,
-  Package,
   X,
   Plus,
   FileText,
-  Receipt,
-  Calendar,
 } from 'lucide-react'
 import { AlmondButton } from './AlmondButton'
 import type {
@@ -963,7 +958,6 @@ export function ContactDetailCard({
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {/* Additional Names Button - with eyelashes! */}
           <AlmondButton
-            icon={User}
             label="Additional Names"
             count={nameVariants.length > 1 ? nameVariants.length - 1 : 0}
             isExpanded={showAdditionalNames}
@@ -975,7 +969,6 @@ export function ContactDetailCard({
 
           {/* Other Emails Button */}
           <AlmondButton
-            icon={Mail}
             label="Other Emails"
             count={rankedEmails.length > 1 ? rankedEmails.length - 1 : 0}
             isExpanded={showOtherEmails}
@@ -986,7 +979,6 @@ export function ContactDetailCard({
 
           {/* Phone Numbers Button */}
           <AlmondButton
-            icon={Phone}
             label="Phone Numbers"
             count={phoneVariants.length}
             isExpanded={showPhones}
@@ -997,7 +989,6 @@ export function ContactDetailCard({
 
           {/* Addresses Button */}
           <AlmondButton
-            icon={MapPin}
             label="Addresses"
             count={rankedAddresses.length}
             isExpanded={showAddresses}
@@ -1011,7 +1002,6 @@ export function ContactDetailCard({
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {/* Tags Button */}
           <AlmondButton
-            icon={Tag}
             label="Tags"
             count={contactTags.length}
             isExpanded={showTags}
@@ -1022,7 +1012,6 @@ export function ContactDetailCard({
 
           {/* Products Button */}
           <AlmondButton
-            icon={Package}
             label="Products"
             count={subscriptions.length}
             isExpanded={showProducts}
@@ -1033,7 +1022,6 @@ export function ContactDetailCard({
 
           {/* Transactions Button */}
           <AlmondButton
-            icon={Receipt}
             label="Transactions"
             count={transactions.length}
             isExpanded={showTransactionsSection}
@@ -1044,7 +1032,6 @@ export function ContactDetailCard({
 
           {/* Subscriptions Button */}
           <AlmondButton
-            icon={Calendar}
             label="Subscriptions"
             count={activeSubscriptions.length}
             isExpanded={showSubscriptionsSection}

@@ -3,10 +3,7 @@
  * FAANG Standard: Reusable, type-safe component with feminine design aesthetics
  */
 
-import { ChevronDown, ChevronUp, LucideIcon } from 'lucide-react'
-
 interface AlmondButtonProps {
-  icon: LucideIcon
   label: string
   count?: number
   isExpanded: boolean
@@ -17,7 +14,6 @@ interface AlmondButtonProps {
 }
 
 export function AlmondButton({
-  icon: Icon,
   label,
   count,
   isExpanded,
@@ -64,43 +60,18 @@ export function AlmondButton({
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Content */}
-        <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className={`
-              rounded-full p-3 transition-all duration-300
-              ${isExpanded
-                ? 'bg-white/90 text-rose-600 shadow-md'
-                : 'bg-white/70 text-purple-600 group-hover:bg-white/90'
-              }
+        <div className="relative flex items-center justify-center">
+          <div className="text-center">
+            <span className={`
+              font-medium text-sm transition-colors
+              ${isExpanded ? 'text-rose-900' : 'text-purple-900'}
             `}>
-              <Icon className="h-6 w-6" />
-            </div>
-            <div className="text-left">
-              <span className={`
-                font-semibold text-lg transition-colors
-                ${isExpanded ? 'text-rose-900' : 'text-purple-900'}
-              `}>
-                {label}
+              {label}
+            </span>
+            {count !== undefined && (
+              <span className="ml-1.5 text-xs font-normal text-purple-700/70">
+                ({count})
               </span>
-              {count !== undefined && (
-                <span className="ml-2 text-base font-normal text-purple-700/70">
-                  ({count})
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className={`
-            rounded-full p-2 transition-all duration-300
-            ${isExpanded
-              ? 'bg-white/70 text-rose-700'
-              : 'bg-white/50 text-purple-700 group-hover:bg-white/70'
-            }
-          `}>
-            {isExpanded ? (
-              <ChevronUp className="h-5 w-5" />
-            ) : (
-              <ChevronDown className="h-5 w-5" />
             )}
           </div>
         </div>
