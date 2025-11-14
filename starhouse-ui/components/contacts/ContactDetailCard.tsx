@@ -688,6 +688,36 @@ export function ContactDetailCard({
     )
   }
 
+  // Extract all variants with memoization for performance
+  // FAANG Standard: Memoize expensive calculations to prevent unnecessary re-renders
+  // IMPORTANT: Must be called before any conditional returns (Rules of Hooks)
+  const nameVariants = useMemo(() => {
+    if (!contact) return []
+    return extractNameVariants(contact)
+  }, [contact])
+
+  const phoneVariants = useMemo(() => {
+    if (!contact) return []
+    return extractPhoneVariants(contact)
+  }, [contact])
+
+  const rankedAddresses = useMemo(() => {
+    if (!contact) return []
+    return buildRankedAddresses(contact, mailingListData)
+  }, [contact, mailingListData])
+
+  const rankedEmails = useMemo(() => {
+    if (!contact) return []
+    return buildRankedEmails(contact)
+  }, [contact])
+
+  // Calculate stats
+  const activeSubscriptions = useMemo(() => {
+    if (!subscriptions) return []
+    return subscriptions.filter((s) => s.status === 'active')
+  }, [subscriptions])
+
+  // Early return AFTER all hooks are called
   if (error || !contact) {
     return (
       <Card className="p-8">
@@ -700,19 +730,6 @@ export function ContactDetailCard({
       </Card>
     )
   }
-
-  // Extract all variants with memoization for performance
-  // FAANG Standard: Memoize expensive calculations to prevent unnecessary re-renders
-  const nameVariants = useMemo(() => extractNameVariants(contact), [contact])
-  const phoneVariants = useMemo(() => extractPhoneVariants(contact), [contact])
-  const rankedAddresses = useMemo(
-    () => buildRankedAddresses(contact, mailingListData),
-    [contact, mailingListData]
-  )
-  const rankedEmails = useMemo(() => buildRankedEmails(contact), [contact])
-
-  // Calculate stats
-  const activeSubscriptions = subscriptions.filter((s) => s.status === 'active')
 
   return (
     <div className="space-y-4">
