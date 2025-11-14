@@ -802,16 +802,16 @@ export function ContactDetailCard({
                 {/* Contact Info - Email & Phone */}
                 <div className="mt-3 space-y-3">
                   {/* Email */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
                       <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                      <span className="font-mono text-foreground select-all text-xs sm:text-sm truncate">
+                      <span className="font-mono text-foreground select-all text-xs sm:text-sm">
                         {contact.email}
                       </span>
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="h-7 px-2 flex-shrink-0"
+                        className="h-6 px-2 flex-shrink-0"
                         onClick={() => handleCopyEmail(contact.email)}
                         title="Copy email"
                       >
@@ -822,14 +822,29 @@ export function ContactDetailCard({
                         )}
                       </Button>
                     </div>
-                    <Button
-                      size="sm"
-                      className="h-8 w-full sm:w-auto sm:ml-auto"
-                      onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
-                    >
-                      <Mail className="h-3 w-3 mr-1" />
-                      Send Email
-                    </Button>
+
+                    {/* Email Status Badge */}
+                    <div className="flex items-center gap-2 ml-6">
+                      {contact.email_subscribed ? (
+                        <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Email Subscribed
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-xs text-muted-foreground">
+                          No Email Record
+                        </Badge>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs"
+                        onClick={() => window.open(`mailto:${contact.email}`, '_blank')}
+                      >
+                        <Mail className="h-3 w-3 mr-1" />
+                        Send Email
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Phone */}
@@ -848,8 +863,7 @@ export function ContactDetailCard({
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {contact.email_subscribed && <Badge>Email Subscribed</Badge>}
-                  <Badge variant="outline" className="capitalize">
+                  <Badge variant="outline" className="capitalize text-xs">
                     {contact.source_system.replace('_', ' ')}
                   </Badge>
                 </div>
