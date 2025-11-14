@@ -18,8 +18,12 @@ import {
   X,
   Plus,
   FileText,
+  ChevronRight,
+  User,
+  AtSign,
+  Tag,
+  DollarSign,
 } from 'lucide-react'
-import { AlmondButton } from './AlmondButton'
 import type {
   Contact,
   TransactionWithProduct,
@@ -879,18 +883,18 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Notes Section - Moved to Top with Soft Background */}
-      <Card className="bg-gradient-to-br from-blue-50/70 via-cyan-50/60 to-sky-50/70 border-blue-200/50 dark:from-blue-950/20 dark:via-cyan-950/20 dark:to-sky-950/20 dark:border-blue-800/30">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <FileText className="h-4 w-4 text-rose-600" />
+      {/* Notes Section - Clean, Minimal Design */}
+      <Card className="border-border/50 shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="flex items-center gap-2 text-base font-semibold">
+            <FileText className="h-4 w-4 text-muted-foreground" />
             Notes
           </CardTitle>
           <Button
             size="sm"
             variant="outline"
             onClick={() => setShowAddNote(!showAddNote)}
-            className="border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300"
+            className="h-8"
           >
             {showAddNote ? 'Cancel' : '+ Add Note'}
           </Button>
@@ -898,17 +902,17 @@ export function ContactDetailCard({
         <CardContent className="space-y-3">
           {/* Add Note Form */}
           {showAddNote && (
-            <div className="space-y-3 rounded-lg border border-rose-200/50 bg-white/50 backdrop-blur-sm p-3 sm:p-4 dark:bg-black/20 dark:border-rose-800/30">
+            <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
               <div>
                 <label className="text-xs font-medium text-muted-foreground">
-                  Subject (3-5 words)
+                  Subject
                 </label>
                 <input
                   type="text"
                   value={newNoteSubject}
                   onChange={(e) => setNewNoteSubject(e.target.value)}
                   placeholder="e.g., Follow up needed"
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm"
+                  className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   maxLength={50}
                 />
               </div>
@@ -920,7 +924,7 @@ export function ContactDetailCard({
                   value={newNoteContent}
                   onChange={(e) => setNewNoteContent(e.target.value)}
                   placeholder="Enter your note here..."
-                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 sm:py-2 text-sm resize-y min-h-[100px]"
+                  className="mt-1.5 w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-y min-h-[100px] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   rows={4}
                 />
               </div>
@@ -928,7 +932,7 @@ export function ContactDetailCard({
                 size="sm"
                 onClick={handleSaveNote}
                 disabled={savingNote || !newNoteSubject.trim() || !newNoteContent.trim()}
-                className="w-full sm:w-auto h-10 sm:h-9 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
+                className="h-9"
               >
                 {savingNote ? 'Saving...' : 'Save Note'}
               </Button>
@@ -937,7 +941,7 @@ export function ContactDetailCard({
 
           {/* Notes List */}
           {notes.length === 0 && !showAddNote && (
-            <p className="text-sm text-muted-foreground italic text-center py-4">
+            <p className="text-sm text-muted-foreground italic text-center py-6">
               No notes yet. Add your first note!
             </p>
           )}
@@ -949,7 +953,7 @@ export function ContactDetailCard({
             return (
               <div
                 key={note.id}
-                className="rounded-lg border border-rose-200/50 bg-white/50 backdrop-blur-sm p-3 transition-all hover:bg-white/70 hover:shadow-sm dark:bg-black/20 dark:border-rose-800/30 dark:hover:bg-black/30"
+                className="rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted/30"
               >
                 <div
                   className="flex cursor-pointer items-start justify-between"
@@ -961,22 +965,20 @@ export function ContactDetailCard({
                         {summary}
                       </span>
                       {note.is_pinned && (
-                        <Badge variant="secondary" className="text-xs bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:border-rose-800">
+                        <Badge variant="secondary" className="text-xs">
                           Pinned
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {formatDate(note.created_at)} • {note.author_name}
                     </p>
                   </div>
-                  <span className="text-xs text-muted-foreground">
-                    {isExpanded ? '▼' : '▶'}
-                  </span>
+                  <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-3 border-t border-rose-200/50 pt-3 dark:border-rose-800/30">
+                  <div className="mt-3 border-t border-border pt-3">
                     <p className="whitespace-pre-wrap text-sm text-foreground">
                       {note.content}
                     </p>
@@ -993,118 +995,190 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Almond-Shaped Expandable Buttons - 6 Eyes in 3x2 Grid */}
+      {/* Clean Expandable Section Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {/* Names Card */}
+        <button
+          onClick={() => {
+            setShowAdditionalNames(!showAdditionalNames)
+            if (!showAdditionalNames) scrollToSection(additionalNamesRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showAdditionalNames
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Names</div>
+                <div className="text-xs text-muted-foreground">{nameVariants.length} variant{nameVariants.length !== 1 ? 's' : ''}</div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showAdditionalNames ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+
+        {/* Other Emails Card */}
+        <button
+          onClick={() => {
+            setShowOtherEmails(!showOtherEmails)
+            if (!showOtherEmails) scrollToSection(otherEmailsRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showOtherEmails
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <AtSign className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Other Emails</div>
+                <div className="text-xs text-muted-foreground">
+                  {rankedEmails.length > 1 ? rankedEmails.length - 1 : 0} email{rankedEmails.length - 1 !== 1 ? 's' : ''}
+                </div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showOtherEmails ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+
+        {/* Phone Numbers Card */}
+        <button
+          onClick={() => {
+            setShowPhones(!showPhones)
+            if (!showPhones) scrollToSection(phonesRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showPhones
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Phone Numbers</div>
+                <div className="text-xs text-muted-foreground">{phoneVariants.length} number{phoneVariants.length !== 1 ? 's' : ''}</div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showPhones ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+
+        {/* Addresses Card */}
+        <button
+          onClick={() => {
+            setShowAddresses(!showAddresses)
+            if (!showAddresses) scrollToSection(addressesRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showAddresses
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Addresses</div>
+                <div className="text-xs text-muted-foreground">{rankedAddresses.length} address{rankedAddresses.length !== 1 ? 'es' : ''}</div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showAddresses ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+
+        {/* Tags Card */}
+        <button
+          onClick={() => {
+            setShowTags(!showTags)
+            if (!showTags) scrollToSection(tagsRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showTags
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <Tag className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Tags</div>
+                <div className="text-xs text-muted-foreground">{contactTags.length} tag{contactTags.length !== 1 ? 's' : ''}</div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showTags ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+
+        {/* Transactions Card */}
+        <button
+          onClick={() => {
+            setShowTransactionsSection(!showTransactionsSection)
+            if (!showTransactionsSection) scrollToSection(transactionsRef)
+          }}
+          className={`group rounded-lg border p-4 text-left transition-all ${
+            showTransactionsSection
+              ? 'border-primary bg-muted/50 shadow-sm'
+              : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-muted p-2">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-sm">Transactions</div>
+                <div className="text-xs text-muted-foreground">{transactions.length} recent</div>
+              </div>
+            </div>
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${showTransactionsSection ? 'rotate-90' : ''}`} />
+          </div>
+        </button>
+      </div>
+
+      {/* Expanded Content Sections */}
       <div className="space-y-4">
-        {/* Row 1: 3 Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {/* Names Button - with eyelashes! */}
-          <AlmondButton
-            label="Names"
-            count={nameVariants.length}
-            isExpanded={showAdditionalNames}
-            onClick={() => {
-              setShowAdditionalNames(!showAdditionalNames)
-              if (!showAdditionalNames) scrollToSection(additionalNamesRef)
-            }}
-            gradientFrom="from-rose-100"
-            gradientTo="to-pink-100"
-            hasEyelashes={true}
-            namesForEye={nameVariants.map(v => formatName(v.first_name, v.last_name))}
-          />
-
-          {/* Other Emails Button */}
-          <AlmondButton
-            label="Other Emails"
-            count={rankedEmails.length > 1 ? rankedEmails.length - 1 : 0}
-            isExpanded={showOtherEmails}
-            onClick={() => {
-              setShowOtherEmails(!showOtherEmails)
-              if (!showOtherEmails) scrollToSection(otherEmailsRef)
-            }}
-            gradientFrom="from-purple-100"
-            gradientTo="to-lavender-100"
-          />
-
-          {/* Phone Numbers Button */}
-          <AlmondButton
-            label="Phone Numbers"
-            count={phoneVariants.length}
-            isExpanded={showPhones}
-            onClick={() => {
-              setShowPhones(!showPhones)
-              if (!showPhones) scrollToSection(phonesRef)
-            }}
-            gradientFrom="from-blue-100"
-            gradientTo="to-cyan-100"
-          />
-        </div>
-
-        {/* Row 2: 3 Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {/* Addresses Button */}
-          <AlmondButton
-            label="Addresses"
-            count={rankedAddresses.length}
-            isExpanded={showAddresses}
-            onClick={() => {
-              setShowAddresses(!showAddresses)
-              if (!showAddresses) scrollToSection(addressesRef)
-            }}
-            gradientFrom="from-emerald-100"
-            gradientTo="to-teal-100"
-          />
-
-          {/* Tags Button */}
-          <AlmondButton
-            label="Tags"
-            count={contactTags.length}
-            isExpanded={showTags}
-            onClick={() => {
-              setShowTags(!showTags)
-              if (!showTags) scrollToSection(tagsRef)
-            }}
-            gradientFrom="from-violet-100"
-            gradientTo="to-purple-100"
-          />
-
-          {/* Transactions Button */}
-          <AlmondButton
-            label="Transactions"
-            count={transactions.length}
-            isExpanded={showTransactionsSection}
-            onClick={() => {
-              setShowTransactionsSection(!showTransactionsSection)
-              if (!showTransactionsSection) scrollToSection(transactionsRef)
-            }}
-            gradientFrom="from-amber-100"
-            gradientTo="to-orange-100"
-          />
-        </div>
 
         {/* Expanded Sections */}
 
         {/* All Names Expanded */}
         {showAdditionalNames && (
           <div ref={additionalNamesRef}>
-            <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
-            <CardContent className="pt-6 space-y-3">
+            <Card className="shadow-sm">
+            <CardContent className="pt-6 space-y-2">
               {nameVariants.length > 0 ? (
                 nameVariants.map((variant, idx) => (
-                  <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-semibold text-base">
-                          {formatName(variant.first_name, variant.last_name)}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {variant.label} • {variant.source}
-                        </p>
-                      </div>
-                    </div>
+                  <div key={idx} className="rounded-md border border-border bg-card p-3">
+                    <p className="font-medium text-sm">
+                      {formatName(variant.first_name, variant.last_name)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {variant.label} • {variant.source}
+                    </p>
                   </div>
                 ))
               ) : (
-                <p className="text-base text-muted-foreground italic text-center py-6">
+                <p className="text-sm text-muted-foreground italic text-center py-6">
                   No Names
                 </p>
               )}
@@ -1116,7 +1190,7 @@ export function ContactDetailCard({
         {/* Other Emails Expanded */}
         {showOtherEmails && rankedEmails.length > 1 && (
           <div ref={otherEmailsRef}>
-            <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
+            <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <p className="text-sm text-muted-foreground">
                 Ranked by deliverability for email campaigns
@@ -1129,57 +1203,42 @@ export function ContactDetailCard({
                 return (
                   <div
                     key={idx}
-                    className="relative overflow-hidden rounded-xl border-2 border-purple-200/50 bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20 dark:border-purple-800/30"
+                    className="rounded-lg border border-border bg-card p-4"
                   >
                     <div className="space-y-3">
                       {/* Header Row */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-3">
-                          <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/30">
-                            <Mail className="h-5 w-5 text-purple-600 dark:text-purple-300" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-base">{email.label}</h4>
-                            <p className="text-sm text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
-                          </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h4 className="font-medium text-sm">{email.label}</h4>
+                          <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
                         </div>
 
-                        {/* Score Badge */}
-                        <div className="flex flex-col items-end gap-1">
-                          <div className="flex items-center gap-2">
-                            <div className="text-right">
-                              <div className="text-xl font-bold">{email.score}</div>
-                              <div className="text-sm text-muted-foreground leading-none">/ 100</div>
-                            </div>
-                            <div className={`h-12 w-2.5 rounded-full ${confidence.bgClass}`} />
+                        {/* Score */}
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <div className="text-lg font-semibold">{email.score}</div>
+                            <div className="text-xs text-muted-foreground">/ 100</div>
                           </div>
-                          <Badge className={`${confidence.color} bg-transparent border text-sm font-semibold`}>
-                            {confidence.label}
-                          </Badge>
                         </div>
                       </div>
 
                       {/* Email Address */}
-                      <div className="space-y-0.5 rounded-lg bg-background/50 p-3">
-                        <a
-                          href={`mailto:${email.email}`}
-                          className="font-medium text-base hover:text-primary break-all"
-                        >
-                          {email.email}
-                        </a>
-                      </div>
+                      <a
+                        href={`mailto:${email.email}`}
+                        className="block font-mono text-sm hover:text-primary break-all"
+                      >
+                        {email.email}
+                      </a>
 
                       {/* Status Badges */}
                       <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {confidence.label}
+                        </Badge>
                         {email.isSubscribed && (
-                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-sm py-1">
-                            <CheckCircle className="mr-1.5 h-4 w-4" />
+                          <Badge variant="secondary" className="text-xs">
+                            <CheckCircle className="mr-1 h-3 w-3" />
                             Subscribed
-                          </Badge>
-                        )}
-                        {!email.isSubscribed && (
-                          <Badge variant="outline" className="text-sm text-muted-foreground py-1">
-                            Not Subscribed
                           </Badge>
                         )}
                       </div>
@@ -1195,25 +1254,25 @@ export function ContactDetailCard({
         {/* Phone Numbers Expanded */}
         {showPhones && phoneVariants.length > 0 && (
           <div ref={phonesRef}>
-            <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
-            <CardContent className="pt-6 space-y-3">
+            <Card className="shadow-sm">
+            <CardContent className="pt-6 space-y-2">
               {phoneVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
+                <div key={idx} className="rounded-md border border-border bg-card p-3">
                   <div className="flex items-start justify-between">
                     <div>
                       <a
                         href={`tel:${variant.number}`}
-                        className="font-semibold text-base hover:text-primary"
+                        className="font-medium text-sm hover:text-primary"
                       >
                         {variant.number}
                       </a>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {variant.label} • {variant.source}
                         {variant.country_code && ` • ${variant.country_code}`}
                       </p>
                     </div>
                     {idx === 0 && (
-                      <Badge variant="secondary" className="text-sm py-1 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+                      <Badge variant="secondary" className="text-xs">
                         Primary
                       </Badge>
                     )}
@@ -1228,13 +1287,13 @@ export function ContactDetailCard({
         {/* Addresses Expanded */}
         {showAddresses && rankedAddresses.length > 0 && (
           <div ref={addressesRef}>
-            <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
+            <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <p className="text-sm text-muted-foreground">
                 Ranked by quality for mailing campaigns
               </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {rankedAddresses.map((address, idx) => {
                 const confidence = getConfidenceDisplay(address.score)
                 const hasCompleteAddress = address.line_1 || address.city
@@ -1242,66 +1301,47 @@ export function ContactDetailCard({
                 return (
                   <div
                     key={idx}
-                    className={`relative overflow-hidden rounded-xl border-2 p-4 transition-all ${
+                    className={`rounded-lg border p-4 ${
                       address.isRecommended
-                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
-                        : 'border-emerald-200/50 bg-white/50 backdrop-blur-sm dark:bg-black/20 dark:border-emerald-800/30'
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border bg-card'
                     }`}
                   >
-                    {/* Recommended Badge Ribbon */}
-                    {address.isRecommended && (
-                      <div className="absolute -right-1 -top-1">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
-                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-3 py-1.5 text-sm font-bold text-primary-foreground shadow-lg">
-                            <Mail className="h-4 w-4" />
-                            Use for Campaign
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
                     <div className="space-y-3">
                       {/* Header Row */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-3">
-                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-emerald-100 dark:bg-emerald-900/30'} p-2`}>
-                            <MapPin className={`h-5 w-5 ${address.isRecommended ? 'text-primary' : 'text-emerald-600 dark:text-emerald-300'}`} />
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium text-sm">{address.label}</h4>
+                            {address.isRecommended && (
+                              <Badge variant="default" className="text-xs">
+                                Recommended
+                              </Badge>
+                            )}
                           </div>
-                          <div>
-                            <h4 className="font-semibold text-base">{address.label}</h4>
-                            <p className="text-sm text-muted-foreground capitalize">{address.source}</p>
-                          </div>
+                          <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
                         </div>
 
-                        {/* Score Badge */}
+                        {/* Score */}
                         {address.score > 0 && (
-                          <div className="flex flex-col items-end gap-1">
-                            <div className="flex items-center gap-2">
-                              <div className="text-right">
-                                <div className="text-xl font-bold">{address.score}</div>
-                                <div className="text-sm text-muted-foreground leading-none">/ 100</div>
-                              </div>
-                              <div className={`h-12 w-2.5 rounded-full ${confidence.bgClass}`} />
-                            </div>
-                            <Badge className={`${confidence.color} bg-transparent border text-sm font-semibold`}>
-                              {confidence.label}
-                            </Badge>
+                          <div className="text-right">
+                            <div className="text-lg font-semibold">{address.score}</div>
+                            <div className="text-xs text-muted-foreground">/ 100</div>
                           </div>
                         )}
                       </div>
 
                       {/* Address Details */}
                       {hasCompleteAddress ? (
-                        <div className="space-y-1 rounded-lg bg-background/50 p-3">
+                        <div className="space-y-0.5 text-sm">
                           {address.line_1 && (
-                            <p className="font-semibold text-base">{address.line_1}</p>
+                            <p className="font-medium">{address.line_1}</p>
                           )}
                           {address.line_2 && (
-                            <p className="text-base">{address.line_2}</p>
+                            <p>{address.line_2}</p>
                           )}
                           {(address.city || address.state || address.postal_code) && (
-                            <p className="text-base text-muted-foreground">
+                            <p className="text-muted-foreground">
                               {[
                                 address.city,
                                 address.state,
@@ -1310,26 +1350,26 @@ export function ContactDetailCard({
                             </p>
                           )}
                           {address.country && address.country !== 'US' && (
-                            <p className="text-base text-muted-foreground">{address.country}</p>
+                            <p className="text-muted-foreground">{address.country}</p>
                           )}
                         </div>
                       ) : (
-                        <p className="text-base italic text-muted-foreground">
+                        <p className="text-sm italic text-muted-foreground">
                           No address on file
                         </p>
                       )}
 
                       {/* Status Badges */}
                       <div className="flex flex-wrap gap-2">
-                        {address.uspsValidated && (
-                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-sm py-1">
-                            <CheckCircle className="mr-1.5 h-4 w-4" />
-                            USPS Validated
+                        {address.score > 0 && (
+                          <Badge variant="outline" className="text-xs">
+                            {confidence.label}
                           </Badge>
                         )}
-                        {!address.uspsValidated && address.score > 0 && (
-                          <Badge variant="outline" className="text-sm text-muted-foreground py-1">
-                            Not Validated
+                        {address.uspsValidated && (
+                          <Badge variant="secondary" className="text-xs">
+                            <CheckCircle className="mr-1 h-3 w-3" />
+                            USPS Validated
                           </Badge>
                         )}
                       </div>
@@ -1345,7 +1385,7 @@ export function ContactDetailCard({
         {/* Tags Expanded */}
         {showTags && (
           <div ref={tagsRef}>
-            <Card className="border-violet-200/50 bg-gradient-to-br from-violet-50/30 to-transparent dark:border-violet-800/30">
+            <Card className="shadow-sm">
             <CardContent className="pt-6 space-y-4">
               {/* Add Tag Input */}
               <div className="flex gap-2">
@@ -1355,37 +1395,37 @@ export function ContactDetailCard({
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                   placeholder="Add a tag..."
-                  className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-3 text-base focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-200 dark:focus:border-violet-700 dark:focus:ring-violet-900"
+                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 <Button
                   size="sm"
                   onClick={handleAddTag}
                   disabled={!newTag.trim()}
-                  className="rounded-full px-5 h-12 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 flex-shrink-0"
+                  className="h-9"
                 >
-                  <Plus className="h-5 w-5" />
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Tags Display */}
               {contactTags.length === 0 ? (
-                <p className="text-base text-muted-foreground italic text-center py-6">
+                <p className="text-sm text-muted-foreground italic text-center py-6">
                   No tags yet. Add your first tag above!
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-2.5">
+                <div className="flex flex-wrap gap-2">
                   {contactTags.map((tag, index) => (
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="rounded-full px-4 py-2 text-sm font-medium bg-gradient-to-r from-violet-100 to-purple-100 text-violet-900 border-violet-200 dark:from-violet-900/30 dark:to-purple-900/30 dark:text-violet-200 dark:border-violet-800 hover:shadow-md transition-all"
+                      className="text-sm"
                     >
                       {tag}
                       <button
                         onClick={() => handleRemoveTag(tag)}
-                        className="ml-2 hover:text-destructive transition-colors"
+                        className="ml-1.5 hover:text-destructive transition-colors"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3" />
                       </button>
                     </Badge>
                   ))}
@@ -1399,47 +1439,45 @@ export function ContactDetailCard({
         {/* Transactions Expanded */}
         {showTransactionsSection && transactions.length > 0 && (
           <div ref={transactionsRef}>
-            <Card className="border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-transparent dark:border-amber-800/30">
+            <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Transactions</CardTitle>
+              <CardTitle className="text-base font-semibold">Recent Transactions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {transactions.map((transaction) => (
                   <div
                     key={transaction.id}
-                    className="flex items-center justify-between rounded-xl border border-amber-200/50 bg-white/50 backdrop-blur-sm p-4 transition-all hover:shadow-md dark:bg-black/20 dark:border-amber-800/30"
+                    className="flex items-center justify-between rounded-lg border border-border bg-card p-3"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base capitalize">
+                        <span className="font-medium text-sm capitalize">
                           {getTransactionDisplayName(transaction)}
                         </span>
                         <Badge
                           variant={
                             transaction.status === 'completed'
-                              ? 'default'
+                              ? 'secondary'
                               : transaction.status === 'failed'
                               ? 'destructive'
                               : 'outline'
                           }
-                          className="text-sm"
+                          className="text-xs"
                         >
                           {transaction.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {formatDate(transaction.transaction_date)}
                         {transaction.payment_method && ` • ${transaction.payment_method}`}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold text-lg">
-                        {formatCurrency(
-                          Number(transaction.amount),
-                          transaction.currency
-                        )}
-                      </div>
+                    <div className="text-right font-semibold text-sm">
+                      {formatCurrency(
+                        Number(transaction.amount),
+                        transaction.currency
+                      )}
                     </div>
                   </div>
                 ))}
