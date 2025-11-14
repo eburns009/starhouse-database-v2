@@ -51,20 +51,6 @@ interface ContactDetailCardProps {
   onClose: () => void
 }
 
-// Extended Contact type with additional email fields
-interface ContactWithEmails extends Contact {
-  paypal_email?: string | null
-  additional_email?: string | null
-  additional_email_source?: string | null
-  zoho_email?: string | null
-}
-
-interface AdditionalEmail {
-  email: string
-  source: string
-  priority: number
-}
-
 /**
  * Get source priority for email ranking
  * FAANG Standard: Pure function with clear business logic
@@ -92,45 +78,6 @@ function getEmailSourceLabel(source: string): string {
     'zoho': 'Zoho CRM',
   }
   return labels[source.toLowerCase()] || source
-}
-
-/**
- * Extract additional emails from contact fields
- * FAANG Standard: Pure function, no side effects
- */
-function extractAdditionalEmails(contact: ContactWithEmails): AdditionalEmail[] {
-  const additionalEmails: AdditionalEmail[] = []
-  const primaryEmail = contact.email.toLowerCase()
-
-  // PayPal email
-  if (contact.paypal_email && contact.paypal_email.toLowerCase() !== primaryEmail) {
-    additionalEmails.push({
-      email: contact.paypal_email,
-      source: 'paypal',
-      priority: 3,
-    })
-  }
-
-  // Additional email (from various sources)
-  if (contact.additional_email && contact.additional_email.toLowerCase() !== primaryEmail) {
-    additionalEmails.push({
-      email: contact.additional_email,
-      source: contact.additional_email_source || 'manual',
-      priority: getEmailSourcePriority(contact.additional_email_source || 'manual'),
-    })
-  }
-
-  // Zoho email
-  if (contact.zoho_email && contact.zoho_email.toLowerCase() !== primaryEmail) {
-    additionalEmails.push({
-      email: contact.zoho_email,
-      source: 'zoho',
-      priority: 4,
-    })
-  }
-
-  // Sort by priority (ascending)
-  return additionalEmails.sort((a, b) => a.priority - b.priority)
 }
 
 /**
@@ -228,6 +175,21 @@ interface RankedAddress {
 }
 
 /**
+ * Ranked email for campaigns
+ */
+interface RankedEmail {
+  label: 'Primary' | 'PayPal' | 'Additional' | 'Zoho'
+  email: string
+  score: number
+  isSubscribed: boolean
+  isVerified: boolean
+  isPrimary: boolean
+  isRecommended: boolean
+  source: string
+  sourcePriority: number
+}
+
+/**
  * Build ranked addresses for display with scores and USPS validation
  */
 function buildRankedAddresses(
@@ -307,6 +269,147 @@ function getConfidenceDisplay(score: number): { color: string; label: string; bg
   if (score >= 45) return { color: 'text-amber-600', label: 'Medium', bgClass: 'bg-amber-500' }
   if (score >= 30) return { color: 'text-orange-600', label: 'Low', bgClass: 'bg-orange-500' }
   return { color: 'text-red-600', label: 'Very Low', bgClass: 'bg-red-500' }
+}
+
+/**
+ * Build ranked emails for display with scores and verification
+ */
+function buildRankedEmails(contact: any): RankedEmail[] {
+  const emails: RankedEmail[] = []
+  const processedEmails = new Set<string>()
+
+  // Helper to calculate email score
+  const calculateEmailScore = (
+    isPrimary: boolean,
+    isSubscribed: boolean,
+    sourcePriority: number,
+    isVerified: boolean
+  ): number => {
+    let score = 0
+
+    // Primary email bonus: 40 points
+    if (isPrimary) score += 40
+
+    // Subscription status: 30 points
+    if (isSubscribed) score += 30
+
+    // Source priority: 20 points max (inverse of priority number)
+    score += Math.max(0, 20 - (sourcePriority * 4))
+
+    // Verified email: 10 points
+    if (isVerified) score += 10
+
+    return Math.min(100, score)
+  }
+
+  // Primary Email (from main contact)
+  if (contact.email) {
+    const email = contact.email.toLowerCase()
+    processedEmails.add(email)
+
+    const sourcePriority = getEmailSourcePriority(contact.source_system || 'manual')
+    const score = calculateEmailScore(
+      true, // isPrimary
+      contact.email_subscribed || false,
+      sourcePriority,
+      false // isVerified - could add email_verified field later
+    )
+
+    emails.push({
+      label: 'Primary',
+      email: contact.email,
+      score,
+      isSubscribed: contact.email_subscribed || false,
+      isVerified: false,
+      isPrimary: true,
+      isRecommended: false, // Will be set after sorting
+      source: contact.source_system || 'manual',
+      sourcePriority,
+    })
+  }
+
+  // PayPal Email
+  if (contact.paypal_email && !processedEmails.has(contact.paypal_email.toLowerCase())) {
+    processedEmails.add(contact.paypal_email.toLowerCase())
+
+    const score = calculateEmailScore(
+      false,
+      false, // PayPal emails not typically in subscription list
+      3, // PayPal priority
+      false
+    )
+
+    emails.push({
+      label: 'PayPal',
+      email: contact.paypal_email,
+      score,
+      isSubscribed: false,
+      isVerified: false,
+      isPrimary: false,
+      isRecommended: false,
+      source: 'paypal',
+      sourcePriority: 3,
+    })
+  }
+
+  // Additional Email
+  if (contact.additional_email && !processedEmails.has(contact.additional_email.toLowerCase())) {
+    processedEmails.add(contact.additional_email.toLowerCase())
+
+    const sourcePriority = getEmailSourcePriority(contact.additional_email_source || 'manual')
+    const score = calculateEmailScore(
+      false,
+      false,
+      sourcePriority,
+      false
+    )
+
+    emails.push({
+      label: 'Additional',
+      email: contact.additional_email,
+      score,
+      isSubscribed: false,
+      isVerified: false,
+      isPrimary: false,
+      isRecommended: false,
+      source: contact.additional_email_source || 'manual',
+      sourcePriority,
+    })
+  }
+
+  // Zoho Email
+  if (contact.zoho_email && !processedEmails.has(contact.zoho_email.toLowerCase())) {
+    processedEmails.add(contact.zoho_email.toLowerCase())
+
+    const score = calculateEmailScore(
+      false,
+      false,
+      4, // Zoho priority
+      false
+    )
+
+    emails.push({
+      label: 'Zoho',
+      email: contact.zoho_email,
+      score,
+      isSubscribed: false,
+      isVerified: false,
+      isPrimary: false,
+      isRecommended: false,
+      source: 'zoho',
+      sourcePriority: 4,
+    })
+  }
+
+  // Sort by score (highest first)
+  emails.sort((a, b) => b.score - a.score)
+
+  // Mark the highest scoring email as recommended
+  if (emails.length > 0) {
+    emails[0].isRecommended = true
+  }
+
+  return emails
 }
 
 export function ContactDetailCard({
@@ -642,8 +745,8 @@ export function ContactDetailCard({
   // Extract all variants
   const nameVariants = extractNameVariants(contact)
   const phoneVariants = extractPhoneVariants(contact)
-  const additionalEmails = extractAdditionalEmails(contact)
   const rankedAddresses = buildRankedAddresses(contact, mailingListData)
+  const rankedEmails = buildRankedEmails(contact)
 
   // Calculate stats
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active')
@@ -1041,75 +1144,109 @@ export function ContactDetailCard({
           </Card>
         )}
 
-        {/* Emails */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Mail className="h-4 w-4" />
-              Email Addresses
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {/* Primary email with subscription status */}
-            <div className="rounded-lg bg-muted/30 p-2">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="font-medium text-sm hover:text-primary"
-                  >
-                    {contact.email}
-                  </a>
-                  <p className="text-xs text-muted-foreground">
-                    Primary • {contact.source_system}
-                  </p>
-                </div>
-                <div className="flex gap-1 flex-wrap">
-                  <Badge variant="secondary" className="text-xs py-0">
-                    Primary
-                  </Badge>
-                  {contact.email_subscribed ? (
-                    <Badge variant="default" className="text-xs bg-green-600 py-0">
-                      Subscribed
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-xs py-0">
-                      Not Subscribed
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Additional emails with source priority */}
-            {additionalEmails.map((additionalEmail, idx) => (
-              <div key={idx} className="rounded-lg bg-muted/30 p-2">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 overflow-hidden">
-                    <a
-                      href={`mailto:${additionalEmail.email}`}
-                      className="block truncate font-medium text-sm hover:text-primary"
-                    >
-                      {additionalEmail.email}
-                    </a>
-                    <p className="text-xs text-muted-foreground">
-                      {getEmailSourceLabel(additionalEmail.source)}
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="text-xs py-0">
-                    {getEmailSourceLabel(additionalEmail.source)}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-
-            {additionalEmails.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                No additional emails found
+        {/* Emails - Ranked with Scores */}
+        {rankedEmails.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Mail className="h-4 w-4" />
+                Email Addresses
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                Ranked by deliverability for email campaigns
               </p>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {rankedEmails.map((email, idx) => {
+                const confidence = getConfidenceDisplay(email.score)
+
+                return (
+                  <div
+                    key={idx}
+                    className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
+                      email.isRecommended
+                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
+                        : 'border-border/50 bg-muted/30'
+                    }`}
+                  >
+                    {/* Recommended Badge Ribbon */}
+                    {email.isRecommended && (
+                      <div className="absolute -right-1 -top-1">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
+                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
+                            <Mail className="h-3 w-3" />
+                            Use for Campaign
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className={`rounded-lg ${email.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-1.5`}>
+                            <Mail className={`h-4 w-4 ${email.isRecommended ? 'text-primary' : 'text-muted-foreground'}`} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-sm">{email.label}</h4>
+                            <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
+                          </div>
+                        </div>
+
+                        {/* Score Badge */}
+                        <div className="flex flex-col items-end gap-1">
+                          <div className="flex items-center gap-2">
+                            <div className="text-right">
+                              <div className="text-lg font-bold">{email.score}</div>
+                              <div className="text-xs text-muted-foreground leading-none">/ 100</div>
+                            </div>
+                            <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
+                          </div>
+                          <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
+                            {confidence.label}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Email Address */}
+                      <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
+                        <a
+                          href={`mailto:${email.email}`}
+                          className="font-medium text-sm hover:text-primary break-all"
+                        >
+                          {email.email}
+                        </a>
+                      </div>
+
+                      {/* Status Badges */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {email.isPrimary && (
+                          <Badge className="bg-blue-500/10 text-blue-700 border-blue-500/20 text-xs py-0">
+                            <CheckCircle className="mr-1 h-3 w-3" />
+                            Primary
+                          </Badge>
+                        )}
+                        {email.isSubscribed && (
+                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
+                            <CheckCircle className="mr-1 h-3 w-3" />
+                            Subscribed
+                          </Badge>
+                        )}
+                        {!email.isSubscribed && (
+                          <Badge variant="outline" className="text-xs text-muted-foreground py-0">
+                            Not Subscribed
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Phones */}
         {phoneVariants.length > 0 && (
