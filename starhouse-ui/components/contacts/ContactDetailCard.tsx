@@ -633,15 +633,17 @@ export function ContactDetailCard({
         }
 
         // Fetch total revenue (all transactions, not just the recent 5)
+        // FAANG Standard: Include refunds - they are stored as negative amounts
         const { data: revenueData, error: revenueError } = await supabase
           .from('transactions')
-          .select('amount, transaction_type')
+          .select('amount, status')
           .eq('contact_id', contactId)
-          .neq('transaction_type', 'refund')
+          .in('status', ['completed', 'succeeded'])
 
         if (revenueError) {
           console.error('Error fetching revenue:', revenueError)
         } else {
+          // Sum all amounts (refunds are negative, so they subtract automatically)
           const revenue = revenueData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
           setTotalRevenue(revenue)
         }
