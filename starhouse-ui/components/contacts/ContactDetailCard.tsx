@@ -23,6 +23,7 @@ import {
   AtSign,
   Tag,
   DollarSign,
+  Building2,
 } from 'lucide-react'
 import type {
   Contact,
@@ -860,6 +861,21 @@ export function ContactDetailCard({
                       </a>
                     </div>
                   )}
+
+                  {/* Organization/Business */}
+                  {contact.paypal_business_name && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{contact.paypal_business_name}</span>
+                        {(contact as any).billing_address_source === 'google_contacts' && (
+                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">
+                            from Google
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -1286,10 +1302,17 @@ export function ContactDetailCard({
                       >
                         {variant.number}
                       </a>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {variant.label} • {variant.source}
-                        {variant.country_code && ` • ${variant.country_code}`}
-                      </p>
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                        <p className="text-xs text-muted-foreground">
+                          {variant.label} • {variant.source}
+                          {variant.country_code && ` • ${variant.country_code}`}
+                        </p>
+                        {variant.source === 'google_contacts' && (
+                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                            Google
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     {idx === 0 && (
                       <Badge variant="secondary" className="text-xs">
@@ -1315,6 +1338,33 @@ export function ContactDetailCard({
             </CardHeader>
             <CardContent className="space-y-3">
               {rankedAddresses.map((address, idx) => {
+                const contactExt = contact as any
+                const isGoogleSource = (
+                  address.label === 'Mailing' &&
+                  contactExt.billing_address_source === 'google_contacts'
+                )
+
+                // USPS validation data
+                const uspsData = address.label === 'Mailing' ? {
+                  county: contactExt.billing_usps_county,
+                  rdi: contactExt.billing_usps_rdi,
+                  dpv: contactExt.billing_usps_dpv_match_code,
+                  latitude: contactExt.billing_usps_latitude,
+                  longitude: contactExt.billing_usps_longitude,
+                  precision: contactExt.billing_usps_precision,
+                  vacant: contactExt.billing_usps_vacant,
+                  active: contactExt.billing_usps_active,
+                } : address.label === 'Shipping' ? {
+                  county: contactExt.shipping_usps_county,
+                  rdi: contactExt.shipping_usps_rdi,
+                  dpv: contactExt.shipping_usps_dpv_match_code,
+                  latitude: contactExt.shipping_usps_latitude,
+                  longitude: contactExt.shipping_usps_longitude,
+                  precision: contactExt.shipping_usps_precision,
+                  vacant: contactExt.shipping_usps_vacant,
+                  active: contactExt.shipping_usps_active,
+                } : null
+
                 const confidence = getConfidenceDisplay(address.score)
                 const hasCompleteAddress = address.line_1 || address.city
 
@@ -1331,15 +1381,22 @@ export function ContactDetailCard({
                       {/* Header Row */}
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <h4 className="font-medium text-sm">{address.label}</h4>
                             {address.isRecommended && (
                               <Badge variant="default" className="text-xs">
                                 Recommended
                               </Badge>
                             )}
+                            {isGoogleSource && (
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                Google Contacts
+                              </Badge>
+                            )}
                           </div>
-                          <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
+                          <p className="text-xs text-muted-foreground capitalize mt-0.5">
+                            {address.source}
+                          </p>
                         </div>
 
                         {/* Tiered Score Badge */}
@@ -1390,13 +1447,79 @@ export function ContactDetailCard({
                         </p>
                       )}
 
-                      {/* Status Badges */}
-                      {address.uspsValidated && (
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            <CheckCircle className="mr-1 h-3 w-3" />
-                            USPS Validated
-                          </Badge>
+                      {/* USPS Validation Details - ENHANCED */}
+                      {address.uspsValidated && uspsData && (
+                        <div className="mt-4 pt-3 border-t border-border/50 space-y-2">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700 border-emerald-200">
+                              <CheckCircle className="mr-1 h-3 w-3" />
+                              USPS Validated
+                            </Badge>
+                            {uspsData.dpv === 'Y' && (
+                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                                ✓ Deliverable
+                              </Badge>
+                            )}
+                            {uspsData.vacant && (
+                              <Badge variant="destructive" className="text-xs">
+                                Vacant
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3 text-xs">
+                            {/* County */}
+                            {uspsData.county && (
+                              <div>
+                                <span className="text-muted-foreground">County:</span>
+                                <span className="ml-1.5 font-medium">{uspsData.county}</span>
+                              </div>
+                            )}
+
+                            {/* Property Type */}
+                            {uspsData.rdi && (
+                              <div>
+                                <span className="text-muted-foreground">Type:</span>
+                                <span className="ml-1.5 font-medium capitalize">{uspsData.rdi}</span>
+                              </div>
+                            )}
+
+                            {/* Precision */}
+                            {uspsData.precision && (
+                              <div>
+                                <span className="text-muted-foreground">Precision:</span>
+                                <span className="ml-1.5 font-medium">{uspsData.precision}</span>
+                              </div>
+                            )}
+
+                            {/* DPV Match */}
+                            {uspsData.dpv && (
+                              <div>
+                                <span className="text-muted-foreground">DPV:</span>
+                                <span className="ml-1.5 font-medium">{uspsData.dpv}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Geocoding */}
+                          {uspsData.latitude && uspsData.longitude && (
+                            <div className="mt-2 pt-2 border-t border-border/50">
+                              <div className="text-xs">
+                                <span className="text-muted-foreground">Location:</span>
+                                <span className="ml-1.5 font-mono">
+                                  {Number(uspsData.latitude).toFixed(4)}, {Number(uspsData.longitude).toFixed(4)}
+                                </span>
+                                <a
+                                  href={`https://www.google.com/maps?q=${uspsData.latitude},${uspsData.longitude}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="ml-2 text-primary hover:underline"
+                                >
+                                  View on Map →
+                                </a>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
