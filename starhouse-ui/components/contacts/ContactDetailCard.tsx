@@ -22,7 +22,7 @@ import {
 import { AlmondButton } from './AlmondButton'
 import type {
   Contact,
-  Transaction,
+  TransactionWithProduct,
   SubscriptionWithProduct,
   NameVariant,
   PhoneVariant,
@@ -69,6 +69,19 @@ function getEmailSourceLabel(source: string): string {
     'zoho': 'Zoho CRM',
   }
   return labels[source.toLowerCase()] || source
+}
+
+/**
+ * Get product name from transaction
+ * FAANG Standard: Pure function with clear priority logic
+ * Priority: Direct product > Subscription product > Transaction type fallback
+ */
+function getTransactionDisplayName(transaction: TransactionWithProduct): string {
+  return (
+    transaction.products?.name ||
+    transaction.subscriptions?.products?.name ||
+    transaction.transaction_type.replace('_', ' ')
+  )
 }
 
 /**
@@ -370,7 +383,7 @@ export function ContactDetailCard({
   onClose,
 }: ContactDetailCardProps) {
   const [contact, setContact] = useState<Contact | null>(null)
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [transactions, setTransactions] = useState<TransactionWithProduct[]>([])
   const [subscriptions, setSubscriptions] = useState<SubscriptionWithProduct[]>([])
   const [notes, setNotes] = useState<ContactNote[]>([])
   const [totalRevenue, setTotalRevenue] = useState(0)
@@ -594,11 +607,12 @@ export function ContactDetailCard({
         if (contactError) throw contactError
 
         // Fetch transactions with product information (both direct and via subscription)
+        // FAANG Standard: Explicit select with proper joins for type safety
         const { data: transactionsData, error: transactionsError } = await supabase
           .from('transactions')
           .select(`
             *,
-            products!transactions_product_id_fkey (
+            products (
               name,
               product_type
             ),
@@ -1397,20 +1411,7 @@ export function ContactDetailCard({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base capitalize">
-                          {(() => {
-                            // Priority: Direct product > Subscription product > Transaction type
-                            const directProduct = (transaction as any).products?.name
-                            const subscriptionProduct = (transaction as any).subscriptions?.products?.name
-
-                            if (directProduct) {
-                              return directProduct
-                            }
-                            if (subscriptionProduct) {
-                              return subscriptionProduct
-                            }
-                            // Fallback to transaction type if no product info
-                            return transaction.transaction_type.replace('_', ' ')
-                          })()}
+                          {getTransactionDisplayName(transaction)}
                         </span>
                         <Badge
                           variant={

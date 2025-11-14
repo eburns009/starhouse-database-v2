@@ -14,6 +14,18 @@ export interface SubscriptionWithProduct extends Subscription {
   products: Pick<Product, 'id' | 'name' | 'product_type'> | null
 }
 
+/**
+ * Transaction with joined product information
+ * FAANG Standard: Explicit type for database joins instead of 'any'
+ */
+export interface TransactionWithProduct extends Transaction {
+  products?: Pick<Product, 'name' | 'product_type'> | null
+  subscriptions?: {
+    id: string
+    products: Pick<Product, 'name' | 'product_type'> | null
+  } | null
+}
+
 export interface AlternateEmail {
   id: string
   email: string
