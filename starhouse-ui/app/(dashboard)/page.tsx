@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, TrendingUp, DollarSign, Calendar } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { MailingListStats } from '@/components/dashboard/MailingListStats'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -63,6 +64,15 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground">Events this week</p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Mailing List Statistics - NEW IMPRESSIVE SECTION */}
+      <div className="mt-8">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold">Mailing List Quality</h2>
+          <p className="text-muted-foreground">Address validation and quality metrics for your campaigns</p>
+        </div>
+        <MailingListStats />
       </div>
 
       {/* Quick Actions */}

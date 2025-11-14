@@ -16,6 +16,7 @@ import {
   User,
   Copy,
   Check,
+  CheckCircle,
   Tag,
   Package,
   X,
@@ -29,8 +30,8 @@ import type {
   SubscriptionWithProduct,
   NameVariant,
   PhoneVariant,
-  AddressVariant,
 } from '@/lib/types/contact'
+import { MailingListQuality } from './MailingListQuality'
 
 // Note type for contact notes
 interface ContactNote {
@@ -209,128 +210,103 @@ function extractPhoneVariants(contact: Contact): PhoneVariant[] {
 }
 
 /**
- * Check if a string looks like a complete address (not just line 2)
- * FAANG Standard: Data quality heuristics
+ * Ranked address for mailing campaigns
  */
-function looksLikeCompleteAddress(line: string): boolean {
-  if (!line) return false
-
-  // Contains street number + street name pattern
-  const hasStreetNumber = /^\d+\s+/.test(line.trim())
-
-  // Contains common address indicators
-  const hasAddressKeywords = /\b(street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct|circle|blvd|boulevard|box|po box)\b/i.test(line)
-
-  return hasStreetNumber || hasAddressKeywords
+interface RankedAddress {
+  label: 'Mailing' | 'Shipping' | 'Other'
+  line_1: string | null
+  line_2: string | null
+  city: string | null
+  state: string | null
+  postal_code: string | null
+  country: string | null
+  score: number
+  uspsValidated: boolean
+  uspsValidatedDate: string | null
+  isRecommended: boolean
+  source: string
 }
 
 /**
- * Extract all address variants from contact data
- * Handles cases where address_line_2 contains a separate address
+ * Build ranked addresses for display with scores and USPS validation
  */
-function extractAddressVariants(contact: Contact): AddressVariant[] {
-  const variants: AddressVariant[] = []
+function buildRankedAddresses(
+  contact: any,
+  mailingListData: any
+): RankedAddress[] {
+  const addresses: RankedAddress[] = []
 
-  // Check if address_line_2 looks like a separate address
-  const line2IsSeparateAddress =
-    contact.address_line_2 &&
-    looksLikeCompleteAddress(contact.address_line_2) &&
-    contact.address_line_1 &&
-    contact.address_line_2 !== contact.address_line_1 &&
-    contact.address_line_2.trim().toLowerCase() !== contact.address_line_1.trim().toLowerCase()
-
-  // Primary address (address_line_1 only if line_2 is separate)
-  if (contact.address_line_1) {
-    variants.push({
+  // Mailing Address (Billing)
+  if (contact.address_line_1 || contact.city) {
+    addresses.push({
+      label: 'Mailing',
       line_1: contact.address_line_1,
-      line_2: line2IsSeparateAddress ? null : contact.address_line_2,
+      line_2: contact.address_line_2,
       city: contact.city,
       state: contact.state,
       postal_code: contact.postal_code,
       country: contact.country,
-      source: contact.source_system,
-      label: 'Primary Address',
+      score: mailingListData?.billing_score || 0,
+      uspsValidated: !!contact.billing_usps_validated_at,
+      uspsValidatedDate: contact.billing_usps_validated_at || null,
+      isRecommended: mailingListData?.recommended_address === 'billing',
+      source: contact.source_system || 'unknown',
     })
   }
 
-  // If address_line_2 is a separate address, add it as alternate
-  if (line2IsSeparateAddress) {
-    // Check if shipping has the correct city/state/zip for this address
-    const hasShippingMatch =
-      contact.shipping_address_line_2 === contact.address_line_2 &&
-      contact.shipping_city &&
-      contact.shipping_state &&
-      contact.shipping_postal_code
-
-    if (hasShippingMatch) {
-      // Use shipping city/state/zip (correct!)
-      variants.push({
-        line_1: contact.address_line_2,
-        line_2: null,
-        city: contact.shipping_city,
-        state: contact.shipping_state,
-        postal_code: contact.shipping_postal_code,
-        country: contact.shipping_country,
-        source: 'shipping',
-        label: 'Alternate Address (from line 2)',
-      })
-    }
-    // else: Don't show as separate address if we don't have correct city/state/zip
-  }
-
-  // Additional alternate address fields (if different from above)
-  if (contact.address && contact.address !== contact.address_line_1 && contact.address !== contact.address_line_2) {
-    variants.push({
-      line_1: contact.address,
-      line_2: contact.address_2 || null,
-      city: null,
-      state: null,
-      postal_code: null,
-      country: null,
-      source: contact.source_system,
-      label: 'Additional Address',
-    })
-  }
-
-  // Shipping address
-  if (contact.shipping_address_line_1) {
-    // Check if shipping line 2 is different from other addresses
-    const shippingLine2 =
-      contact.shipping_address_line_2 !== contact.address_line_1 &&
-      contact.shipping_address_line_2 !== contact.address_line_2 &&
-      contact.shipping_address_line_2 !== contact.address
-        ? contact.shipping_address_line_2
-        : null
-
-    variants.push({
+  // Shipping Address
+  if (contact.shipping_address_line_1 || contact.shipping_city) {
+    addresses.push({
+      label: 'Shipping',
       line_1: contact.shipping_address_line_1,
-      line_2: shippingLine2,
+      line_2: contact.shipping_address_line_2,
       city: contact.shipping_city,
       state: contact.shipping_state,
       postal_code: contact.shipping_postal_code,
       country: contact.shipping_country,
+      score: mailingListData?.shipping_score || 0,
+      uspsValidated: !!contact.shipping_usps_validated_at,
+      uspsValidatedDate: contact.shipping_usps_validated_at || null,
+      isRecommended: mailingListData?.recommended_address === 'shipping',
       source: 'paypal',
-      label: 'Shipping Address',
-      status: contact.shipping_address_status,
     })
   }
 
-  return variants
+  // Other Address (from alternate fields if different)
+  if (contact.address && contact.address !== contact.address_line_1 && contact.address !== contact.shipping_address_line_1) {
+    addresses.push({
+      label: 'Other',
+      line_1: contact.address,
+      line_2: contact.address_2,
+      city: null,
+      state: null,
+      postal_code: null,
+      country: null,
+      score: 0, // No scoring for other addresses
+      uspsValidated: false,
+      uspsValidatedDate: null,
+      isRecommended: false,
+      source: 'legacy',
+    })
+  }
+
+  // Sort by: recommended first, then by score
+  return addresses.sort((a, b) => {
+    if (a.isRecommended && !b.isRecommended) return -1
+    if (!a.isRecommended && b.isRecommended) return 1
+    return b.score - a.score
+  })
 }
 
 /**
- * Format address for display
+ * Get confidence color and label based on score
  */
-function formatAddress(address: AddressVariant): string {
-  const parts = [
-    address.line_1,
-    address.line_2,
-    [address.city, address.state].filter(Boolean).join(', '),
-    address.postal_code,
-    address.country,
-  ].filter(Boolean)
-
-  return parts.join('\n')
+function getConfidenceDisplay(score: number): { color: string; label: string; bgClass: string } {
+  if (score >= 75) return { color: 'text-emerald-600', label: 'Very High', bgClass: 'bg-emerald-500' }
+  if (score >= 60) return { color: 'text-blue-600', label: 'High', bgClass: 'bg-blue-500' }
+  if (score >= 45) return { color: 'text-amber-600', label: 'Medium', bgClass: 'bg-amber-500' }
+  if (score >= 30) return { color: 'text-orange-600', label: 'Low', bgClass: 'bg-orange-500' }
+  return { color: 'text-red-600', label: 'Very Low', bgClass: 'bg-red-500' }
 }
 
 export function ContactDetailCard({
@@ -357,6 +333,7 @@ export function ContactDetailCard({
   const [showSubscriptions, setShowSubscriptions] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
+  const [mailingListData, setMailingListData] = useState<any>(null)
 
   const handleCopyEmail = async (email: string) => {
     try {
@@ -617,6 +594,17 @@ export function ContactDetailCard({
         if (contactData.tags && Array.isArray(contactData.tags)) {
           setContactTags(contactData.tags)
         }
+
+        // Fetch mailing list recommendation with scores
+        const { data: mailingData } = await supabase
+          .from('mailing_list_priority')
+          .select('recommended_address, billing_score, shipping_score, confidence')
+          .eq('id', contactId)
+          .single()
+
+        if (mailingData) {
+          setMailingListData(mailingData)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load contact')
         console.error('Error loading contact:', err)
@@ -654,8 +642,8 @@ export function ContactDetailCard({
   // Extract all variants
   const nameVariants = extractNameVariants(contact)
   const phoneVariants = extractPhoneVariants(contact)
-  const addressVariants = extractAddressVariants(contact)
   const additionalEmails = extractAdditionalEmails(contact)
+  const rankedAddresses = buildRankedAddresses(contact, mailingListData)
 
   // Calculate stats
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active')
@@ -1160,40 +1148,138 @@ export function ContactDetailCard({
           </Card>
         )}
 
-        {/* Addresses */}
-        {addressVariants.length > 0 && (
+        {/* Addresses - Ranked with Scores */}
+        {rankedAddresses.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
                 <MapPin className="h-4 w-4" />
                 Addresses
               </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                Ranked by quality for mailing campaigns
+              </p>
             </CardHeader>
             <CardContent className="space-y-3">
-              {addressVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-muted/30 p-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="whitespace-pre-line text-sm font-medium">
-                        {formatAddress(variant)}
-                      </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {variant.label} • {variant.source}
-                        {variant.status && ` • ${variant.status}`}
-                      </p>
-                    </div>
-                    {idx === 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        Primary
-                      </Badge>
+              {rankedAddresses.map((address, idx) => {
+                const confidence = getConfidenceDisplay(address.score)
+                const hasCompleteAddress = address.line_1 || address.city
+
+                return (
+                  <div
+                    key={idx}
+                    className={`relative overflow-hidden rounded-xl border-2 p-4 transition-all ${
+                      address.isRecommended
+                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
+                        : 'border-border/50 bg-muted/30'
+                    }`}
+                  >
+                    {/* Recommended Badge Ribbon */}
+                    {address.isRecommended && (
+                      <div className="absolute -right-1 -top-1">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
+                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-3 py-1.5 text-xs font-bold text-primary-foreground shadow-lg">
+                            <Mail className="h-3 w-3" />
+                            Use for Campaign
+                          </div>
+                        </div>
+                      </div>
                     )}
+
+                    <div className="space-y-3">
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-2`}>
+                            <MapPin className={`h-4 w-4 ${address.isRecommended ? 'text-primary' : 'text-muted-foreground'}`} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">{address.label}</h4>
+                            <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
+                          </div>
+                        </div>
+
+                        {/* Score Badge */}
+                        {address.score > 0 && (
+                          <div className="flex flex-col items-end gap-1.5">
+                            <div className="flex items-center gap-2">
+                              <div className="text-right">
+                                <div className="text-xl font-bold">{address.score}</div>
+                                <div className="text-xs text-muted-foreground">/ 100</div>
+                              </div>
+                              <div className={`h-12 w-2 rounded-full ${confidence.bgClass}`} />
+                            </div>
+                            <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
+                              {confidence.label}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Address Details */}
+                      {hasCompleteAddress ? (
+                        <div className="space-y-1 rounded-lg bg-background/50 p-3">
+                          {address.line_1 && (
+                            <p className="font-medium">{address.line_1}</p>
+                          )}
+                          {address.line_2 && (
+                            <p className="text-sm">{address.line_2}</p>
+                          )}
+                          {(address.city || address.state || address.postal_code) && (
+                            <p className="text-sm text-muted-foreground">
+                              {[
+                                address.city,
+                                address.state,
+                                address.postal_code,
+                              ].filter(Boolean).join(', ')}
+                            </p>
+                          )}
+                          {address.country && address.country !== 'US' && (
+                            <p className="text-sm text-muted-foreground">{address.country}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm italic text-muted-foreground">
+                          No address on file
+                        </p>
+                      )}
+
+                      {/* Status Badges */}
+                      <div className="flex flex-wrap gap-2">
+                        {address.uspsValidated && (
+                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs">
+                            <CheckCircle className="mr-1 h-3 w-3" />
+                            USPS Validated
+                          </Badge>
+                        )}
+                        {!address.uspsValidated && address.score > 0 && (
+                          <Badge variant="outline" className="text-xs text-muted-foreground">
+                            Not Validated
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </CardContent>
           </Card>
         )}
       </div>
+
+      {/* Mailing List Quality */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Mail className="h-4 w-4" />
+            Mailing List Quality
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MailingListQuality contactId={contact.id} />
+        </CardContent>
+      </Card>
 
       {/* Recent Transactions Button */}
       {transactions.length > 0 && (
