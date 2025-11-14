@@ -1227,12 +1227,21 @@ export function ContactDetailCard({
                           <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
                         </div>
 
-                        {/* Score */}
-                        <div className="flex items-center gap-2">
-                          <div className="text-right">
-                            <div className="text-lg font-semibold">{email.score}</div>
-                            <div className="text-xs text-muted-foreground">/ 100</div>
-                          </div>
+                        {/* Tiered Score Badge */}
+                        <div className="text-right">
+                          <Badge
+                            variant="secondary"
+                            className={`text-xs font-semibold ${
+                              confidence.label === 'Very High' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300' :
+                              confidence.label === 'High' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300' :
+                              confidence.label === 'Medium' ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300' :
+                              confidence.label === 'Low' ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300' :
+                              'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300'
+                            }`}
+                          >
+                            {confidence.label}
+                          </Badge>
+                          <div className="text-xs text-muted-foreground mt-1">Score: {email.score}</div>
                         </div>
                       </div>
 
@@ -1245,17 +1254,14 @@ export function ContactDetailCard({
                       </a>
 
                       {/* Status Badges */}
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {confidence.label}
-                        </Badge>
-                        {email.isSubscribed && (
+                      {email.isSubscribed && (
+                        <div className="flex flex-wrap gap-2">
                           <Badge variant="secondary" className="text-xs">
                             <CheckCircle className="mr-1 h-3 w-3" />
                             Subscribed
                           </Badge>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
@@ -1336,11 +1342,22 @@ export function ContactDetailCard({
                           <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
                         </div>
 
-                        {/* Score */}
+                        {/* Tiered Score Badge */}
                         {address.score > 0 && (
                           <div className="text-right">
-                            <div className="text-lg font-semibold">{address.score}</div>
-                            <div className="text-xs text-muted-foreground">/ 100</div>
+                            <Badge
+                              variant="secondary"
+                              className={`text-xs font-semibold ${
+                                confidence.label === 'Very High' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300' :
+                                confidence.label === 'High' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300' :
+                                confidence.label === 'Medium' ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300' :
+                                confidence.label === 'Low' ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300' :
+                                'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300'
+                              }`}
+                            >
+                              {confidence.label}
+                            </Badge>
+                            <div className="text-xs text-muted-foreground mt-1">Score: {address.score}</div>
                           </div>
                         )}
                       </div>
@@ -1374,19 +1391,14 @@ export function ContactDetailCard({
                       )}
 
                       {/* Status Badges */}
-                      <div className="flex flex-wrap gap-2">
-                        {address.score > 0 && (
-                          <Badge variant="outline" className="text-xs">
-                            {confidence.label}
-                          </Badge>
-                        )}
-                        {address.uspsValidated && (
+                      {address.uspsValidated && (
+                        <div className="flex flex-wrap gap-2">
                           <Badge variant="secondary" className="text-xs">
                             <CheckCircle className="mr-1 h-3 w-3" />
                             USPS Validated
                           </Badge>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
