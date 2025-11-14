@@ -31,7 +31,10 @@ import type {
   NameVariant,
   PhoneVariant,
 } from '@/lib/types/contact'
+import type { MailingListData, RankedAddress, RankedEmail } from '@/lib/types/mailing'
+import { EMAIL_SCORE_WEIGHTS, EMAIL_SOURCE_PRIORITY, getConfidenceDisplay } from '@/lib/constants/scoring'
 import { MailingListQuality } from './MailingListQuality'
+import { useMemo } from 'react'
 
 // Note type for contact notes
 interface ContactNote {
@@ -56,14 +59,8 @@ interface ContactDetailCardProps {
  * FAANG Standard: Pure function with clear business logic
  */
 function getEmailSourcePriority(source: string): number {
-  const priorities: Record<string, number> = {
-    'kajabi': 1,
-    'ticket_tailor': 2,
-    'paypal': 3,
-    'manual': 4,
-    'zoho': 4,
-  }
-  return priorities[source.toLowerCase()] || 4
+  const key = source.toLowerCase() as keyof typeof EMAIL_SOURCE_PRIORITY
+  return EMAIL_SOURCE_PRIORITY[key] || EMAIL_SOURCE_PRIORITY.MANUAL
 }
 
 /**
@@ -157,46 +154,16 @@ function extractPhoneVariants(contact: Contact): PhoneVariant[] {
 }
 
 /**
- * Ranked address for mailing campaigns
- */
-interface RankedAddress {
-  label: 'Mailing' | 'Shipping' | 'Other'
-  line_1: string | null
-  line_2: string | null
-  city: string | null
-  state: string | null
-  postal_code: string | null
-  country: string | null
-  score: number
-  uspsValidated: boolean
-  uspsValidatedDate: string | null
-  isRecommended: boolean
-  source: string
-}
-
-/**
- * Ranked email for campaigns
- */
-interface RankedEmail {
-  label: 'Primary' | 'PayPal' | 'Additional' | 'Zoho'
-  email: string
-  score: number
-  isSubscribed: boolean
-  isVerified: boolean
-  isPrimary: boolean
-  isRecommended: boolean
-  source: string
-  sourcePriority: number
-}
-
-/**
  * Build ranked addresses for display with scores and USPS validation
+ * FAANG Standard: Pure function, proper types, clear business logic
+ * Note: Uses type assertion for extended contact fields not in base type
  */
 function buildRankedAddresses(
-  contact: any,
-  mailingListData: any
+  contact: Contact,
+  mailingListData: MailingListData | null
 ): RankedAddress[] {
   const addresses: RankedAddress[] = []
+  const contactExt = contact as any // Type assertion for extended fields
 
   // Mailing Address (Billing)
   if (contact.address_line_1 || contact.city) {
@@ -209,8 +176,8 @@ function buildRankedAddresses(
       postal_code: contact.postal_code,
       country: contact.country,
       score: mailingListData?.billing_score || 0,
-      uspsValidated: !!contact.billing_usps_validated_at,
-      uspsValidatedDate: contact.billing_usps_validated_at || null,
+      uspsValidated: !!contactExt.billing_usps_validated_at,
+      uspsValidatedDate: contactExt.billing_usps_validated_at || null,
       isRecommended: mailingListData?.recommended_address === 'billing',
       source: contact.source_system || 'unknown',
     })
@@ -227,8 +194,8 @@ function buildRankedAddresses(
       postal_code: contact.shipping_postal_code,
       country: contact.shipping_country,
       score: mailingListData?.shipping_score || 0,
-      uspsValidated: !!contact.shipping_usps_validated_at,
-      uspsValidatedDate: contact.shipping_usps_validated_at || null,
+      uspsValidated: !!contactExt.shipping_usps_validated_at,
+      uspsValidatedDate: contactExt.shipping_usps_validated_at || null,
       isRecommended: mailingListData?.recommended_address === 'shipping',
       source: 'paypal',
     })
@@ -261,24 +228,16 @@ function buildRankedAddresses(
 }
 
 /**
- * Get confidence color and label based on score
- */
-function getConfidenceDisplay(score: number): { color: string; label: string; bgClass: string } {
-  if (score >= 75) return { color: 'text-emerald-600', label: 'Very High', bgClass: 'bg-emerald-500' }
-  if (score >= 60) return { color: 'text-blue-600', label: 'High', bgClass: 'bg-blue-500' }
-  if (score >= 45) return { color: 'text-amber-600', label: 'Medium', bgClass: 'bg-amber-500' }
-  if (score >= 30) return { color: 'text-orange-600', label: 'Low', bgClass: 'bg-orange-500' }
-  return { color: 'text-red-600', label: 'Very Low', bgClass: 'bg-red-500' }
-}
-
-/**
  * Build ranked emails for display with scores and verification
+ * FAANG Standard: Pure function, proper types, optimized scoring
+ * Note: Uses type assertion for extended contact fields not in base type
  */
-function buildRankedEmails(contact: any): RankedEmail[] {
+function buildRankedEmails(contact: Contact): RankedEmail[] {
   const emails: RankedEmail[] = []
   const processedEmails = new Set<string>()
+  const contactExt = contact as any // Type assertion for extended fields
 
-  // Helper to calculate email score
+  // Helper to calculate email score using constants
   const calculateEmailScore = (
     isPrimary: boolean,
     isSubscribed: boolean,
@@ -287,17 +246,17 @@ function buildRankedEmails(contact: any): RankedEmail[] {
   ): number => {
     let score = 0
 
-    // Primary email bonus: 40 points
-    if (isPrimary) score += 40
+    // Primary email bonus
+    if (isPrimary) score += EMAIL_SCORE_WEIGHTS.PRIMARY
 
-    // Subscription status: 30 points
-    if (isSubscribed) score += 30
+    // Subscription status
+    if (isSubscribed) score += EMAIL_SCORE_WEIGHTS.SUBSCRIBED
 
-    // Source priority: 20 points max (inverse of priority number)
-    score += Math.max(0, 20 - (sourcePriority * 4))
+    // Source priority (inverse of priority number)
+    score += Math.max(0, EMAIL_SCORE_WEIGHTS.SOURCE_PRIORITY_MAX - (sourcePriority * 4))
 
-    // Verified email: 10 points
-    if (isVerified) score += 10
+    // Verified email
+    if (isVerified) score += EMAIL_SCORE_WEIGHTS.VERIFIED
 
     return Math.min(100, score)
   }
@@ -329,34 +288,34 @@ function buildRankedEmails(contact: any): RankedEmail[] {
   }
 
   // PayPal Email
-  if (contact.paypal_email && !processedEmails.has(contact.paypal_email.toLowerCase())) {
-    processedEmails.add(contact.paypal_email.toLowerCase())
+  if (contactExt.paypal_email && !processedEmails.has(contactExt.paypal_email.toLowerCase())) {
+    processedEmails.add(contactExt.paypal_email.toLowerCase())
 
     const score = calculateEmailScore(
       false,
       false, // PayPal emails not typically in subscription list
-      3, // PayPal priority
+      EMAIL_SOURCE_PRIORITY.PAYPAL,
       false
     )
 
     emails.push({
       label: 'PayPal',
-      email: contact.paypal_email,
+      email: contactExt.paypal_email,
       score,
       isSubscribed: false,
       isVerified: false,
       isPrimary: false,
       isRecommended: false,
       source: 'paypal',
-      sourcePriority: 3,
+      sourcePriority: EMAIL_SOURCE_PRIORITY.PAYPAL,
     })
   }
 
   // Additional Email
-  if (contact.additional_email && !processedEmails.has(contact.additional_email.toLowerCase())) {
-    processedEmails.add(contact.additional_email.toLowerCase())
+  if (contactExt.additional_email && !processedEmails.has(contactExt.additional_email.toLowerCase())) {
+    processedEmails.add(contactExt.additional_email.toLowerCase())
 
-    const sourcePriority = getEmailSourcePriority(contact.additional_email_source || 'manual')
+    const sourcePriority = getEmailSourcePriority(contactExt.additional_email_source || 'manual')
     const score = calculateEmailScore(
       false,
       false,
@@ -366,38 +325,38 @@ function buildRankedEmails(contact: any): RankedEmail[] {
 
     emails.push({
       label: 'Additional',
-      email: contact.additional_email,
+      email: contactExt.additional_email,
       score,
       isSubscribed: false,
       isVerified: false,
       isPrimary: false,
       isRecommended: false,
-      source: contact.additional_email_source || 'manual',
+      source: contactExt.additional_email_source || 'manual',
       sourcePriority,
     })
   }
 
   // Zoho Email
-  if (contact.zoho_email && !processedEmails.has(contact.zoho_email.toLowerCase())) {
-    processedEmails.add(contact.zoho_email.toLowerCase())
+  if (contactExt.zoho_email && !processedEmails.has(contactExt.zoho_email.toLowerCase())) {
+    processedEmails.add(contactExt.zoho_email.toLowerCase())
 
     const score = calculateEmailScore(
       false,
       false,
-      4, // Zoho priority
+      EMAIL_SOURCE_PRIORITY.ZOHO,
       false
     )
 
     emails.push({
       label: 'Zoho',
-      email: contact.zoho_email,
+      email: contactExt.zoho_email,
       score,
       isSubscribed: false,
       isVerified: false,
       isPrimary: false,
       isRecommended: false,
       source: 'zoho',
-      sourcePriority: 4,
+      sourcePriority: EMAIL_SOURCE_PRIORITY.ZOHO,
     })
   }
 
@@ -436,7 +395,7 @@ export function ContactDetailCard({
   const [showSubscriptions, setShowSubscriptions] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
-  const [mailingListData, setMailingListData] = useState<any>(null)
+  const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
 
   const handleCopyEmail = async (email: string) => {
     try {
@@ -742,11 +701,15 @@ export function ContactDetailCard({
     )
   }
 
-  // Extract all variants
-  const nameVariants = extractNameVariants(contact)
-  const phoneVariants = extractPhoneVariants(contact)
-  const rankedAddresses = buildRankedAddresses(contact, mailingListData)
-  const rankedEmails = buildRankedEmails(contact)
+  // Extract all variants with memoization for performance
+  // FAANG Standard: Memoize expensive calculations to prevent unnecessary re-renders
+  const nameVariants = useMemo(() => extractNameVariants(contact), [contact])
+  const phoneVariants = useMemo(() => extractPhoneVariants(contact), [contact])
+  const rankedAddresses = useMemo(
+    () => buildRankedAddresses(contact, mailingListData),
+    [contact, mailingListData]
+  )
+  const rankedEmails = useMemo(() => buildRankedEmails(contact), [contact])
 
   // Calculate stats
   const activeSubscriptions = subscriptions.filter((s) => s.status === 'active')

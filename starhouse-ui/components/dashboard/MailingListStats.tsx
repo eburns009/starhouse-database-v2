@@ -2,100 +2,66 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { Mail, CheckCircle, AlertCircle, TrendingUp, Download, MapPin } from 'lucide-react'
+import { CONFIDENCE_LEVELS } from '@/lib/constants/scoring'
+import { calculateMailingStatistics, calculatePercentage } from '@/lib/utils/mailingStatistics'
+import type { MailingListEntry } from '@/lib/types/mailing'
 
-type MailingListEntry = {
-  confidence: 'very_high' | 'high' | 'medium' | 'low' | 'very_low'
-  billing_score: number
-  shipping_score: number
-  recommended_address: 'billing' | 'shipping'
-}
-
+/**
+ * Mailing List Statistics Component
+ * FAANG Standard: Server-side data fetching with proper error handling
+ */
 export async function MailingListStats() {
   const supabase = createClient()
 
-  // Fetch mailing list statistics
-  const { data: stats } = await supabase
+  // Fetch mailing list statistics with error handling
+  const { data: stats, error } = await supabase
     .from('mailing_list_priority')
     .select('confidence, billing_score, shipping_score, recommended_address')
     .returns<MailingListEntry[]>()
 
+  // Error state
+  if (error) {
+    console.error('[MailingListStats] Database query failed:', error)
+    return (
+      <Card className="border-destructive/50">
+        <CardContent className="pt-6">
+          <div className="flex items-center gap-3 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            <p className="text-sm font-medium">Unable to load mailing statistics. Please try again later.</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Empty state
   if (!stats || stats.length === 0) {
-    return null
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <Mail className="h-5 w-5" />
+            <p className="text-sm">No mailing data available yet.</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
-  // Calculate statistics
-  const total = stats.length
-  const confidenceCounts = {
-    very_high: stats.filter(s => s.confidence === 'very_high').length,
-    high: stats.filter(s => s.confidence === 'high').length,
-    medium: stats.filter(s => s.confidence === 'medium').length,
-    low: stats.filter(s => s.confidence === 'low').length,
-    very_low: stats.filter(s => s.confidence === 'very_low').length,
-  }
+  // Calculate statistics (optimized single-pass algorithm)
+  const statistics = calculateMailingStatistics(stats)
+  const { total, confidenceCounts, recommendBilling, recommendShipping, avgScore, readyToMail, readyPercentage } = statistics
 
-  const readyToMail = confidenceCounts.very_high + confidenceCounts.high
-  const readyPercentage = Math.round((readyToMail / total) * 100)
-
-  const recommendBilling = stats.filter(s => s.recommended_address === 'billing').length
-  const recommendShipping = stats.filter(s => s.recommended_address === 'shipping').length
-
-  // Average scores
-  const avgScore = Math.round(
-    stats.reduce((sum, s) => sum + Math.max(s.billing_score || 0, s.shipping_score || 0), 0) / total
-  )
-
-  const confidenceLevels = [
-    {
-      label: 'Very High',
-      count: confidenceCounts.very_high,
-      percentage: Math.round((confidenceCounts.very_high / total) * 100),
-      color: 'bg-emerald-500',
-      bgColor: 'bg-emerald-500/10',
-      borderColor: 'border-emerald-500/20',
-      textColor: 'text-emerald-600',
-      description: 'Premium quality',
-    },
-    {
-      label: 'High',
-      count: confidenceCounts.high,
-      percentage: Math.round((confidenceCounts.high / total) * 100),
-      color: 'bg-blue-500',
-      bgColor: 'bg-blue-500/10',
-      borderColor: 'border-blue-500/20',
-      textColor: 'text-blue-600',
-      description: 'Good to mail',
-    },
-    {
-      label: 'Medium',
-      count: confidenceCounts.medium,
-      percentage: Math.round((confidenceCounts.medium / total) * 100),
-      color: 'bg-amber-500',
-      bgColor: 'bg-amber-500/10',
-      borderColor: 'border-amber-500/20',
-      textColor: 'text-amber-600',
-      description: 'Verify first',
-    },
-    {
-      label: 'Low',
-      count: confidenceCounts.low,
-      percentage: Math.round((confidenceCounts.low / total) * 100),
-      color: 'bg-orange-500',
-      bgColor: 'bg-orange-500/10',
-      borderColor: 'border-orange-500/20',
-      textColor: 'text-orange-600',
-      description: 'Needs update',
-    },
-    {
-      label: 'Very Low',
-      count: confidenceCounts.very_low,
-      percentage: Math.round((confidenceCounts.very_low / total) * 100),
-      color: 'bg-red-500',
-      bgColor: 'bg-red-500/10',
-      borderColor: 'border-red-500/20',
-      textColor: 'text-red-600',
-      description: 'Do not mail',
-    },
-  ]
+  // Build confidence level display data with calculated percentages
+  const confidenceLevels = CONFIDENCE_LEVELS.map((level) => {
+    const confidenceKey = level.label.toLowerCase().replace(' ', '_') as keyof typeof confidenceCounts
+    const count = confidenceCounts[confidenceKey] || 0
+    return {
+      ...level,
+      count,
+      percentage: calculatePercentage(count, total),
+    }
+  })
 
   return (
     <div className="space-y-6">
@@ -183,11 +149,11 @@ export async function MailingListStats() {
                     <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full rounded-full bg-blue-500"
-                        style={{ width: `${Math.round((recommendBilling / total) * 100)}%` }}
+                        style={{ width: `${calculatePercentage(recommendBilling, total)}%` }}
                       />
                     </div>
                     <span className="text-sm font-bold text-blue-600">
-                      {Math.round((recommendBilling / total) * 100)}%
+                      {calculatePercentage(recommendBilling, total)}%
                     </span>
                   </div>
                 </div>
@@ -197,11 +163,11 @@ export async function MailingListStats() {
                     <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full rounded-full bg-purple-500"
-                        style={{ width: `${Math.round((recommendShipping / total) * 100)}%` }}
+                        style={{ width: `${calculatePercentage(recommendShipping, total)}%` }}
                       />
                     </div>
                     <span className="text-sm font-bold text-purple-600">
-                      {Math.round((recommendShipping / total) * 100)}%
+                      {calculatePercentage(recommendShipping, total)}%
                     </span>
                   </div>
                 </div>
