@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { formatName, getInitials, formatCurrency, formatDate } from '@/lib/utils'
 import {
-  ArrowLeft,
   Mail,
   Phone,
   MapPin,
@@ -391,7 +390,6 @@ export function ContactDetailCard({
   const [showPhones, setShowPhones] = useState(false)
   const [showAddresses, setShowAddresses] = useState(false)
   const [showTransactionsSection, setShowTransactionsSection] = useState(false)
-  const [showSubscriptionsSection, setShowSubscriptionsSection] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
@@ -404,7 +402,6 @@ export function ContactDetailCard({
   const tagsRef = useRef<HTMLDivElement>(null)
   const productsRef = useRef<HTMLDivElement>(null)
   const transactionsRef = useRef<HTMLDivElement>(null)
-  const subscriptionsRef = useRef<HTMLDivElement>(null)
 
   // Helper to scroll to a section when expanded
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
@@ -598,10 +595,19 @@ export function ContactDetailCard({
 
         if (contactError) throw contactError
 
-        // Fetch transactions
+        // Fetch transactions with product/subscription information
         const { data: transactionsData, error: transactionsError } = await supabase
           .from('transactions')
-          .select('*')
+          .select(`
+            *,
+            subscriptions (
+              id,
+              products (
+                name,
+                product_type
+              )
+            )
+          `)
           .eq('contact_id', contactId)
           .order('transaction_date', { ascending: false })
           .limit(5)
@@ -740,9 +746,6 @@ export function ContactDetailCard({
       <Card className="p-8">
         <div className="text-center">
           <p className="text-destructive">{error || 'Contact not found'}</p>
-          <Button onClick={onClose} variant="outline" className="mt-4">
-            Back to search
-          </Button>
         </div>
       </Card>
     )
@@ -750,14 +753,17 @@ export function ContactDetailCard({
 
   return (
     <div className="space-y-4">
-      {/* Back Button */}
-      <Button variant="ghost" onClick={onClose} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back to search
-      </Button>
-
       {/* Header Card */}
-      <Card>
+      <Card className="relative">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="absolute top-4 right-4 h-8 w-8 p-0 rounded-full hover:bg-muted"
+          title="Close"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <CardContent className="pt-6">
           <div className="flex items-start gap-4 sm:gap-6">
             <Avatar
@@ -765,7 +771,7 @@ export function ContactDetailCard({
               className="h-16 w-16 sm:h-20 sm:w-20 text-base sm:text-lg flex-shrink-0"
             />
 
-            <div className="flex-1 space-y-3 min-w-0">
+            <div className="flex-1 space-y-3 min-w-0 pr-8">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold">
                   {formatName(contact.first_name, contact.last_name)}
@@ -856,7 +862,7 @@ export function ContactDetailCard({
       </Card>
 
       {/* Notes Section - Moved to Top with Soft Background */}
-      <Card className="bg-gradient-to-br from-rose-100/60 via-lavender-100/50 to-purple-100/60 border-rose-300/40 dark:from-rose-950/20 dark:via-lavender-950/20 dark:to-purple-950/20 dark:border-rose-800/30">
+      <Card className="bg-gradient-to-br from-blue-50/70 via-cyan-50/60 to-sky-50/70 border-blue-200/50 dark:from-blue-950/20 dark:via-cyan-950/20 dark:to-sky-950/20 dark:border-blue-800/30">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
             <FileText className="h-4 w-4 text-rose-600" />
@@ -973,10 +979,10 @@ export function ContactDetailCard({
       <div className="space-y-4">
         {/* Row 1: 4 Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {/* Additional Names Button - with eyelashes! */}
+          {/* Names Button - with eyelashes! */}
           <AlmondButton
-            label="Additional Names"
-            count={nameVariants.length > 1 ? nameVariants.length - 1 : 0}
+            label="Names"
+            count={nameVariants.length}
             isExpanded={showAdditionalNames}
             onClick={() => {
               setShowAdditionalNames(!showAdditionalNames)
@@ -985,6 +991,7 @@ export function ContactDetailCard({
             gradientFrom="from-rose-100"
             gradientTo="to-pink-100"
             hasEyelashes={true}
+            namesForEye={nameVariants.map(v => formatName(v.first_name, v.last_name))}
           />
 
           {/* Other Emails Button */}
@@ -1027,8 +1034,8 @@ export function ContactDetailCard({
           />
         </div>
 
-        {/* Row 2: 4 Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {/* Row 2: 3 Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Tags Button */}
           <AlmondButton
             label="Tags"
@@ -1067,30 +1074,17 @@ export function ContactDetailCard({
             gradientFrom="from-amber-100"
             gradientTo="to-orange-100"
           />
-
-          {/* Subscriptions Button */}
-          <AlmondButton
-            label="Subscriptions"
-            count={activeSubscriptions.length}
-            isExpanded={showSubscriptionsSection}
-            onClick={() => {
-              setShowSubscriptionsSection(!showSubscriptionsSection)
-              if (!showSubscriptionsSection) scrollToSection(subscriptionsRef)
-            }}
-            gradientFrom="from-indigo-100"
-            gradientTo="to-blue-100"
-          />
         </div>
 
         {/* Expanded Sections */}
 
-        {/* Additional Names Expanded */}
+        {/* All Names Expanded */}
         {showAdditionalNames && (
           <div ref={additionalNamesRef}>
             <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
             <CardContent className="pt-6 space-y-3">
-              {nameVariants.length > 1 ? (
-                nameVariants.slice(1).map((variant, idx) => (
+              {nameVariants.length > 0 ? (
+                nameVariants.map((variant, idx) => (
                   <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
                     <div className="flex items-start justify-between">
                       <div>
@@ -1106,7 +1100,7 @@ export function ContactDetailCard({
                 ))
               ) : (
                 <p className="text-base text-muted-foreground italic text-center py-6">
-                  No Additional Names
+                  No Names
                 </p>
               )}
             </CardContent>
@@ -1465,7 +1459,15 @@ export function ContactDetailCard({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base capitalize">
-                          {transaction.transaction_type.replace('_', ' ')}
+                          {(() => {
+                            // Show actual product name instead of transaction type
+                            const productName = (transaction as any).subscriptions?.products?.name
+                            if (productName) {
+                              return productName
+                            }
+                            // Fallback to transaction type if no product info
+                            return transaction.transaction_type.replace('_', ' ')
+                          })()}
                         </span>
                         <Badge
                           variant={
@@ -1492,53 +1494,6 @@ export function ContactDetailCard({
                           transaction.currency
                         )}
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Subscriptions Expanded */}
-        {showSubscriptionsSection && activeSubscriptions.length > 0 && (
-          <div ref={subscriptionsRef}>
-            <Card className="border-indigo-200/50 bg-gradient-to-br from-indigo-50/30 to-transparent dark:border-indigo-800/30">
-            <CardHeader>
-              <CardTitle className="text-lg">Active Subscriptions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activeSubscriptions.map((subscription) => (
-                  <div
-                    key={subscription.id}
-                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-indigo-200/50 bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20 dark:border-indigo-800/30"
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="font-semibold text-base">
-                        {subscription.products?.name || subscription.billing_cycle || 'Subscription'}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {subscription.next_billing_date &&
-                          `Next billing: ${formatDate(subscription.next_billing_date)}`}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between sm:flex-col sm:text-right gap-2 sm:gap-1">
-                      {subscription.amount && (
-                        <div className="font-bold text-base">
-                          {formatCurrency(
-                            Number(subscription.amount),
-                            subscription.currency
-                          )}
-                          <span className="ml-1 text-sm font-normal text-muted-foreground">
-                            / {subscription.billing_cycle}
-                          </span>
-                        </div>
-                      )}
-                      <Badge variant="default" className="text-sm">
-                        {subscription.status}
-                      </Badge>
                     </div>
                   </div>
                 ))}
