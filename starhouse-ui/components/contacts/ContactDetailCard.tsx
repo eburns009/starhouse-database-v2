@@ -21,9 +21,9 @@ import {
   Package,
   X,
   Plus,
-  ChevronDown,
-  ChevronUp,
   FileText,
+  Receipt,
+  Calendar,
 } from 'lucide-react'
 import { AlmondButton } from './AlmondButton'
 import type {
@@ -391,12 +391,12 @@ export function ContactDetailCard({
   const [savingNote, setSavingNote] = useState(false)
   const [showProducts, setShowProducts] = useState(false)
   const [showTags, setShowTags] = useState(false)
-  const [showTransactions, setShowTransactions] = useState(false)
-  const [showSubscriptions, setShowSubscriptions] = useState(false)
   const [showAdditionalNames, setShowAdditionalNames] = useState(false)
   const [showOtherEmails, setShowOtherEmails] = useState(false)
   const [showPhones, setShowPhones] = useState(false)
   const [showAddresses, setShowAddresses] = useState(false)
+  const [showTransactionsSection, setShowTransactionsSection] = useState(false)
+  const [showSubscriptionsSection, setShowSubscriptionsSection] = useState(false)
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
@@ -957,323 +957,360 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Almond-Shaped Expandable Buttons */}
-      <div className="space-y-3">
-        {/* Additional Names Button */}
-        {nameVariants.length > 1 && (
-          <>
-            <AlmondButton
-              icon={User}
-              label="Additional Names"
-              count={nameVariants.length - 1}
-              isExpanded={showAdditionalNames}
-              onClick={() => setShowAdditionalNames(!showAdditionalNames)}
-              gradientFrom="from-rose-100"
-              gradientTo="to-pink-100"
-            />
+      {/* Almond-Shaped Expandable Buttons - 8 Eyes in 4x2 Grid */}
+      <div className="space-y-4">
+        {/* Row 1: 4 Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {/* Additional Names Button - with eyelashes! */}
+          <AlmondButton
+            icon={User}
+            label="Additional Names"
+            count={nameVariants.length > 1 ? nameVariants.length - 1 : 0}
+            isExpanded={showAdditionalNames}
+            onClick={() => setShowAdditionalNames(!showAdditionalNames)}
+            gradientFrom="from-rose-100"
+            gradientTo="to-pink-100"
+            hasEyelashes={true}
+          />
 
-            {showAdditionalNames && (
-              <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
-                <CardContent className="pt-4 space-y-2">
-                  {nameVariants.slice(1).map((variant, idx) => (
-                    <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium text-sm">
-                            {formatName(variant.first_name, variant.last_name)}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {variant.label} • {variant.source}
-                          </p>
-                        </div>
+          {/* Other Emails Button */}
+          <AlmondButton
+            icon={Mail}
+            label="Other Emails"
+            count={rankedEmails.length > 1 ? rankedEmails.length - 1 : 0}
+            isExpanded={showOtherEmails}
+            onClick={() => setShowOtherEmails(!showOtherEmails)}
+            gradientFrom="from-purple-100"
+            gradientTo="to-lavender-100"
+          />
+
+          {/* Phone Numbers Button */}
+          <AlmondButton
+            icon={Phone}
+            label="Phone Numbers"
+            count={phoneVariants.length}
+            isExpanded={showPhones}
+            onClick={() => setShowPhones(!showPhones)}
+            gradientFrom="from-blue-100"
+            gradientTo="to-cyan-100"
+          />
+
+          {/* Addresses Button */}
+          <AlmondButton
+            icon={MapPin}
+            label="Addresses"
+            count={rankedAddresses.length}
+            isExpanded={showAddresses}
+            onClick={() => setShowAddresses(!showAddresses)}
+            gradientFrom="from-emerald-100"
+            gradientTo="to-teal-100"
+          />
+        </div>
+
+        {/* Row 2: 4 Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {/* Tags Button */}
+          <AlmondButton
+            icon={Tag}
+            label="Tags"
+            count={contactTags.length}
+            isExpanded={showTags}
+            onClick={() => setShowTags(!showTags)}
+            gradientFrom="from-violet-100"
+            gradientTo="to-purple-100"
+          />
+
+          {/* Products Button */}
+          <AlmondButton
+            icon={Package}
+            label="Products"
+            count={subscriptions.length}
+            isExpanded={showProducts}
+            onClick={() => setShowProducts(!showProducts)}
+            gradientFrom="from-fuchsia-100"
+            gradientTo="to-pink-100"
+          />
+
+          {/* Transactions Button */}
+          <AlmondButton
+            icon={Receipt}
+            label="Transactions"
+            count={transactions.length}
+            isExpanded={showTransactionsSection}
+            onClick={() => setShowTransactionsSection(!showTransactionsSection)}
+            gradientFrom="from-amber-100"
+            gradientTo="to-orange-100"
+          />
+
+          {/* Subscriptions Button */}
+          <AlmondButton
+            icon={Calendar}
+            label="Subscriptions"
+            count={activeSubscriptions.length}
+            isExpanded={showSubscriptionsSection}
+            onClick={() => setShowSubscriptionsSection(!showSubscriptionsSection)}
+            gradientFrom="from-indigo-100"
+            gradientTo="to-blue-100"
+          />
+        </div>
+
+        {/* Expanded Sections */}
+
+        {/* Additional Names Expanded */}
+        {showAdditionalNames && (
+          <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
+            <CardContent className="pt-6 space-y-3">
+              {nameVariants.length > 1 ? (
+                nameVariants.slice(1).map((variant, idx) => (
+                  <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-semibold text-base">
+                          {formatName(variant.first_name, variant.last_name)}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {variant.label} • {variant.source}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-          </>
+                  </div>
+                ))
+              ) : (
+                <p className="text-base text-muted-foreground italic text-center py-6">
+                  No Additional Names
+                </p>
+              )}
+            </CardContent>
+          </Card>
         )}
 
-        {/* Other Emails Button */}
-        {rankedEmails.length > 1 && (
-          <>
-            <AlmondButton
-              icon={Mail}
-              label="Other Emails"
-              count={rankedEmails.length - 1}
-              isExpanded={showOtherEmails}
-              onClick={() => setShowOtherEmails(!showOtherEmails)}
-              gradientFrom="from-purple-100"
-              gradientTo="to-lavender-100"
-            />
+        {/* Other Emails Expanded */}
+        {showOtherEmails && rankedEmails.length > 1 && (
+          <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
+            <CardHeader className="pb-3">
+              <p className="text-sm text-muted-foreground">
+                Ranked by deliverability for email campaigns
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {rankedEmails.slice(1).map((email, idx) => {
+                const confidence = getConfidenceDisplay(email.score)
 
-            {showOtherEmails && (
-              <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
-                <CardHeader className="pb-3">
-                  <p className="text-xs text-muted-foreground">
-                    Ranked by deliverability for email campaigns
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {rankedEmails.slice(1).map((email, idx) => {
-                    const confidence = getConfidenceDisplay(email.score)
+                return (
+                  <div
+                    key={idx}
+                    className="relative overflow-hidden rounded-xl border-2 border-purple-200/50 bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20 dark:border-purple-800/30"
+                  >
+                    <div className="space-y-3">
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/30">
+                            <Mail className="h-5 w-5 text-purple-600 dark:text-purple-300" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-base">{email.label}</h4>
+                            <p className="text-sm text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
+                          </div>
+                        </div>
 
-                    return (
-                      <div
-                        key={idx}
-                        className="relative overflow-hidden rounded-xl border-2 border-purple-200/50 bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20 dark:border-purple-800/30"
-                      >
-                        <div className="space-y-2">
-                          {/* Header Row */}
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className="rounded-lg bg-purple-100 p-1.5 dark:bg-purple-900/30">
-                                <Mail className="h-4 w-4 text-purple-600 dark:text-purple-300" />
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-sm">{email.label}</h4>
-                                <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
-                              </div>
+                        {/* Score Badge */}
+                        <div className="flex flex-col items-end gap-1">
+                          <div className="flex items-center gap-2">
+                            <div className="text-right">
+                              <div className="text-xl font-bold">{email.score}</div>
+                              <div className="text-sm text-muted-foreground leading-none">/ 100</div>
                             </div>
-
-                            {/* Score Badge */}
-                            <div className="flex flex-col items-end gap-1">
-                              <div className="flex items-center gap-2">
-                                <div className="text-right">
-                                  <div className="text-lg font-bold">{email.score}</div>
-                                  <div className="text-xs text-muted-foreground leading-none">/ 100</div>
-                                </div>
-                                <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
-                              </div>
-                              <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
-                                {confidence.label}
-                              </Badge>
-                            </div>
+                            <div className={`h-12 w-2.5 rounded-full ${confidence.bgClass}`} />
                           </div>
-
-                          {/* Email Address */}
-                          <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
-                            <a
-                              href={`mailto:${email.email}`}
-                              className="font-medium text-sm hover:text-primary break-all"
-                            >
-                              {email.email}
-                            </a>
-                          </div>
-
-                          {/* Status Badges */}
-                          <div className="flex flex-wrap gap-1.5">
-                            {email.isSubscribed && (
-                              <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
-                                <CheckCircle className="mr-1 h-3 w-3" />
-                                Subscribed
-                              </Badge>
-                            )}
-                            {!email.isSubscribed && (
-                              <Badge variant="outline" className="text-xs text-muted-foreground py-0">
-                                Not Subscribed
-                              </Badge>
-                            )}
-                          </div>
+                          <Badge className={`${confidence.color} bg-transparent border text-sm font-semibold`}>
+                            {confidence.label}
+                          </Badge>
                         </div>
                       </div>
-                    )
-                  })}
-                </CardContent>
-              </Card>
-            )}
-          </>
-        )}
 
-        {/* Phone Numbers Button */}
-        {phoneVariants.length > 0 && (
-          <>
-            <AlmondButton
-              icon={Phone}
-              label="Phone Numbers"
-              count={phoneVariants.length}
-              isExpanded={showPhones}
-              onClick={() => setShowPhones(!showPhones)}
-              gradientFrom="from-blue-100"
-              gradientTo="to-cyan-100"
-            />
+                      {/* Email Address */}
+                      <div className="space-y-0.5 rounded-lg bg-background/50 p-3">
+                        <a
+                          href={`mailto:${email.email}`}
+                          className="font-medium text-base hover:text-primary break-all"
+                        >
+                          {email.email}
+                        </a>
+                      </div>
 
-            {showPhones && (
-              <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
-                <CardContent className="pt-4 space-y-2">
-                  {phoneVariants.map((variant, idx) => (
-                    <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-3 dark:bg-black/20">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <a
-                            href={`tel:${variant.number}`}
-                            className="font-medium text-sm hover:text-primary"
-                          >
-                            {variant.number}
-                          </a>
-                          <p className="text-xs text-muted-foreground">
-                            {variant.label} • {variant.source}
-                            {variant.country_code && ` • ${variant.country_code}`}
-                          </p>
-                        </div>
-                        {idx === 0 && (
-                          <Badge variant="secondary" className="text-xs py-0 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
-                            Primary
+                      {/* Status Badges */}
+                      <div className="flex flex-wrap gap-2">
+                        {email.isSubscribed && (
+                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-sm py-1">
+                            <CheckCircle className="mr-1.5 h-4 w-4" />
+                            Subscribed
+                          </Badge>
+                        )}
+                        {!email.isSubscribed && (
+                          <Badge variant="outline" className="text-sm text-muted-foreground py-1">
+                            Not Subscribed
                           </Badge>
                         )}
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-          </>
+                  </div>
+                )
+              })}
+            </CardContent>
+          </Card>
         )}
 
-        {/* Addresses Button */}
-        {rankedAddresses.length > 0 && (
-          <>
-            <AlmondButton
-              icon={MapPin}
-              label="Addresses"
-              count={rankedAddresses.length}
-              isExpanded={showAddresses}
-              onClick={() => setShowAddresses(!showAddresses)}
-              gradientFrom="from-emerald-100"
-              gradientTo="to-teal-100"
-            />
-
-            {showAddresses && (
-              <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
-                <CardHeader className="pb-3">
-                  <p className="text-xs text-muted-foreground">
-                    Ranked by quality for mailing campaigns
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {rankedAddresses.map((address, idx) => {
-                    const confidence = getConfidenceDisplay(address.score)
-                    const hasCompleteAddress = address.line_1 || address.city
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
-                          address.isRecommended
-                            ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
-                            : 'border-emerald-200/50 bg-white/50 backdrop-blur-sm dark:bg-black/20 dark:border-emerald-800/30'
-                        }`}
+        {/* Phone Numbers Expanded */}
+        {showPhones && phoneVariants.length > 0 && (
+          <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
+            <CardContent className="pt-6 space-y-3">
+              {phoneVariants.map((variant, idx) => (
+                <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <a
+                        href={`tel:${variant.number}`}
+                        className="font-semibold text-base hover:text-primary"
                       >
-                        {/* Recommended Badge Ribbon */}
-                        {address.isRecommended && (
-                          <div className="absolute -right-1 -top-1">
-                            <div className="relative">
-                              <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
-                              <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
-                                <Mail className="h-3 w-3" />
-                                Use for Campaign
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                        {variant.number}
+                      </a>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {variant.label} • {variant.source}
+                        {variant.country_code && ` • ${variant.country_code}`}
+                      </p>
+                    </div>
+                    {idx === 0 && (
+                      <Badge variant="secondary" className="text-sm py-1 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800">
+                        Primary
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
-                        <div className="space-y-2">
-                          {/* Header Row */}
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-emerald-100 dark:bg-emerald-900/30'} p-1.5`}>
-                                <MapPin className={`h-4 w-4 ${address.isRecommended ? 'text-primary' : 'text-emerald-600 dark:text-emerald-300'}`} />
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-sm">{address.label}</h4>
-                                <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
-                              </div>
-                            </div>
+        {/* Addresses Expanded */}
+        {showAddresses && rankedAddresses.length > 0 && (
+          <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
+            <CardHeader className="pb-3">
+              <p className="text-sm text-muted-foreground">
+                Ranked by quality for mailing campaigns
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {rankedAddresses.map((address, idx) => {
+                const confidence = getConfidenceDisplay(address.score)
+                const hasCompleteAddress = address.line_1 || address.city
 
-                            {/* Score Badge */}
-                            {address.score > 0 && (
-                              <div className="flex flex-col items-end gap-1">
-                                <div className="flex items-center gap-2">
-                                  <div className="text-right">
-                                    <div className="text-lg font-bold">{address.score}</div>
-                                    <div className="text-xs text-muted-foreground leading-none">/ 100</div>
-                                  </div>
-                                  <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
-                                </div>
-                                <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
-                                  {confidence.label}
-                                </Badge>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Address Details */}
-                          {hasCompleteAddress ? (
-                            <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
-                              {address.line_1 && (
-                                <p className="font-medium text-sm">{address.line_1}</p>
-                              )}
-                              {address.line_2 && (
-                                <p className="text-sm">{address.line_2}</p>
-                              )}
-                              {(address.city || address.state || address.postal_code) && (
-                                <p className="text-sm text-muted-foreground">
-                                  {[
-                                    address.city,
-                                    address.state,
-                                    address.postal_code,
-                                  ].filter(Boolean).join(', ')}
-                                </p>
-                              )}
-                              {address.country && address.country !== 'US' && (
-                                <p className="text-sm text-muted-foreground">{address.country}</p>
-                              )}
-                            </div>
-                          ) : (
-                            <p className="text-sm italic text-muted-foreground">
-                              No address on file
-                            </p>
-                          )}
-
-                          {/* Status Badges */}
-                          <div className="flex flex-wrap gap-1.5">
-                            {address.uspsValidated && (
-                              <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
-                                <CheckCircle className="mr-1 h-3 w-3" />
-                                USPS Validated
-                              </Badge>
-                            )}
-                            {!address.uspsValidated && address.score > 0 && (
-                              <Badge variant="outline" className="text-xs text-muted-foreground py-0">
-                                Not Validated
-                              </Badge>
-                            )}
+                return (
+                  <div
+                    key={idx}
+                    className={`relative overflow-hidden rounded-xl border-2 p-4 transition-all ${
+                      address.isRecommended
+                        ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
+                        : 'border-emerald-200/50 bg-white/50 backdrop-blur-sm dark:bg-black/20 dark:border-emerald-800/30'
+                    }`}
+                  >
+                    {/* Recommended Badge Ribbon */}
+                    {address.isRecommended && (
+                      <div className="absolute -right-1 -top-1">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
+                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-3 py-1.5 text-sm font-bold text-primary-foreground shadow-lg">
+                            <Mail className="h-4 w-4" />
+                            Use for Campaign
                           </div>
                         </div>
                       </div>
-                    )
-                  })}
-                </CardContent>
-              </Card>
-            )}
-          </>
+                    )}
+
+                    <div className="space-y-3">
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-emerald-100 dark:bg-emerald-900/30'} p-2`}>
+                            <MapPin className={`h-5 w-5 ${address.isRecommended ? 'text-primary' : 'text-emerald-600 dark:text-emerald-300'}`} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-base">{address.label}</h4>
+                            <p className="text-sm text-muted-foreground capitalize">{address.source}</p>
+                          </div>
+                        </div>
+
+                        {/* Score Badge */}
+                        {address.score > 0 && (
+                          <div className="flex flex-col items-end gap-1">
+                            <div className="flex items-center gap-2">
+                              <div className="text-right">
+                                <div className="text-xl font-bold">{address.score}</div>
+                                <div className="text-sm text-muted-foreground leading-none">/ 100</div>
+                              </div>
+                              <div className={`h-12 w-2.5 rounded-full ${confidence.bgClass}`} />
+                            </div>
+                            <Badge className={`${confidence.color} bg-transparent border text-sm font-semibold`}>
+                              {confidence.label}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Address Details */}
+                      {hasCompleteAddress ? (
+                        <div className="space-y-1 rounded-lg bg-background/50 p-3">
+                          {address.line_1 && (
+                            <p className="font-semibold text-base">{address.line_1}</p>
+                          )}
+                          {address.line_2 && (
+                            <p className="text-base">{address.line_2}</p>
+                          )}
+                          {(address.city || address.state || address.postal_code) && (
+                            <p className="text-base text-muted-foreground">
+                              {[
+                                address.city,
+                                address.state,
+                                address.postal_code,
+                              ].filter(Boolean).join(', ')}
+                            </p>
+                          )}
+                          {address.country && address.country !== 'US' && (
+                            <p className="text-base text-muted-foreground">{address.country}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-base italic text-muted-foreground">
+                          No address on file
+                        </p>
+                      )}
+
+                      {/* Status Badges */}
+                      <div className="flex flex-wrap gap-2">
+                        {address.uspsValidated && (
+                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-sm py-1">
+                            <CheckCircle className="mr-1.5 h-4 w-4" />
+                            USPS Validated
+                          </Badge>
+                        )}
+                        {!address.uspsValidated && address.score > 0 && (
+                          <Badge variant="outline" className="text-sm text-muted-foreground py-1">
+                            Not Validated
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </CardContent>
+          </Card>
         )}
 
-        {/* Tags Button */}
-        <AlmondButton
-          icon={Tag}
-          label="Tags"
-          count={contactTags.length}
-          isExpanded={showTags}
-          onClick={() => setShowTags(!showTags)}
-          gradientFrom="from-violet-100"
-          gradientTo="to-purple-100"
-        />
-
+        {/* Tags Expanded */}
         {showTags && (
           <Card className="border-violet-200/50 bg-gradient-to-br from-violet-50/30 to-transparent dark:border-violet-800/30">
-            <CardContent className="pt-4 space-y-4">
+            <CardContent className="pt-6 space-y-4">
               {/* Add Tag Input */}
               <div className="flex gap-2">
                 <input
@@ -1282,37 +1319,37 @@ export function ContactDetailCard({
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                   placeholder="Add a tag..."
-                  className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-2.5 sm:py-2 text-sm focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-200 dark:focus:border-violet-700 dark:focus:ring-violet-900"
+                  className="flex-1 rounded-full border border-input bg-background/50 backdrop-blur-sm px-4 py-3 text-base focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-200 dark:focus:border-violet-700 dark:focus:ring-violet-900"
                 />
                 <Button
                   size="sm"
                   onClick={handleAddTag}
                   disabled={!newTag.trim()}
-                  className="rounded-full px-4 h-10 sm:h-9 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 flex-shrink-0"
+                  className="rounded-full px-5 h-12 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 flex-shrink-0"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                 </Button>
               </div>
 
               {/* Tags Display */}
               {contactTags.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic text-center py-4">
+                <p className="text-base text-muted-foreground italic text-center py-6">
                   No tags yet. Add your first tag above!
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {contactTags.map((tag, index) => (
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="rounded-full px-3 py-1 text-xs font-medium bg-gradient-to-r from-violet-100 to-purple-100 text-violet-900 border-violet-200 dark:from-violet-900/30 dark:to-purple-900/30 dark:text-violet-200 dark:border-violet-800 hover:shadow-md transition-all"
+                      className="rounded-full px-4 py-2 text-sm font-medium bg-gradient-to-r from-violet-100 to-purple-100 text-violet-900 border-violet-200 dark:from-violet-900/30 dark:to-purple-900/30 dark:text-violet-200 dark:border-violet-800 hover:shadow-md transition-all"
                     >
                       {tag}
                       <button
                         onClick={() => handleRemoveTag(tag)}
                         className="ml-2 hover:text-destructive transition-colors"
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-4 w-4" />
                       </button>
                     </Badge>
                   ))}
@@ -1322,52 +1359,42 @@ export function ContactDetailCard({
           </Card>
         )}
 
-        {/* Products & Subscriptions Button */}
-        <AlmondButton
-          icon={Package}
-          label="Products & Subscriptions"
-          count={subscriptions.length}
-          isExpanded={showProducts}
-          onClick={() => setShowProducts(!showProducts)}
-          gradientFrom="from-fuchsia-100"
-          gradientTo="to-pink-100"
-        />
-
+        {/* Products Expanded */}
         {showProducts && (
           <Card className="border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50/30 to-transparent dark:border-fuchsia-800/30">
-            <CardContent className="pt-4 space-y-3">
+            <CardContent className="pt-6 space-y-4">
               {subscriptions.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic text-center py-4">No products or subscriptions yet</p>
+                <p className="text-base text-muted-foreground italic text-center py-6">No products yet</p>
               ) : (
-                <div className="grid gap-3">
+                <div className="grid gap-4">
                   {subscriptions.map((subscription) => (
                     <div
                       key={subscription.id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-fuchsia-200/50 bg-white/50 backdrop-blur-sm p-3 sm:p-4 transition-all hover:shadow-md hover:border-fuchsia-300/50 dark:bg-black/20 dark:border-fuchsia-800/30"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-fuchsia-200/50 bg-white/50 backdrop-blur-sm p-4 transition-all hover:shadow-md hover:border-fuchsia-300/50 dark:bg-black/20 dark:border-fuchsia-800/30"
                     >
                       <div className="space-y-1 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium text-sm">
+                          <span className="font-semibold text-base">
                             {subscription.products?.name || 'Unknown Product'}
                           </span>
                           <Badge
                             variant={subscription.status === 'active' ? 'default' : 'outline'}
-                            className="text-xs"
+                            className="text-sm"
                           >
                             {subscription.status}
                           </Badge>
                         </div>
                         {subscription.products?.product_type && (
-                          <p className="text-xs text-muted-foreground capitalize">
+                          <p className="text-sm text-muted-foreground capitalize">
                             {subscription.products.product_type}
                           </p>
                         )}
                       </div>
                       {subscription.amount && (
                         <div className="text-left sm:text-right flex-shrink-0">
-                          <div className="font-semibold text-sm">
+                          <div className="font-semibold text-base">
                             {formatCurrency(Number(subscription.amount))}
-                            <span className="text-xs text-muted-foreground font-normal ml-1">
+                            <span className="text-sm text-muted-foreground font-normal ml-1">
                               / {subscription.billing_cycle}
                             </span>
                           </div>
@@ -1380,130 +1407,103 @@ export function ContactDetailCard({
             </CardContent>
           </Card>
         )}
-      </div>
 
-      {/* Recent Transactions Button */}
-      {transactions.length > 0 && (
-        <Button
-          variant={showTransactions ? "default" : "outline"}
-          size="sm"
-          onClick={() => setShowTransactions(!showTransactions)}
-          className="w-full h-10 sm:h-9"
-        >
-          Recent Transactions ({transactions.length})
-          {showTransactions ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
-        </Button>
-      )}
+        {/* Transactions Expanded */}
+        {showTransactionsSection && transactions.length > 0 && (
+          <Card className="border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-transparent dark:border-amber-800/30">
+            <CardHeader>
+              <CardTitle className="text-lg">Transactions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between rounded-xl border border-amber-200/50 bg-white/50 backdrop-blur-sm p-4 transition-all hover:shadow-md dark:bg-black/20 dark:border-amber-800/30"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base capitalize">
+                          {transaction.transaction_type.replace('_', ' ')}
+                        </span>
+                        <Badge
+                          variant={
+                            transaction.status === 'completed'
+                              ? 'default'
+                              : transaction.status === 'failed'
+                              ? 'destructive'
+                              : 'outline'
+                          }
+                          className="text-sm"
+                        >
+                          {transaction.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(transaction.transaction_date)}
+                        {transaction.payment_method && ` • ${transaction.payment_method}`}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-lg">
+                        {formatCurrency(
+                          Number(transaction.amount),
+                          transaction.currency
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Recent Transactions */}
-      {transactions.length > 0 && showTransactions && (
-        <Card id="transactions">
-          <CardHeader>
-            <CardTitle className="text-base">Recent Transactions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between rounded-xl border border-border/50 p-3 transition-colors hover:bg-accent/50"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium capitalize">
-                        {transaction.transaction_type.replace('_', ' ')}
-                      </span>
-                      <Badge
-                        variant={
-                          transaction.status === 'completed'
-                            ? 'default'
-                            : transaction.status === 'failed'
-                            ? 'destructive'
-                            : 'outline'
-                        }
-                        className="text-xs"
-                      >
-                        {transaction.status}
+        {/* Subscriptions Expanded */}
+        {showSubscriptionsSection && activeSubscriptions.length > 0 && (
+          <Card className="border-indigo-200/50 bg-gradient-to-br from-indigo-50/30 to-transparent dark:border-indigo-800/30">
+            <CardHeader>
+              <CardTitle className="text-lg">Active Subscriptions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {activeSubscriptions.map((subscription) => (
+                  <div
+                    key={subscription.id}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-indigo-200/50 bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20 dark:border-indigo-800/30"
+                  >
+                    <div className="space-y-1 flex-1">
+                      <div className="font-semibold text-base">
+                        {subscription.products?.name || subscription.billing_cycle || 'Subscription'}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {subscription.next_billing_date &&
+                          `Next billing: ${formatDate(subscription.next_billing_date)}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between sm:flex-col sm:text-right gap-2 sm:gap-1">
+                      {subscription.amount && (
+                        <div className="font-bold text-base">
+                          {formatCurrency(
+                            Number(subscription.amount),
+                            subscription.currency
+                          )}
+                          <span className="ml-1 text-sm font-normal text-muted-foreground">
+                            / {subscription.billing_cycle}
+                          </span>
+                        </div>
+                      )}
+                      <Badge variant="default" className="text-sm">
+                        {subscription.status}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(transaction.transaction_date)}
-                      {transaction.payment_method && ` • ${transaction.payment_method}`}
-                    </p>
                   </div>
-                  <div className="text-right">
-                    <div className="font-semibold">
-                      {formatCurrency(
-                        Number(transaction.amount),
-                        transaction.currency
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Active Subscriptions Button */}
-      {activeSubscriptions.length > 0 && (
-        <Button
-          variant={showSubscriptions ? "default" : "outline"}
-          size="sm"
-          onClick={() => setShowSubscriptions(!showSubscriptions)}
-          className="w-full h-10 sm:h-9"
-        >
-          Active Subscriptions ({activeSubscriptions.length})
-          {showSubscriptions ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
-        </Button>
-      )}
-
-      {/* Active Subscriptions */}
-      {activeSubscriptions.length > 0 && showSubscriptions && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Active Subscriptions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {activeSubscriptions.map((subscription) => (
-                <div
-                  key={subscription.id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border/50 p-3"
-                >
-                  <div className="space-y-1 flex-1">
-                    <div className="font-medium text-sm sm:text-base">
-                      {subscription.products?.name || subscription.billing_cycle || 'Subscription'}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {subscription.next_billing_date &&
-                        `Next billing: ${formatDate(subscription.next_billing_date)}`}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between sm:flex-col sm:text-right gap-2 sm:gap-1">
-                    {subscription.amount && (
-                      <div className="font-semibold text-sm">
-                        {formatCurrency(
-                          Number(subscription.amount),
-                          subscription.currency
-                        )}
-                        <span className="ml-1 text-xs font-normal text-muted-foreground">
-                          / {subscription.billing_cycle}
-                        </span>
-                      </div>
-                    )}
-                    <Badge variant="default" className="text-xs">
-                      {subscription.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
     </div>
   )
