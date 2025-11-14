@@ -1017,12 +1017,12 @@ export function ContactDetailCard({
                 Names
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2">
               {nameVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-muted/30 p-3">
+                <div key={idx} className="rounded-lg bg-muted/30 p-2">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-medium">
+                      <p className="font-medium text-sm">
                         {formatName(variant.first_name, variant.last_name)}
                       </p>
                       <p className="text-xs text-muted-foreground">
@@ -1030,7 +1030,7 @@ export function ContactDetailCard({
                       </p>
                     </div>
                     {idx === 0 && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs py-0">
                         Primary
                       </Badge>
                     )}
@@ -1049,14 +1049,14 @@ export function ContactDetailCard({
               Email Addresses
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {/* Primary email with subscription status */}
-            <div className="rounded-lg bg-muted/30 p-3">
+            <div className="rounded-lg bg-muted/30 p-2">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <a
                     href={`mailto:${contact.email}`}
-                    className="font-medium hover:text-primary"
+                    className="font-medium text-sm hover:text-primary"
                   >
                     {contact.email}
                   </a>
@@ -1065,15 +1065,15 @@ export function ContactDetailCard({
                   </p>
                 </div>
                 <div className="flex gap-1 flex-wrap">
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs py-0">
                     Primary
                   </Badge>
                   {contact.email_subscribed ? (
-                    <Badge variant="default" className="text-xs bg-green-600">
+                    <Badge variant="default" className="text-xs bg-green-600 py-0">
                       Subscribed
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs py-0">
                       Not Subscribed
                     </Badge>
                   )}
@@ -1083,12 +1083,12 @@ export function ContactDetailCard({
 
             {/* Additional emails with source priority */}
             {additionalEmails.map((additionalEmail, idx) => (
-              <div key={idx} className="rounded-lg bg-muted/30 p-3">
+              <div key={idx} className="rounded-lg bg-muted/30 p-2">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 overflow-hidden">
                     <a
                       href={`mailto:${additionalEmail.email}`}
-                      className="block truncate font-medium hover:text-primary"
+                      className="block truncate font-medium text-sm hover:text-primary"
                     >
                       {additionalEmail.email}
                     </a>
@@ -1096,7 +1096,7 @@ export function ContactDetailCard({
                       {getEmailSourceLabel(additionalEmail.source)}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs py-0">
                     {getEmailSourceLabel(additionalEmail.source)}
                   </Badge>
                 </div>
@@ -1120,14 +1120,14 @@ export function ContactDetailCard({
                 Phone Numbers
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2">
               {phoneVariants.map((variant, idx) => (
-                <div key={idx} className="rounded-lg bg-muted/30 p-3">
+                <div key={idx} className="rounded-lg bg-muted/30 p-2">
                   <div className="flex items-start justify-between">
                     <div>
                       <a
                         href={`tel:${variant.number}`}
-                        className="font-medium hover:text-primary"
+                        className="font-medium text-sm hover:text-primary"
                       >
                         {variant.number}
                       </a>
@@ -1137,7 +1137,7 @@ export function ContactDetailCard({
                       </p>
                     </div>
                     {idx === 0 && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs py-0">
                         Primary
                       </Badge>
                     )}
@@ -1168,7 +1168,7 @@ export function ContactDetailCard({
                 return (
                   <div
                     key={idx}
-                    className={`relative overflow-hidden rounded-xl border-2 p-4 transition-all ${
+                    className={`relative overflow-hidden rounded-xl border-2 p-3 transition-all ${
                       address.isRecommended
                         ? 'border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg'
                         : 'border-border/50 bg-muted/30'
@@ -1179,7 +1179,7 @@ export function ContactDetailCard({
                       <div className="absolute -right-1 -top-1">
                         <div className="relative">
                           <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 blur-sm" />
-                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-3 py-1.5 text-xs font-bold text-primary-foreground shadow-lg">
+                          <div className="relative flex items-center gap-1 rounded-bl-lg rounded-tr-lg bg-gradient-to-br from-primary to-primary/90 px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-lg">
                             <Mail className="h-3 w-3" />
                             Use for Campaign
                           </div>
@@ -1187,28 +1187,28 @@ export function ContactDetailCard({
                       </div>
                     )}
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {/* Header Row */}
-                      <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-2`}>
+                          <div className={`rounded-lg ${address.isRecommended ? 'bg-primary/20' : 'bg-muted'} p-1.5`}>
                             <MapPin className={`h-4 w-4 ${address.isRecommended ? 'text-primary' : 'text-muted-foreground'}`} />
                           </div>
                           <div>
-                            <h4 className="font-semibold">{address.label}</h4>
+                            <h4 className="font-semibold text-sm">{address.label}</h4>
                             <p className="text-xs text-muted-foreground capitalize">{address.source}</p>
                           </div>
                         </div>
 
                         {/* Score Badge */}
                         {address.score > 0 && (
-                          <div className="flex flex-col items-end gap-1.5">
+                          <div className="flex flex-col items-end gap-1">
                             <div className="flex items-center gap-2">
                               <div className="text-right">
-                                <div className="text-xl font-bold">{address.score}</div>
-                                <div className="text-xs text-muted-foreground">/ 100</div>
+                                <div className="text-lg font-bold">{address.score}</div>
+                                <div className="text-xs text-muted-foreground leading-none">/ 100</div>
                               </div>
-                              <div className={`h-12 w-2 rounded-full ${confidence.bgClass}`} />
+                              <div className={`h-10 w-2 rounded-full ${confidence.bgClass}`} />
                             </div>
                             <Badge className={`${confidence.color} bg-transparent border text-xs font-semibold`}>
                               {confidence.label}
@@ -1219,9 +1219,9 @@ export function ContactDetailCard({
 
                       {/* Address Details */}
                       {hasCompleteAddress ? (
-                        <div className="space-y-1 rounded-lg bg-background/50 p-3">
+                        <div className="space-y-0.5 rounded-lg bg-background/50 p-2">
                           {address.line_1 && (
-                            <p className="font-medium">{address.line_1}</p>
+                            <p className="font-medium text-sm">{address.line_1}</p>
                           )}
                           {address.line_2 && (
                             <p className="text-sm">{address.line_2}</p>
@@ -1246,15 +1246,15 @@ export function ContactDetailCard({
                       )}
 
                       {/* Status Badges */}
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         {address.uspsValidated && (
-                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs">
+                          <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20 text-xs py-0">
                             <CheckCircle className="mr-1 h-3 w-3" />
                             USPS Validated
                           </Badge>
                         )}
                         {!address.uspsValidated && address.score > 0 && (
-                          <Badge variant="outline" className="text-xs text-muted-foreground">
+                          <Badge variant="outline" className="text-xs text-muted-foreground py-0">
                             Not Validated
                           </Badge>
                         )}
