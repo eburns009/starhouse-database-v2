@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -395,6 +395,23 @@ export function ContactDetailCard({
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
+
+  // Refs for scrolling to expanded sections
+  const additionalNamesRef = useRef<HTMLDivElement>(null)
+  const otherEmailsRef = useRef<HTMLDivElement>(null)
+  const phonesRef = useRef<HTMLDivElement>(null)
+  const addressesRef = useRef<HTMLDivElement>(null)
+  const tagsRef = useRef<HTMLDivElement>(null)
+  const productsRef = useRef<HTMLDivElement>(null)
+  const transactionsRef = useRef<HTMLDivElement>(null)
+  const subscriptionsRef = useRef<HTMLDivElement>(null)
+
+  // Helper to scroll to a section when expanded
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
 
   const handleCopyEmail = async (email: string) => {
     try {
@@ -839,7 +856,7 @@ export function ContactDetailCard({
       </Card>
 
       {/* Notes Section - Moved to Top with Soft Background */}
-      <Card className="bg-gradient-to-br from-rose-50/40 via-lavender-50/30 to-purple-50/40 border-rose-200/30 dark:from-rose-950/10 dark:via-lavender-950/10 dark:to-purple-950/10 dark:border-rose-800/20">
+      <Card className="bg-gradient-to-br from-rose-100/60 via-lavender-100/50 to-purple-100/60 border-rose-300/40 dark:from-rose-950/20 dark:via-lavender-950/20 dark:to-purple-950/20 dark:border-rose-800/30">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
             <FileText className="h-4 w-4 text-rose-600" />
@@ -961,7 +978,10 @@ export function ContactDetailCard({
             label="Additional Names"
             count={nameVariants.length > 1 ? nameVariants.length - 1 : 0}
             isExpanded={showAdditionalNames}
-            onClick={() => setShowAdditionalNames(!showAdditionalNames)}
+            onClick={() => {
+              setShowAdditionalNames(!showAdditionalNames)
+              if (!showAdditionalNames) scrollToSection(additionalNamesRef)
+            }}
             gradientFrom="from-rose-100"
             gradientTo="to-pink-100"
             hasEyelashes={true}
@@ -972,7 +992,10 @@ export function ContactDetailCard({
             label="Other Emails"
             count={rankedEmails.length > 1 ? rankedEmails.length - 1 : 0}
             isExpanded={showOtherEmails}
-            onClick={() => setShowOtherEmails(!showOtherEmails)}
+            onClick={() => {
+              setShowOtherEmails(!showOtherEmails)
+              if (!showOtherEmails) scrollToSection(otherEmailsRef)
+            }}
             gradientFrom="from-purple-100"
             gradientTo="to-lavender-100"
           />
@@ -982,7 +1005,10 @@ export function ContactDetailCard({
             label="Phone Numbers"
             count={phoneVariants.length}
             isExpanded={showPhones}
-            onClick={() => setShowPhones(!showPhones)}
+            onClick={() => {
+              setShowPhones(!showPhones)
+              if (!showPhones) scrollToSection(phonesRef)
+            }}
             gradientFrom="from-blue-100"
             gradientTo="to-cyan-100"
           />
@@ -992,7 +1018,10 @@ export function ContactDetailCard({
             label="Addresses"
             count={rankedAddresses.length}
             isExpanded={showAddresses}
-            onClick={() => setShowAddresses(!showAddresses)}
+            onClick={() => {
+              setShowAddresses(!showAddresses)
+              if (!showAddresses) scrollToSection(addressesRef)
+            }}
             gradientFrom="from-emerald-100"
             gradientTo="to-teal-100"
           />
@@ -1005,7 +1034,10 @@ export function ContactDetailCard({
             label="Tags"
             count={contactTags.length}
             isExpanded={showTags}
-            onClick={() => setShowTags(!showTags)}
+            onClick={() => {
+              setShowTags(!showTags)
+              if (!showTags) scrollToSection(tagsRef)
+            }}
             gradientFrom="from-violet-100"
             gradientTo="to-purple-100"
           />
@@ -1015,7 +1047,10 @@ export function ContactDetailCard({
             label="Products"
             count={subscriptions.length}
             isExpanded={showProducts}
-            onClick={() => setShowProducts(!showProducts)}
+            onClick={() => {
+              setShowProducts(!showProducts)
+              if (!showProducts) scrollToSection(productsRef)
+            }}
             gradientFrom="from-fuchsia-100"
             gradientTo="to-pink-100"
           />
@@ -1025,7 +1060,10 @@ export function ContactDetailCard({
             label="Transactions"
             count={transactions.length}
             isExpanded={showTransactionsSection}
-            onClick={() => setShowTransactionsSection(!showTransactionsSection)}
+            onClick={() => {
+              setShowTransactionsSection(!showTransactionsSection)
+              if (!showTransactionsSection) scrollToSection(transactionsRef)
+            }}
             gradientFrom="from-amber-100"
             gradientTo="to-orange-100"
           />
@@ -1035,7 +1073,10 @@ export function ContactDetailCard({
             label="Subscriptions"
             count={activeSubscriptions.length}
             isExpanded={showSubscriptionsSection}
-            onClick={() => setShowSubscriptionsSection(!showSubscriptionsSection)}
+            onClick={() => {
+              setShowSubscriptionsSection(!showSubscriptionsSection)
+              if (!showSubscriptionsSection) scrollToSection(subscriptionsRef)
+            }}
             gradientFrom="from-indigo-100"
             gradientTo="to-blue-100"
           />
@@ -1045,7 +1086,8 @@ export function ContactDetailCard({
 
         {/* Additional Names Expanded */}
         {showAdditionalNames && (
-          <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
+          <div ref={additionalNamesRef}>
+            <Card className="border-rose-200/50 bg-gradient-to-br from-rose-50/30 to-transparent dark:border-rose-800/30">
             <CardContent className="pt-6 space-y-3">
               {nameVariants.length > 1 ? (
                 nameVariants.slice(1).map((variant, idx) => (
@@ -1068,12 +1110,14 @@ export function ContactDetailCard({
                 </p>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Other Emails Expanded */}
         {showOtherEmails && rankedEmails.length > 1 && (
-          <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
+          <div ref={otherEmailsRef}>
+            <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/30 to-transparent dark:border-purple-800/30">
             <CardHeader className="pb-3">
               <p className="text-sm text-muted-foreground">
                 Ranked by deliverability for email campaigns
@@ -1145,12 +1189,14 @@ export function ContactDetailCard({
                 )
               })}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Phone Numbers Expanded */}
         {showPhones && phoneVariants.length > 0 && (
-          <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
+          <div ref={phonesRef}>
+            <Card className="border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-transparent dark:border-blue-800/30">
             <CardContent className="pt-6 space-y-3">
               {phoneVariants.map((variant, idx) => (
                 <div key={idx} className="rounded-lg bg-white/50 backdrop-blur-sm p-4 dark:bg-black/20">
@@ -1176,12 +1222,14 @@ export function ContactDetailCard({
                 </div>
               ))}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Addresses Expanded */}
         {showAddresses && rankedAddresses.length > 0 && (
-          <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
+          <div ref={addressesRef}>
+            <Card className="border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-transparent dark:border-emerald-800/30">
             <CardHeader className="pb-3">
               <p className="text-sm text-muted-foreground">
                 Ranked by quality for mailing campaigns
@@ -1291,12 +1339,14 @@ export function ContactDetailCard({
                 )
               })}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Tags Expanded */}
         {showTags && (
-          <Card className="border-violet-200/50 bg-gradient-to-br from-violet-50/30 to-transparent dark:border-violet-800/30">
+          <div ref={tagsRef}>
+            <Card className="border-violet-200/50 bg-gradient-to-br from-violet-50/30 to-transparent dark:border-violet-800/30">
             <CardContent className="pt-6 space-y-4">
               {/* Add Tag Input */}
               <div className="flex gap-2">
@@ -1343,12 +1393,14 @@ export function ContactDetailCard({
                 </div>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Products Expanded */}
         {showProducts && (
-          <Card className="border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50/30 to-transparent dark:border-fuchsia-800/30">
+          <div ref={productsRef}>
+            <Card className="border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50/30 to-transparent dark:border-fuchsia-800/30">
             <CardContent className="pt-6 space-y-4">
               {subscriptions.length === 0 ? (
                 <p className="text-base text-muted-foreground italic text-center py-6">No products yet</p>
@@ -1392,12 +1444,14 @@ export function ContactDetailCard({
                 </div>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Transactions Expanded */}
         {showTransactionsSection && transactions.length > 0 && (
-          <Card className="border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-transparent dark:border-amber-800/30">
+          <div ref={transactionsRef}>
+            <Card className="border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-transparent dark:border-amber-800/30">
             <CardHeader>
               <CardTitle className="text-lg">Transactions</CardTitle>
             </CardHeader>
@@ -1443,12 +1497,14 @@ export function ContactDetailCard({
                 ))}
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
 
         {/* Subscriptions Expanded */}
         {showSubscriptionsSection && activeSubscriptions.length > 0 && (
-          <Card className="border-indigo-200/50 bg-gradient-to-br from-indigo-50/30 to-transparent dark:border-indigo-800/30">
+          <div ref={subscriptionsRef}>
+            <Card className="border-indigo-200/50 bg-gradient-to-br from-indigo-50/30 to-transparent dark:border-indigo-800/30">
             <CardHeader>
               <CardTitle className="text-lg">Active Subscriptions</CardTitle>
             </CardHeader>
@@ -1488,7 +1544,8 @@ export function ContactDetailCard({
                 ))}
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         )}
       </div>
 
