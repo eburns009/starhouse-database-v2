@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -34,7 +34,6 @@ import type {
 import type { MailingListData, RankedAddress, RankedEmail } from '@/lib/types/mailing'
 import { EMAIL_SCORE_WEIGHTS, EMAIL_SOURCE_PRIORITY, getConfidenceDisplay } from '@/lib/constants/scoring'
 import { MailingListQuality } from './MailingListQuality'
-import { useMemo } from 'react'
 
 // Note type for contact notes
 interface ContactNote {
@@ -678,19 +677,9 @@ export function ContactDetailCard({
     fetchContactDetails()
   }, [contactId])
 
-  if (loading) {
-    return (
-      <Card className="p-8">
-        <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </Card>
-    )
-  }
-
   // Extract all variants with memoization for performance
   // FAANG Standard: Memoize expensive calculations to prevent unnecessary re-renders
-  // IMPORTANT: Must be called before any conditional returns (Rules of Hooks)
+  // CRITICAL: ALL hooks MUST be called BEFORE any conditional returns (Rules of Hooks)
   const nameVariants = useMemo(() => {
     if (!contact) return []
     return extractNameVariants(contact)
@@ -717,7 +706,18 @@ export function ContactDetailCard({
     return subscriptions.filter((s) => s.status === 'active')
   }, [subscriptions])
 
-  // Early return AFTER all hooks are called
+  // Early return for LOADING state - AFTER all hooks
+  if (loading) {
+    return (
+      <Card className="p-8">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Card>
+    )
+  }
+
+  // Early return for ERROR state - AFTER all hooks
   if (error || !contact) {
     return (
       <Card className="p-8">
