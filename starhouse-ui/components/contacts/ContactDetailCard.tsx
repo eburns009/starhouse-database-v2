@@ -383,7 +383,6 @@ export function ContactDetailCard({
   const [newNoteSubject, setNewNoteSubject] = useState('')
   const [newNoteContent, setNewNoteContent] = useState('')
   const [savingNote, setSavingNote] = useState(false)
-  const [showProducts, setShowProducts] = useState(false)
   const [showTags, setShowTags] = useState(false)
   const [showAdditionalNames, setShowAdditionalNames] = useState(false)
   const [showOtherEmails, setShowOtherEmails] = useState(false)
@@ -400,7 +399,6 @@ export function ContactDetailCard({
   const phonesRef = useRef<HTMLDivElement>(null)
   const addressesRef = useRef<HTMLDivElement>(null)
   const tagsRef = useRef<HTMLDivElement>(null)
-  const productsRef = useRef<HTMLDivElement>(null)
   const transactionsRef = useRef<HTMLDivElement>(null)
 
   // Helper to scroll to a section when expanded
@@ -595,11 +593,15 @@ export function ContactDetailCard({
 
         if (contactError) throw contactError
 
-        // Fetch transactions with product/subscription information
+        // Fetch transactions with product information (both direct and via subscription)
         const { data: transactionsData, error: transactionsError } = await supabase
           .from('transactions')
           .select(`
             *,
+            products!transactions_product_id_fkey (
+              name,
+              product_type
+            ),
             subscriptions (
               id,
               products (
@@ -975,10 +977,10 @@ export function ContactDetailCard({
         </CardContent>
       </Card>
 
-      {/* Almond-Shaped Expandable Buttons - 8 Eyes in 4x2 Grid */}
+      {/* Almond-Shaped Expandable Buttons - 6 Eyes in 3x2 Grid */}
       <div className="space-y-4">
-        {/* Row 1: 4 Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {/* Row 1: 3 Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Names Button - with eyelashes! */}
           <AlmondButton
             label="Names"
@@ -1019,7 +1021,10 @@ export function ContactDetailCard({
             gradientFrom="from-blue-100"
             gradientTo="to-cyan-100"
           />
+        </div>
 
+        {/* Row 2: 3 Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Addresses Button */}
           <AlmondButton
             label="Addresses"
@@ -1032,10 +1037,7 @@ export function ContactDetailCard({
             gradientFrom="from-emerald-100"
             gradientTo="to-teal-100"
           />
-        </div>
 
-        {/* Row 2: 3 Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Tags Button */}
           <AlmondButton
             label="Tags"
@@ -1047,19 +1049,6 @@ export function ContactDetailCard({
             }}
             gradientFrom="from-violet-100"
             gradientTo="to-purple-100"
-          />
-
-          {/* Products Button */}
-          <AlmondButton
-            label="Products"
-            count={subscriptions.length}
-            isExpanded={showProducts}
-            onClick={() => {
-              setShowProducts(!showProducts)
-              if (!showProducts) scrollToSection(productsRef)
-            }}
-            gradientFrom="from-fuchsia-100"
-            gradientTo="to-pink-100"
           />
 
           {/* Transactions Button */}
@@ -1391,57 +1380,6 @@ export function ContactDetailCard({
           </div>
         )}
 
-        {/* Products Expanded */}
-        {showProducts && (
-          <div ref={productsRef}>
-            <Card className="border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50/30 to-transparent dark:border-fuchsia-800/30">
-            <CardContent className="pt-6 space-y-4">
-              {subscriptions.length === 0 ? (
-                <p className="text-base text-muted-foreground italic text-center py-6">No products yet</p>
-              ) : (
-                <div className="grid gap-4">
-                  {subscriptions.map((subscription) => (
-                    <div
-                      key={subscription.id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-fuchsia-200/50 bg-white/50 backdrop-blur-sm p-4 transition-all hover:shadow-md hover:border-fuchsia-300/50 dark:bg-black/20 dark:border-fuchsia-800/30"
-                    >
-                      <div className="space-y-1 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-semibold text-base">
-                            {subscription.products?.name || 'Unknown Product'}
-                          </span>
-                          <Badge
-                            variant={subscription.status === 'active' ? 'default' : 'outline'}
-                            className="text-sm"
-                          >
-                            {subscription.status}
-                          </Badge>
-                        </div>
-                        {subscription.products?.product_type && (
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {subscription.products.product_type}
-                          </p>
-                        )}
-                      </div>
-                      {subscription.amount && (
-                        <div className="text-left sm:text-right flex-shrink-0">
-                          <div className="font-semibold text-base">
-                            {formatCurrency(Number(subscription.amount))}
-                            <span className="text-sm text-muted-foreground font-normal ml-1">
-                              / {subscription.billing_cycle}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-            </Card>
-          </div>
-        )}
-
         {/* Transactions Expanded */}
         {showTransactionsSection && transactions.length > 0 && (
           <div ref={transactionsRef}>
@@ -1460,10 +1398,15 @@ export function ContactDetailCard({
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base capitalize">
                           {(() => {
-                            // Show actual product name instead of transaction type
-                            const productName = (transaction as any).subscriptions?.products?.name
-                            if (productName) {
-                              return productName
+                            // Priority: Direct product > Subscription product > Transaction type
+                            const directProduct = (transaction as any).products?.name
+                            const subscriptionProduct = (transaction as any).subscriptions?.products?.name
+
+                            if (directProduct) {
+                              return directProduct
+                            }
+                            if (subscriptionProduct) {
+                              return subscriptionProduct
                             }
                             // Fallback to transaction type if no product info
                             return transaction.transaction_type.replace('_', ' ')
