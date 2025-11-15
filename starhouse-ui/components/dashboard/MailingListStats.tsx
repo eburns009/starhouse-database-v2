@@ -1,10 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
-import { Mail, CheckCircle, AlertCircle, TrendingUp, Download, MapPin } from 'lucide-react'
+import { Mail, CheckCircle, AlertCircle, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { CONFIDENCE_LEVELS } from '@/lib/constants/scoring'
 import { calculateMailingStatistics, calculatePercentage } from '@/lib/utils/mailingStatistics'
 import type { MailingListEntry } from '@/lib/types/mailing'
+import { ExportHighConfidenceButton } from './ExportMailingListButton'
 
 /**
  * Mailing List Statistics Component
@@ -18,6 +19,12 @@ export async function MailingListStats() {
     .from('mailing_list_priority')
     .select('confidence, billing_score, shipping_score, recommended_address')
     .returns<MailingListEntry[]>()
+
+  // Fetch NCOA statistics (contacts table)
+  const { data: ncoaData } = await supabase
+    .from('contacts')
+    .select('ncoa_move_date, address_validated')
+    .not('ncoa_move_date', 'is', null)
 
   // Error state
   if (error) {
@@ -50,7 +57,11 @@ export async function MailingListStats() {
 
   // Calculate statistics (optimized single-pass algorithm)
   const statistics = calculateMailingStatistics(stats)
-  const { total, confidenceCounts, recommendBilling, recommendShipping, avgScore, readyToMail, readyPercentage } = statistics
+  const { total, confidenceCounts, avgScore, readyToMail, readyPercentage } = statistics
+
+  // Calculate NCOA statistics
+  const ncoaMoveCount = ncoaData?.length || 0
+  const ncoaPercentage = total > 0 ? Math.round((ncoaMoveCount / total) * 100) : 0
 
   // Build confidence level display data with calculated percentages
   const confidenceLevels = CONFIDENCE_LEVELS.map((level) => {
@@ -131,47 +142,38 @@ export async function MailingListStats() {
           </CardContent>
         </Card>
 
-        {/* Address Recommendations */}
-        <Card className="border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-background">
+        {/* NCOA Moves - Alert Status */}
+        <Card className={`border-2 ${ncoaMoveCount > 0 ? 'border-destructive/30 bg-gradient-to-br from-destructive/10 to-background' : 'border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-background'}`}>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <MapPin className="h-8 w-8 text-blue-600" />
-              <AlertCircle className="h-5 w-5 text-blue-600/50" />
+              {ncoaMoveCount > 0 ? (
+                <AlertTriangle className="h-8 w-8 text-destructive" />
+              ) : (
+                <ShieldCheck className="h-8 w-8 text-emerald-600" />
+              )}
+              <Badge className={ncoaMoveCount > 0 ? 'bg-destructive' : 'bg-emerald-600'}>
+                {ncoaMoveCount > 0 ? 'Action Required' : 'All Clear'}
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">Recommended Addresses</p>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Billing</span>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-blue-500"
-                        style={{ width: `${calculatePercentage(recommendBilling, total)}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-bold text-blue-600">
-                      {calculatePercentage(recommendBilling, total)}%
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Shipping</span>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-purple-500"
-                        style={{ width: `${calculatePercentage(recommendShipping, total)}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-bold text-purple-600">
-                      {calculatePercentage(recommendShipping, total)}%
-                    </span>
-                  </div>
-                </div>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold">{ncoaMoveCount.toLocaleString()}</span>
+                <span className="text-2xl font-semibold text-muted-foreground">
+                  / {total.toLocaleString()}
+                </span>
               </div>
+              <p className="text-sm font-medium text-muted-foreground">
+                {ncoaMoveCount > 0 ? 'NCOA Moves Detected' : 'No Recent Moves'}
+              </p>
+              {ncoaMoveCount > 0 && (
+                <div className="mt-3 rounded-lg bg-destructive/10 p-2">
+                  <p className="text-xs font-medium text-destructive">
+                    ⚠️ {ncoaMoveCount} contact{ncoaMoveCount !== 1 ? 's' : ''} moved to new address
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -183,15 +185,11 @@ export async function MailingListStats() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Address Quality Distribution</CardTitle>
-              <CardDescription>Confidence levels based on validation, recency, and transaction history</CardDescription>
+              <CardDescription>
+                Validation-first scoring: USPS confirmation is proof of deliverability
+              </CardDescription>
             </div>
-            <a
-              href="/contacts"
-              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
-            >
-              <Download className="h-4 w-4" />
-              Export List
-            </a>
+            <ExportHighConfidenceButton />
           </div>
         </CardHeader>
         <CardContent>
@@ -231,16 +229,62 @@ export async function MailingListStats() {
               </div>
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-semibold">
-                  {readyToMail.toLocaleString()} addresses ready for your next mailing campaign
+                  {readyToMail.toLocaleString()} USPS-validated addresses ready for your next mailing campaign
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {confidenceCounts.very_high.toLocaleString()} premium quality addresses with recent validation and transaction history
+                  All addresses in High and Very High tiers have USPS confirmation of deliverability
+                  {ncoaMoveCount > 0 && (
+                    <span className="text-destructive font-medium"> • {ncoaMoveCount} NCOA moves excluded for protection</span>
+                  )}
                 </p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* NCOA Details Alert (if moves detected) */}
+      {ncoaMoveCount > 0 && (
+        <Card className="border-2 border-destructive/30 bg-destructive/5">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-6 w-6 text-destructive" />
+              <div>
+                <CardTitle className="text-lg text-destructive">NCOA Moves Detected</CardTitle>
+                <CardDescription>
+                  National Change of Address updates from USPS
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="rounded-lg bg-background border border-destructive/20 p-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <div className="text-sm font-medium text-muted-foreground mb-1">Contacts Moved</div>
+                    <div className="text-2xl font-bold text-destructive">{ncoaMoveCount.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-muted-foreground mb-1">Percentage</div>
+                    <div className="text-2xl font-bold text-destructive">{ncoaPercentage}%</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
+                <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                  <strong>Action Required:</strong> Review and update addresses before your next mailing campaign to avoid undeliverable mail and wasted costs.
+                </p>
+              </div>
+
+              <div className="text-xs text-muted-foreground">
+                <strong>What is NCOA?</strong> The National Change of Address (NCOA) database is maintained by the USPS and contains address changes filed by individuals and businesses. Regular NCOA processing helps maintain list accuracy and reduce waste.
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -256,7 +300,7 @@ export async function MailingListStats() {
                   {readyToMail.toLocaleString()} contacts ready for mail merge
                 </p>
               </div>
-              <Download className="h-5 w-5 text-muted-foreground transition-all group-hover:text-primary" />
+              <Mail className="h-5 w-5 text-muted-foreground transition-all group-hover:text-primary" />
             </div>
           </CardContent>
         </Card>

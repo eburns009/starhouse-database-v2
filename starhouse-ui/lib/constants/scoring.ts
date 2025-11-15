@@ -38,6 +38,8 @@ export const EMAIL_SOURCE_PRIORITY = {
 
 /**
  * Confidence level display configuration
+ * UPDATED: Validation-first scoring (2025-11-15)
+ * USPS validation is now the primary factor, not a bonus
  */
 export const CONFIDENCE_LEVELS = [
   {
@@ -47,7 +49,7 @@ export const CONFIDENCE_LEVELS = [
     bgColor: 'bg-emerald-500/10',
     borderColor: 'border-emerald-500/20',
     textColor: 'text-emerald-600',
-    description: 'Premium quality',
+    description: 'USPS validated + recent activity',
   },
   {
     label: 'High',
@@ -56,7 +58,7 @@ export const CONFIDENCE_LEVELS = [
     bgColor: 'bg-blue-500/10',
     borderColor: 'border-blue-500/20',
     textColor: 'text-blue-600',
-    description: 'Good to mail',
+    description: 'USPS validated deliverable',
   },
   {
     label: 'Medium',
@@ -65,7 +67,7 @@ export const CONFIDENCE_LEVELS = [
     bgColor: 'bg-amber-500/10',
     borderColor: 'border-amber-500/20',
     textColor: 'text-amber-600',
-    description: 'Verify first',
+    description: 'Partial USPS validation',
   },
   {
     label: 'Low',
@@ -74,7 +76,7 @@ export const CONFIDENCE_LEVELS = [
     bgColor: 'bg-orange-500/10',
     borderColor: 'border-orange-500/20',
     textColor: 'text-orange-600',
-    description: 'Needs update',
+    description: 'Not validated - verify first',
   },
   {
     label: 'Very Low',
@@ -83,7 +85,7 @@ export const CONFIDENCE_LEVELS = [
     bgColor: 'bg-red-500/10',
     borderColor: 'border-red-500/20',
     textColor: 'text-red-600',
-    description: 'Do not mail',
+    description: 'Invalid or NCOA move - do not mail',
   },
 ] as const
 
