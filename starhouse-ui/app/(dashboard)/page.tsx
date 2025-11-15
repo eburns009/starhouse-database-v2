@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Users, TrendingUp, DollarSign, Calendar } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { MailingListStats } from '@/components/dashboard/MailingListStats'
+import { ValidationFirstExplainer } from '@/components/dashboard/ValidationFirstExplainer'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -72,6 +73,12 @@ export default async function DashboardPage() {
           <h2 className="text-2xl font-bold">Mailing List Quality</h2>
           <p className="text-muted-foreground">Address validation and quality metrics for your campaigns</p>
         </div>
+
+        {/* Validation-First Algorithm Explainer */}
+        <div className="mb-6">
+          <ValidationFirstExplainer />
+        </div>
+
         <MailingListStats />
       </div>
 
