@@ -320,3 +320,41 @@ data/*.json
 !data/README.md
 !data/samples/**
 !data/templates/**
+
+# Node.js / Next.js
+node_modules/
+starhouse-ui/node_modules/
+starhouse-ui/.next/
+starhouse-ui/out/
+starhouse-ui/.turbo/
+*.tsbuildinfo
+.npm/
+.yarn/
+yarn-error.log
+
+# Logs and temp files
+logs/
+*.log
+/tmp/
+.DS_Store
+*.tmp
+*.temp
+
+# IDE and editor files
+.vscode/settings.backup.json
+.vscode/.react/
+
+# Build artifacts
+dist/
+out/
+.next/
+build/
+
+# Database backups (large files)
+contacts_backup_*.sql
+*_backup_*.sql
+
+# NCOA/TrueNCOA temp files
+truencoa_*.csv
+ncoa_*.csv
+!docs/

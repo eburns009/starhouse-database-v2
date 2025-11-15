@@ -2,50 +2,77 @@
   // Terminal Configuration
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
-
   // Disable terminal relaunch prompts
   "terminal.integrated.environmentChangesRelaunch": false,
   "terminal.integrated.environmentChangesIndicator": "off",
-
   // Shell Integration - helps extensions properly set environment variables
   "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.shellIntegration.decorationsEnabled": "both",
   "terminal.integrated.shellIntegration.suggestEnabled": false,
-
-  // Python Terminal Environment Activation
-  // Prevents issues with Python extension terminal activation
-  "python.terminal.activateEnvironment": true,
+  // Python Configuration - Prevent relaunch prompts
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.terminal.activateEnvironment": false,
   "python.terminal.activateEnvInCurrentTerminal": false,
-
+  "python.terminal.executeInFileDir": false,
+  "python.experiments.enabled": false,
+  "python.languageServer": "Pylance",
+  "python.envFile": "${workspaceFolder}/.env",
   // Git Configuration
   "git.enabled": true,
   "git.autorefresh": true,
-
-  // Extension Recommendations
-  "extensions.ignoreRecommendations": false,
-
-  // Files
+  "git.confirmSync": false,
+  "git.autofetch": false,
+  "git.promptToSaveFilesBeforeCommit": "never",
+  // GitLens - Reduce notifications and relaunch prompts
+  "gitlens.showWelcomeOnInstall": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
+  "gitlens.plusFeatures.enabled": false,
+  "gitlens.telemetry.enabled": false,
+  // Extension Configuration - Suppress prompts
+  "extensions.ignoreRecommendations": true,
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  // Codespaces specific - prevent relaunch prompts
+  "remote.autoForwardPorts": false,
+  "remote.autoForwardPortsSource": "output",
+  // Notifications - reduce interruptions
+  "update.mode": "none",
+  "update.showReleaseNotes": false,
+  // Files - FAANG Quality: Exclude large directories from file watching
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-    "**/node_modules/*/**": true,
+    "**/node_modules/**": true,  // Changed: Deep exclude for all node_modules
     "**/.hg/store/**": true,
     "**/__pycache__/**": true,
     "**/.pytest_cache/**": true,
     "**/.mypy_cache/**": true,
-    "**/.ruff_cache/**": true
+    "**/.ruff_cache/**": true,
+    "**/.next/**": true,  // Added: Next.js build artifacts
+    "**/logs/**": true,   // Added: Log directory
+    "**/dist/**": true,   // Added: Distribution builds
+    "**/build/**": true,  // Added: Build artifacts
+    "**/.venv/**": true   // Added: Python virtual environment
   },
-
+  // Search - Exclude same patterns from search
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/logs": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.venv": true,
+    "**/dist": true,
+    "**/build": true
+  },
   // Python Configuration
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoImportCompletions": true,
-
   // Editor
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
-
   // Files Association
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
@@ -55,7 +82,6 @@
       "source.fixAll": "explicit"
     }
   },
-
   // SQL Files
   "[sql]": {
     "editor.defaultFormatter": "mtxr.sqltools"
