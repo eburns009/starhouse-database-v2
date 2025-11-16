@@ -24,9 +24,12 @@ import {
   Tag,
   DollarSign,
   Building2,
+  AlertTriangle,
+  Truck,
 } from 'lucide-react'
 import type {
   Contact,
+  ContactWithValidation,
   TransactionWithProduct,
   SubscriptionWithProduct,
   NameVariant,
@@ -168,14 +171,12 @@ function extractPhoneVariants(contact: Contact): PhoneVariant[] {
 /**
  * Build ranked addresses for display with scores and USPS validation
  * FAANG Standard: Pure function, proper types, clear business logic
- * Note: Uses type assertion for extended contact fields not in base type
  */
 function buildRankedAddresses(
-  contact: Contact,
+  contact: ContactWithValidation,
   mailingListData: MailingListData | null
 ): RankedAddress[] {
   const addresses: RankedAddress[] = []
-  const contactExt = contact as any // Type assertion for extended fields
 
   // Mailing Address (Billing)
   if (contact.address_line_1 || contact.city) {
@@ -188,8 +189,8 @@ function buildRankedAddresses(
       postal_code: contact.postal_code,
       country: contact.country,
       score: mailingListData?.billing_score || 0,
-      uspsValidated: !!contactExt.billing_usps_validated_at,
-      uspsValidatedDate: contactExt.billing_usps_validated_at || null,
+      uspsValidated: !!contact.billing_usps_validated_at,
+      uspsValidatedDate: contact.billing_usps_validated_at || null,
       isRecommended: mailingListData?.recommended_address === 'billing',
       source: contact.source_system || 'unknown',
     })
@@ -206,8 +207,8 @@ function buildRankedAddresses(
       postal_code: contact.shipping_postal_code,
       country: contact.shipping_country,
       score: mailingListData?.shipping_score || 0,
-      uspsValidated: !!contactExt.shipping_usps_validated_at,
-      uspsValidatedDate: contactExt.shipping_usps_validated_at || null,
+      uspsValidated: !!contact.shipping_usps_validated_at,
+      uspsValidatedDate: contact.shipping_usps_validated_at || null,
       isRecommended: mailingListData?.recommended_address === 'shipping',
       source: 'paypal',
     })
@@ -242,12 +243,10 @@ function buildRankedAddresses(
 /**
  * Build ranked emails for display with scores and verification
  * FAANG Standard: Pure function, proper types, optimized scoring
- * Note: Uses type assertion for extended contact fields not in base type
  */
-function buildRankedEmails(contact: Contact): RankedEmail[] {
+function buildRankedEmails(contact: ContactWithValidation): RankedEmail[] {
   const emails: RankedEmail[] = []
   const processedEmails = new Set<string>()
-  const contactExt = contact as any // Type assertion for extended fields
 
   // Helper to calculate email score using constants
   const calculateEmailScore = (
@@ -300,8 +299,8 @@ function buildRankedEmails(contact: Contact): RankedEmail[] {
   }
 
   // PayPal Email
-  if (contactExt.paypal_email && !processedEmails.has(contactExt.paypal_email.toLowerCase())) {
-    processedEmails.add(contactExt.paypal_email.toLowerCase())
+  if (contact.paypal_email && !processedEmails.has(contact.paypal_email.toLowerCase())) {
+    processedEmails.add(contact.paypal_email.toLowerCase())
 
     const score = calculateEmailScore(
       false,
@@ -312,7 +311,7 @@ function buildRankedEmails(contact: Contact): RankedEmail[] {
 
     emails.push({
       label: 'PayPal',
-      email: contactExt.paypal_email,
+      email: contact.paypal_email,
       score,
       isSubscribed: false,
       isVerified: false,
@@ -324,10 +323,10 @@ function buildRankedEmails(contact: Contact): RankedEmail[] {
   }
 
   // Additional Email
-  if (contactExt.additional_email && !processedEmails.has(contactExt.additional_email.toLowerCase())) {
-    processedEmails.add(contactExt.additional_email.toLowerCase())
+  if (contact.additional_email && !processedEmails.has(contact.additional_email.toLowerCase())) {
+    processedEmails.add(contact.additional_email.toLowerCase())
 
-    const sourcePriority = getEmailSourcePriority(contactExt.additional_email_source || 'manual')
+    const sourcePriority = getEmailSourcePriority(contact.additional_email_source || 'manual')
     const score = calculateEmailScore(
       false,
       false,
@@ -337,20 +336,20 @@ function buildRankedEmails(contact: Contact): RankedEmail[] {
 
     emails.push({
       label: 'Additional',
-      email: contactExt.additional_email,
+      email: contact.additional_email,
       score,
       isSubscribed: false,
       isVerified: false,
       isPrimary: false,
       isRecommended: false,
-      source: contactExt.additional_email_source || 'manual',
+      source: contact.additional_email_source || 'manual',
       sourcePriority,
     })
   }
 
   // Zoho Email
-  if (contactExt.zoho_email && !processedEmails.has(contactExt.zoho_email.toLowerCase())) {
-    processedEmails.add(contactExt.zoho_email.toLowerCase())
+  if (contact.zoho_email && !processedEmails.has(contact.zoho_email.toLowerCase())) {
+    processedEmails.add(contact.zoho_email.toLowerCase())
 
     const score = calculateEmailScore(
       false,
@@ -361,7 +360,7 @@ function buildRankedEmails(contact: Contact): RankedEmail[] {
 
     emails.push({
       label: 'Zoho',
-      email: contactExt.zoho_email,
+      email: contact.zoho_email,
       score,
       isSubscribed: false,
       isVerified: false,
@@ -868,7 +867,7 @@ export function ContactDetailCard({
                       <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{contact.paypal_business_name}</span>
-                        {(contact as any).billing_address_source === 'google_contacts' && (
+                        {(contact as ContactWithValidation).billing_address_source === 'google_contacts' && (
                           <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">
                             from Google
                           </Badge>
@@ -1338,31 +1337,31 @@ export function ContactDetailCard({
             </CardHeader>
             <CardContent className="space-y-3">
               {rankedAddresses.map((address, idx) => {
-                const contactExt = contact as any
+                const contactWithValidation = contact as ContactWithValidation
                 const isGoogleSource = (
                   address.label === 'Mailing' &&
-                  contactExt.billing_address_source === 'google_contacts'
+                  contactWithValidation.billing_address_source === 'google_contacts'
                 )
 
                 // USPS validation data
                 const uspsData = address.label === 'Mailing' ? {
-                  county: contactExt.billing_usps_county,
-                  rdi: contactExt.billing_usps_rdi,
-                  dpv: contactExt.billing_usps_dpv_match_code,
-                  latitude: contactExt.billing_usps_latitude,
-                  longitude: contactExt.billing_usps_longitude,
-                  precision: contactExt.billing_usps_precision,
-                  vacant: contactExt.billing_usps_vacant,
-                  active: contactExt.billing_usps_active,
+                  county: contactWithValidation.billing_usps_county,
+                  rdi: contactWithValidation.billing_usps_rdi,
+                  dpv: contactWithValidation.billing_usps_dpv_match_code,
+                  latitude: contactWithValidation.billing_usps_latitude,
+                  longitude: contactWithValidation.billing_usps_longitude,
+                  precision: contactWithValidation.billing_usps_precision,
+                  vacant: contactWithValidation.billing_usps_vacant,
+                  active: contactWithValidation.billing_usps_active,
                 } : address.label === 'Shipping' ? {
-                  county: contactExt.shipping_usps_county,
-                  rdi: contactExt.shipping_usps_rdi,
-                  dpv: contactExt.shipping_usps_dpv_match_code,
-                  latitude: contactExt.shipping_usps_latitude,
-                  longitude: contactExt.shipping_usps_longitude,
-                  precision: contactExt.shipping_usps_precision,
-                  vacant: contactExt.shipping_usps_vacant,
-                  active: contactExt.shipping_usps_active,
+                  county: contactWithValidation.shipping_usps_county,
+                  rdi: contactWithValidation.shipping_usps_rdi,
+                  dpv: contactWithValidation.shipping_usps_dpv_match_code,
+                  latitude: contactWithValidation.shipping_usps_latitude,
+                  longitude: contactWithValidation.shipping_usps_longitude,
+                  precision: contactWithValidation.shipping_usps_precision,
+                  vacant: contactWithValidation.shipping_usps_vacant,
+                  active: contactWithValidation.shipping_usps_active,
                 } : null
 
                 const confidence = getConfidenceDisplay(address.score)
@@ -1520,6 +1519,77 @@ export function ContactDetailCard({
                               </div>
                             </div>
                           )}
+                        </div>
+                      )}
+
+                      {/* NCOA Move Detection - CRITICAL ALERT */}
+                      {(contactWithValidation.ncoa_move_date || contactWithValidation.ncoa_new_address) && (
+                        <div className="mt-4 pt-3 border-t-2 border-destructive/30 space-y-3">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <Badge variant="destructive" className="text-xs font-semibold">
+                              <AlertTriangle className="mr-1 h-3 w-3" />
+                              NCOA: Contact Moved
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              <Truck className="mr-1 h-3 w-3" />
+                              Address Update Required
+                            </Badge>
+                          </div>
+
+                          <div className="rounded-lg bg-destructive/10 p-3 space-y-2">
+                            {contactWithValidation.ncoa_move_date && (
+                              <div className="text-xs">
+                                <span className="font-semibold text-destructive">Move Date:</span>
+                                <span className="ml-1.5 font-medium">
+                                  {formatDate(contactWithValidation.ncoa_move_date)}
+                                </span>
+                              </div>
+                            )}
+
+                            {contactWithValidation.ncoa_new_address && (
+                              <div className="text-xs">
+                                <span className="font-semibold text-destructive">New Address:</span>
+                                <div className="ml-1.5 mt-1 font-medium whitespace-pre-line">
+                                  {contactWithValidation.ncoa_new_address}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="pt-2 mt-2 border-t border-destructive/20">
+                              <p className="text-xs text-destructive/80 font-medium">
+                                ⚠️ Do not mail to current address. Update contact information before next campaign.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Address Quality Score */}
+                      {contactWithValidation.address_quality_score !== null &&
+                       contactWithValidation.address_quality_score !== undefined && (
+                        <div className="mt-3 pt-3 border-t border-border/50">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground">Address Quality</span>
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
+                                <div
+                                  className={`h-full rounded-full transition-all ${
+                                    contactWithValidation.address_quality_score >= 80
+                                      ? 'bg-emerald-500'
+                                      : contactWithValidation.address_quality_score >= 60
+                                      ? 'bg-blue-500'
+                                      : contactWithValidation.address_quality_score >= 40
+                                      ? 'bg-amber-500'
+                                      : 'bg-red-500'
+                                  }`}
+                                  style={{ width: `${contactWithValidation.address_quality_score}%` }}
+                                />
+                              </div>
+                              <span className="text-xs font-semibold">
+                                {contactWithValidation.address_quality_score}/100
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>

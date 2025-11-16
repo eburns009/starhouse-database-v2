@@ -74,3 +74,63 @@ export interface AddressVariant {
   label: string
   status?: string | null
 }
+
+/**
+ * Extended Contact type with validation and enrichment fields
+ * FAANG Standard: Explicit type instead of 'any' type assertions
+ *
+ * Note: These fields exist in the database but may not be in the base Contact type
+ * because they're from enrichment processes (USPS validation, Google Contacts, etc.)
+ */
+export interface ContactWithValidation extends Contact {
+  // NCOA (National Change of Address) fields
+  ncoa_move_date?: string | null
+  ncoa_new_address?: string | null
+  address_validated?: boolean | null
+  usps_dpv_confirmation?: 'Y' | 'N' | 'S' | 'D' | null
+  usps_validation_date?: string | null
+  usps_rdi?: string | null
+  address_quality_score?: number | null
+
+  // Household management
+  household_id?: string | null
+  is_primary_household_contact?: boolean | null
+
+  // Duplicate management
+  secondary_emails?: string[] | null
+  is_alias_of?: string | null
+  merge_history?: Array<{
+    merged_from_id: string
+    merged_at: string
+    reason: string
+  }> | null
+
+  // USPS validation fields (billing address)
+  billing_usps_validated_at?: string | null
+  billing_usps_county?: string | null
+  billing_usps_rdi?: string | null
+  billing_usps_dpv_match_code?: string | null
+  billing_usps_latitude?: number | null
+  billing_usps_longitude?: number | null
+  billing_usps_precision?: string | null
+  billing_usps_vacant?: boolean | null
+  billing_usps_active?: boolean | null
+  billing_address_source?: string | null
+
+  // USPS validation fields (shipping address)
+  shipping_usps_validated_at?: string | null
+  shipping_usps_county?: string | null
+  shipping_usps_rdi?: string | null
+  shipping_usps_dpv_match_code?: string | null
+  shipping_usps_latitude?: number | null
+  shipping_usps_longitude?: number | null
+  shipping_usps_precision?: string | null
+  shipping_usps_vacant?: boolean | null
+  shipping_usps_active?: boolean | null
+
+  // Extended email fields
+  paypal_email?: string | null
+  additional_email?: string | null
+  additional_email_source?: string | null
+  zoho_email?: string | null
+}
