@@ -1,0 +1,36 @@
+# Claude Code - Ignore patterns for StarHouse Database v2
+# This reduces context size and improves performance
+
+# Node.js - Exclude 657MB
+node_modules/
+starhouse-ui/node_modules/
+starhouse-ui/.next/
+*.min.js
+package-lock.json
+
+# Python cache - Exclude ~50MB
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Data files - Exclude ~6MB
+data/
+backups/
+logs/
+*.db
+*.sqlite
+
+# Build artifacts
+dist/
+build/
+.git/
+docs/archive/
+supabase/.temp/
+
+# Large CSVs
+mailing_list.csv
+validated_mailing_list.csv
+truencoa_*.csv
