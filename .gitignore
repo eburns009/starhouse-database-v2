@@ -339,6 +339,8 @@ logs/
 .DS_Store
 *.tmp
 *.temp
+.temp/
+**/.temp/
 
 # IDE and editor files
 .vscode/settings.backup.json
