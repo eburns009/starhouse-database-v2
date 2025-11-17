@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { Users, Heart, Building, Sparkles, Home, Menu, X } from 'lucide-react'
+import { Users, Heart, Building, Sparkles, Home, Menu, X, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
@@ -13,6 +13,7 @@ const modules = [
   { name: 'Membership', icon: Sparkles, href: '/membership' },
   { name: 'Donors', icon: Heart, href: '/donors' },
   { name: 'Venues', icon: Building, href: '/venues' },
+  { name: 'Staff', icon: Shield, href: '/staff' },
 ]
 
 export default function DashboardLayout({
