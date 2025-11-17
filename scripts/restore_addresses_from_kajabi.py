@@ -15,8 +15,9 @@ import csv
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
+from db_config import get_database_url
 
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 KAJABI_CSV = "/workspaces/starhouse-database-v2/kajabi 3 files review/11102025kajabi.csv"
 
 def read_kajabi_addresses():

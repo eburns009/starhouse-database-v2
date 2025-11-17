@@ -17,9 +17,10 @@ import sys
 from datetime import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from db_config import get_database_url
 
 # Database connection details
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 
 def get_db_connection():
     """Create database connection."""

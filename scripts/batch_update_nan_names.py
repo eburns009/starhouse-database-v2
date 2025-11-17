@@ -27,8 +27,9 @@ import psycopg2
 import sys
 from datetime import datetime
 import argparse
+from db_config import get_database_url
 
-DATABASE_URL = 'postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres'
+DATABASE_URL = get_database_url()
 
 # High-confidence name updates
 HIGH_CONFIDENCE_NAMES = [

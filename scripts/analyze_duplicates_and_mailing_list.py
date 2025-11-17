@@ -23,6 +23,7 @@ from datetime import datetime
 from collections import defaultdict, Counter
 import re
 from difflib import SequenceMatcher
+from db_config import get_database_url
 
 # Configure logging
 logging.basicConfig(
@@ -35,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = get_database_url()
 
 
 def load_all_contacts(conn):

@@ -15,6 +15,7 @@ from psycopg2.extras import RealDictCursor
 import re
 from datetime import datetime
 import sys
+from db_config import get_database_url
 
 # Configuration
 DRY_RUN = True  # Set to False to actually execute updates
@@ -71,7 +72,7 @@ def enrich_contacts(dry_run=True):
     conn = psycopg2.connect(
         dbname='postgres',
         user='postgres.lnagadkqejnopgfxwlkb',
-        password='gqelzN6LRew4Cy9H',
+        password=get_database_url().split('@')[0].split(':')[-1],
         host='aws-1-us-east-2.pooler.supabase.com',
         port='5432'
     )

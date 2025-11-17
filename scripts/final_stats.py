@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from db_config import get_database_url
 
-conn = psycopg2.connect('postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres')
+conn = psycopg2.connect(get_database_url())
 cursor = conn.cursor(cursor_factory=RealDictCursor)
 
 cursor.execute("""

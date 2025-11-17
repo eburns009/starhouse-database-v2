@@ -47,8 +47,9 @@ import argparse
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional
 import hashlib
+from db_config import get_database_url
 
-DATABASE_URL = 'postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres'
+DATABASE_URL = get_database_url()
 
 class EnhancedDuplicateDetector:
     """FAANG-quality duplicate detection with confidence scoring."""

@@ -22,6 +22,7 @@ import logging
 from datetime import datetime
 import sys
 import os
+from db_config import get_database_url
 
 # Configure logging
 log_filename = f'logs/import_ncoa_exceptions_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
@@ -37,7 +38,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = get_database_url()
 
 
 class NCOAExceptionImporter:

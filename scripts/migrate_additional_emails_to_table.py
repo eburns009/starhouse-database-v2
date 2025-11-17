@@ -31,8 +31,9 @@ import sys
 from datetime import datetime
 from typing import List, Tuple, Dict
 import argparse
+from db_config import get_database_url
 
-DATABASE_URL = 'postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres'
+DATABASE_URL = get_database_url()
 
 class EmailMigrator:
     """FAANG-quality email migration with safety guarantees."""

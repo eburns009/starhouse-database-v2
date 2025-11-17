@@ -16,6 +16,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import re
 from datetime import datetime
+from db_config import get_database_url
 
 # Configuration
 CSV_PATH = '/workspaces/starhouse-database-v2/kajabi 3 files review/debbie_google_contacts.csv'
@@ -101,7 +102,7 @@ def import_addresses(dry_run=True):
     conn = psycopg2.connect(
         dbname='postgres',
         user='postgres.lnagadkqejnopgfxwlkb',
-        password='gqelzN6LRew4Cy9H',
+        password=get_database_url().split('@')[0].split(':')[-1],
         host='aws-1-us-east-2.pooler.supabase.com',
         port='5432'
     )

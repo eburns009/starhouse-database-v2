@@ -20,6 +20,7 @@ Set them in your .env file or environment variables.
 import os
 import sys
 from typing import Dict, Any, Optional
+from db_config import get_database_url
 
 
 class ConfigError(Exception):
@@ -53,7 +54,7 @@ def get_database_url() -> str:
             "Never commit credentials to git!\n"
             "\n"
             "Example:\n"
-            "  export DATABASE_URL='postgresql://user:pass@host:5432/dbname'\n"
+            "  export DATABASE_URL = get_database_url()\n"
             "Or create a .env file:\n"
             "  echo 'DATABASE_URL=postgresql://...' > .env\n"
         )

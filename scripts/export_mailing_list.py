@@ -28,8 +28,9 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
 import argparse
+from db_config import get_database_url
 
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 
 CONFIDENCE_LEVELS = {
     'very_high': 1,

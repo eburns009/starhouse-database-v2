@@ -13,8 +13,9 @@ Date: 2025-11-15
 import csv
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from db_config import get_database_url
 
-DATABASE_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = get_database_url()
 
 def main():
     # Read TrueNCOA exceptions

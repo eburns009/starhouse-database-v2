@@ -8,11 +8,12 @@ from psycopg2.extras import RealDictCursor
 import csv
 import logging
 from datetime import datetime
+from db_config import get_database_url
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = get_database_url()
 
 def main():
     logger.info("")

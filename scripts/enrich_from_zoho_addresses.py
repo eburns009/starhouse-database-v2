@@ -16,8 +16,9 @@ import csv
 import psycopg2
 from datetime import datetime
 import sys
+from db_config import get_database_url
 
-DATABASE_URL = 'postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres'
+DATABASE_URL = get_database_url()
 
 def load_zoho_addresses():
     """Load addresses from Zoho Sales Orders CSV."""

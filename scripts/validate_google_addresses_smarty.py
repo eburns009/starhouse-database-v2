@@ -24,6 +24,7 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
 from datetime import datetime
+from db_config import get_database_url
 
 # Configuration
 SMARTY_API_URL = "https://us-street.api.smarty.com/street-address"
@@ -143,7 +144,7 @@ def validate_google_addresses(dry_run=True):
     conn = psycopg2.connect(
         dbname='postgres',
         user='postgres.lnagadkqejnopgfxwlkb',
-        password='gqelzN6LRew4Cy9H',
+        password=get_database_url().split('@')[0].split(':')[-1],
         host='aws-1-us-east-2.pooler.supabase.com',
         port='5432'
     )

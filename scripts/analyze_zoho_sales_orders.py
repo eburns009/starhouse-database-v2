@@ -22,8 +22,9 @@ from collections import defaultdict, Counter
 from datetime import datetime
 from decimal import Decimal
 import re
+from db_config import get_database_url
 
-DATABASE_URL = 'postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres'
+DATABASE_URL = get_database_url()
 
 def analyze_zoho_file():
     """Analyze the Zoho Sales Orders CSV file structure and content."""

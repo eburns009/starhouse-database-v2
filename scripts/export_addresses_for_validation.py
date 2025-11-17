@@ -6,8 +6,9 @@ Export addresses for SmartyStreets validation
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import csv
+from db_config import get_database_url
 
-DATABASE_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DATABASE_URL = get_database_url()
 
 conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor(cursor_factory=RealDictCursor)

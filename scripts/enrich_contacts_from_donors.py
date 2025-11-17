@@ -26,6 +26,7 @@ from datetime import datetime
 import sys
 import logging
 import os
+from db_config import get_database_url
 
 # ============================================================================
 # CONFIGURATION
@@ -34,7 +35,7 @@ import os
 DRY_RUN = False  # LIVE MODE: Executing changes
 BATCH_SIZE = 100
 
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 DONOR_FILE = "kajabi 3 files review/Donors_Quickbooks.csv"
 
 # Payment processors and system accounts to skip

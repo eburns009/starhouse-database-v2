@@ -27,6 +27,7 @@ from urllib.error import HTTPError, URLError
 from datetime import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from db_config import get_database_url
 
 # SmartyStreets API Configuration
 SMARTY_API_URL = "https://us-street.api.smarty.com/street-address"
@@ -34,7 +35,7 @@ SMARTY_AUTH_ID = os.getenv("SMARTY_AUTH_ID", "")
 SMARTY_AUTH_TOKEN = os.getenv("SMARTY_AUTH_TOKEN", "")
 
 # Database connection
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 
 # Rate limiting
 REQUESTS_PER_SECOND = 10

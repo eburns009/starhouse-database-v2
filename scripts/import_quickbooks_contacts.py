@@ -25,6 +25,7 @@ import re
 from datetime import datetime
 import sys
 import logging
+from db_config import get_database_url
 
 # ============================================================================
 # CONFIGURATION
@@ -33,7 +34,7 @@ import logging
 DRY_RUN = False  # LIVE MODE: Executing changes
 BATCH_SIZE = 100
 
-DB_URL = "postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+DB_URL = get_database_url()
 QB_FILE = "kajabi 3 files review/Quickbooks_Contacts.csv"
 
 # Setup logging
