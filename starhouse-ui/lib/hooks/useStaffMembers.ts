@@ -70,7 +70,7 @@ export function useStaffMembers(): UseStaffMembersResult {
           schema: 'public',
           table: 'staff_members'
         },
-        (payload) => {
+        (payload: unknown) => {
           console.log('[useStaffMembers] Real-time update:', payload)
 
           // Refetch to get fresh data

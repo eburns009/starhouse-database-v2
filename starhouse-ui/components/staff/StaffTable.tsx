@@ -25,7 +25,7 @@ import type { StaffMember, StaffRole } from '@/lib/types/staff.types'
 import { RoleBadge } from './RoleBadge'
 import { EditRoleDialog } from './EditRoleDialog'
 import { DeactivateStaffDialog } from './DeactivateStaffDialog'
-import { MoreVertical, Edit2, Trash2, Clock } from 'lucide-react'
+import { Edit2, Trash2, Clock } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface StaffTableProps {
