@@ -10,7 +10,7 @@
  */
 
 import { createClient } from '@/lib/supabase/client'
-import type { StaffMember, StaffRole, Database } from '@/lib/types/staff.types'
+import type { StaffMember, StaffRole } from '@/lib/types/staff.types'
 
 // ============================================================================
 // Error Types (FAANG Standard: Specific error handling)
