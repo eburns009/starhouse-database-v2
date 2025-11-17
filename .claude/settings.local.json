@@ -81,7 +81,14 @@
       "Bash(PGPASSWORD='gqelzN6LRew4Cy9H' psql -h aws-1-us-east-2.pooler.supabase.com -p 5432 -U postgres.lnagadkqejnopgfxwlkb -d postgres -c \"\n-- Data Consistency Check 3: Subscriptions with start_date AFTER first transaction\nSELECT COUNT(*) as subscriptions_starting_after_first_payment\nFROM subscriptions s\nJOIN LATERAL (\n  SELECT MIN(transaction_date) as first_transaction\n  FROM transactions t\n  WHERE t.subscription_id = s.id AND t.deleted_at IS NULL\n) t ON true\nWHERE s.start_date > t.first_transaction\n  AND s.deleted_at IS NULL;\n\")",
       "Bash(top:*)",
       "Bash(journalctl:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git log:*)",
+      "Bash(DATABASE_URL='postgresql://postgres:ia5Amxkf5fpf3wKU@db.lnagadkqejnopgfxwlkb.supabase.co:5432/postgres' python3:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git diff:*)",
+      "Bash(npx --version:*)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

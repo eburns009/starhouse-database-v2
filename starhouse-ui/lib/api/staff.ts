@@ -61,6 +61,31 @@ export interface APIResponse<T> {
 
 /**
  * Get all staff members
+ *
+ * Fetches all staff members from the database, sorted by role (admin first)
+ * and then by email address. Includes both active and inactive staff.
+ *
+ * @returns Promise resolving to APIResponse with staff members array
+ *
+ * @example
+ * ```typescript
+ * const result = await getStaffMembers()
+ *
+ * if (result.success) {
+ *   console.log(`Found ${result.data.length} staff members`)
+ *   result.data.forEach(member => {
+ *     console.log(`${member.email} - ${member.role}`)
+ *   })
+ * } else {
+ *   console.error(result.error.message)
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object
+ *
+ * @see {@link APIResponse} for response format
+ * @see {@link StaffMember} for staff member type definition
+ *
  * FAANG Standard: Efficient query with proper error handling
  */
 export async function getStaffMembers(): Promise<APIResponse<StaffMember[]>> {
@@ -107,6 +132,40 @@ export async function getStaffMembers(): Promise<APIResponse<StaffMember[]>> {
 
 /**
  * Get current user's staff information and permissions
+ *
+ * Fetches the currently authenticated user's staff record and calculates
+ * their permissions (isAdmin, canEdit) based on their role. This is the
+ * single source of truth for checking user permissions throughout the app.
+ *
+ * @returns Promise resolving to APIResponse with staff member plus permissions
+ *
+ * @example
+ * ```typescript
+ * const result = await getCurrentStaff()
+ *
+ * if (result.success) {
+ *   const { isAdmin, canEdit, role } = result.data
+ *
+ *   if (isAdmin) {
+ *     // Show admin-only features
+ *     showAdminPanel()
+ *   }
+ *
+ *   if (canEdit) {
+ *     // Enable edit buttons
+ *     enableEditing()
+ *   }
+ * } else if (result.error.code === 'UNAUTHORIZED') {
+ *   // User not logged in or not a staff member
+ *   redirectToLogin()
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object
+ *
+ * @see {@link APIResponse} for response format
+ * @see {@link StaffMember} for staff member type definition
+ *
  * FAANG Standard: Single source of truth for user permissions
  */
 export async function getCurrentStaff(): Promise<APIResponse<StaffMember & { isAdmin: boolean; canEdit: boolean }>> {
@@ -173,6 +232,51 @@ export async function getCurrentStaff(): Promise<APIResponse<StaffMember & { isA
 
 /**
  * Add a new staff member
+ *
+ * Creates a new staff member with the specified role and optional metadata.
+ * Only admins can add staff members. The operation is idempotent - if the
+ * staff member already exists, it returns a validation error rather than
+ * creating a duplicate.
+ *
+ * @param email - Valid email address (required, validated)
+ * @param role - One of 'admin', 'full_user', or 'read_only' (required)
+ * @param displayName - Optional friendly name for the staff member
+ * @param notes - Optional internal notes about the staff member
+ *
+ * @returns Promise resolving to APIResponse with created staff member info
+ *
+ * @example
+ * ```typescript
+ * // Basic usage
+ * const result = await addStaffMember(
+ *   'newuser@starhouse.org',
+ *   'full_user'
+ * )
+ *
+ * // With display name and notes
+ * const result = await addStaffMember(
+ *   'john.smith@starhouse.org',
+ *   'admin',
+ *   'John Smith',
+ *   'Development team lead, hired Nov 2025'
+ * )
+ *
+ * if (result.success) {
+ *   console.log(`Added: ${result.data.email} as ${result.data.role}`)
+ * } else if (result.error.code === 'VALIDATION_ERROR') {
+ *   // Handle validation errors (invalid email, duplicate, etc.)
+ *   showError(result.error.message)
+ * } else if (result.error.code === 'UNAUTHORIZED') {
+ *   // User is not an admin
+ *   showError('Only admins can add staff members')
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object
+ *
+ * @see {@link StaffRole} for valid role values
+ * @see {@link APIResponse} for response format
+ *
  * FAANG Standard: Input validation + idempotent operation
  */
 export async function addStaffMember(
@@ -242,6 +346,40 @@ export async function addStaffMember(
 
 /**
  * Change staff member role
+ *
+ * Updates a staff member's role to a new value. Only admins can change roles.
+ * Admins cannot demote themselves. All role changes are logged in the audit trail.
+ *
+ * @param email - Email address of the staff member to update (required)
+ * @param newRole - New role to assign: 'admin', 'full_user', or 'read_only' (required)
+ *
+ * @returns Promise resolving to APIResponse with old and new role information
+ *
+ * @example
+ * ```typescript
+ * // Promote user to admin
+ * const result = await changeStaffRole(
+ *   'user@starhouse.org',
+ *   'admin'
+ * )
+ *
+ * if (result.success) {
+ *   console.log(`Changed ${result.data.email} from ${result.data.oldRole} to ${result.data.newRole}`)
+ *   showToast('Role updated successfully')
+ * } else if (result.error.code === 'VALIDATION_ERROR') {
+ *   if (result.error.message.includes('demote yourself')) {
+ *     showError('You cannot demote yourself from admin')
+ *   } else {
+ *     showError(result.error.message)
+ *   }
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object
+ *
+ * @see {@link StaffRole} for valid role values
+ * @see {@link APIResponse} for response format
+ *
  * FAANG Standard: Authorization check + audit trail
  */
 export async function changeStaffRole(
@@ -309,6 +447,36 @@ export async function changeStaffRole(
 
 /**
  * Deactivate staff member
+ *
+ * Deactivates a staff member (soft delete). The staff member will no longer
+ * be able to log in, but their historical data and audit trail are preserved.
+ * Only admins can deactivate staff members. This operation can be reversed
+ * by reactivating the staff member.
+ *
+ * @param email - Email address of the staff member to deactivate (required)
+ *
+ * @returns Promise resolving to APIResponse with deactivation timestamp
+ *
+ * @example
+ * ```typescript
+ * // Deactivate a staff member
+ * const result = await deactivateStaffMember('user@starhouse.org')
+ *
+ * if (result.success) {
+ *   console.log(`Deactivated at: ${result.data.deactivatedAt}`)
+ *   showToast('Staff member deactivated')
+ *   refetchStaffList()
+ * } else if (result.error.code === 'VALIDATION_ERROR') {
+ *   showError('Staff member not found')
+ * } else if (result.error.code === 'UNAUTHORIZED') {
+ *   showError('Only admins can deactivate staff members')
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object
+ *
+ * @see {@link APIResponse} for response format
+ *
  * FAANG Standard: Soft delete with audit trail
  */
 export async function deactivateStaffMember(
@@ -365,6 +533,32 @@ export async function deactivateStaffMember(
 
 /**
  * Update staff member last login timestamp
+ *
+ * Updates the last_login_at timestamp for the current logged-in user.
+ * This is automatically called when a user logs in. If the user is not
+ * authenticated or not a staff member, the operation silently succeeds
+ * without updating anything (non-critical operation).
+ *
+ * @returns Promise resolving to APIResponse (always success, even if no update)
+ *
+ * @example
+ * ```typescript
+ * // Called automatically on login
+ * useEffect(() => {
+ *   updateLastLogin() // Fire and forget
+ * }, [])
+ *
+ * // Or explicitly after authentication
+ * const handleLogin = async () => {
+ *   await supabase.auth.signIn(credentials)
+ *   await updateLastLogin()
+ * }
+ * ```
+ *
+ * @throws Never throws - all errors are returned in the response object (always success)
+ *
+ * @see {@link APIResponse} for response format
+ *
  * FAANG Standard: Automatic audit trail
  */
 export async function updateLastLogin(): Promise<APIResponse<void>> {
