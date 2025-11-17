@@ -63,7 +63,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_migrated_count
     FROM staff_members
-    WHERE role = 'full_user' AND updated_at IS NULL;
+    WHERE role = 'full_user';
 
     RAISE NOTICE 'Migrated % staff members from "staff" to "full_user" role', v_migrated_count;
 END $$;
@@ -221,6 +221,12 @@ GRANT EXECUTE ON FUNCTION get_user_role TO authenticated;
 -- STEP 6: UPDATE STAFF MEMBER FUNCTIONS (Add display_name support)
 -- ============================================================================
 
+-- Drop existing function variants to avoid conflicts (idempotent migration)
+DROP FUNCTION IF EXISTS add_staff_member(TEXT);
+DROP FUNCTION IF EXISTS add_staff_member(TEXT, TEXT);
+DROP FUNCTION IF EXISTS add_staff_member(TEXT, TEXT, TEXT);
+DROP FUNCTION IF EXISTS add_staff_member(TEXT, TEXT, TEXT, TEXT);
+
 -- Update add_staff_member function to support display_name
 CREATE OR REPLACE FUNCTION add_staff_member(
     p_email TEXT,
@@ -337,6 +343,10 @@ GRANT EXECUTE ON FUNCTION change_staff_role TO authenticated;
 
 -- Tags table policies
 DROP POLICY IF EXISTS "staff_full_access" ON tags;
+DROP POLICY IF EXISTS "staff_read_tags" ON tags;
+DROP POLICY IF EXISTS "staff_modify_tags" ON tags;
+DROP POLICY IF EXISTS "staff_update_tags" ON tags;
+DROP POLICY IF EXISTS "admin_delete_tags" ON tags;
 
 CREATE POLICY "staff_read_tags" ON tags FOR SELECT TO authenticated
     USING (is_verified_staff());
@@ -352,6 +362,10 @@ CREATE POLICY "admin_delete_tags" ON tags FOR DELETE TO authenticated
 
 -- Products table policies
 DROP POLICY IF EXISTS "staff_full_access" ON products;
+DROP POLICY IF EXISTS "staff_read_products" ON products;
+DROP POLICY IF EXISTS "staff_modify_products" ON products;
+DROP POLICY IF EXISTS "staff_update_products" ON products;
+DROP POLICY IF EXISTS "admin_delete_products" ON products;
 
 CREATE POLICY "staff_read_products" ON products FOR SELECT TO authenticated
     USING (is_verified_staff());
@@ -367,6 +381,10 @@ CREATE POLICY "admin_delete_products" ON products FOR DELETE TO authenticated
 
 -- Transactions table policies
 DROP POLICY IF EXISTS "staff_full_access" ON transactions;
+DROP POLICY IF EXISTS "staff_read_transactions" ON transactions;
+DROP POLICY IF EXISTS "staff_modify_transactions" ON transactions;
+DROP POLICY IF EXISTS "staff_update_transactions" ON transactions;
+DROP POLICY IF EXISTS "admin_delete_transactions" ON transactions;
 
 CREATE POLICY "staff_read_transactions" ON transactions FOR SELECT TO authenticated
     USING (is_verified_staff());
@@ -382,6 +400,10 @@ CREATE POLICY "admin_delete_transactions" ON transactions FOR DELETE TO authenti
 
 -- Subscriptions table policies
 DROP POLICY IF EXISTS "staff_full_access" ON subscriptions;
+DROP POLICY IF EXISTS "staff_read_subscriptions" ON subscriptions;
+DROP POLICY IF EXISTS "staff_modify_subscriptions" ON subscriptions;
+DROP POLICY IF EXISTS "staff_update_subscriptions" ON subscriptions;
+DROP POLICY IF EXISTS "admin_delete_subscriptions" ON subscriptions;
 
 CREATE POLICY "staff_read_subscriptions" ON subscriptions FOR SELECT TO authenticated
     USING (is_verified_staff());
