@@ -34,7 +34,7 @@
   "extensions.autoCheckUpdates": false,
   // Codespaces specific - prevent relaunch prompts
   "remote.autoForwardPorts": false,
-  "remote.autoForwardPortsSource": "output",
+  "remote.autoForwardPortsSource": "hybrid",
   // Notifications - reduce interruptions
   "update.mode": "none",
   "update.showReleaseNotes": false,
@@ -42,17 +42,17 @@
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-    "**/node_modules/**": true,  // Changed: Deep exclude for all node_modules
+    "**/node_modules/**": true, // Changed: Deep exclude for all node_modules
     "**/.hg/store/**": true,
     "**/__pycache__/**": true,
     "**/.pytest_cache/**": true,
     "**/.mypy_cache/**": true,
     "**/.ruff_cache/**": true,
-    "**/.next/**": true,  // Added: Next.js build artifacts
-    "**/logs/**": true,   // Added: Log directory
-    "**/dist/**": true,   // Added: Distribution builds
-    "**/build/**": true,  // Added: Build artifacts
-    "**/.venv/**": true   // Added: Python virtual environment
+    "**/.next/**": true, // Added: Next.js build artifacts
+    "**/logs/**": true, // Added: Log directory
+    "**/dist/**": true, // Added: Distribution builds
+    "**/build/**": true, // Added: Build artifacts
+    "**/.venv/**": true // Added: Python virtual environment
   },
   // Search - Exclude same patterns from search
   "search.exclude": {
