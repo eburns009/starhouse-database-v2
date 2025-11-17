@@ -1,22 +1,16 @@
 {
   "name": "Starhouse Database v2",
-
-  // Use the default Codespaces image
   "image": "mcr.microsoft.com/devcontainers/universal:2",
-
-  // Configure tool-specific properties
   "customizations": {
     "vscode": {
-      // Extensions to install
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
         "charliermarsh.ruff",
         "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg"
+        "mtxr.sqltools-driver-pg",
+        "anthropic.claude-code"
       ],
-
-      // Settings that override .vscode/settings.json if needed
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.profiles.linux": {
@@ -28,33 +22,21 @@
       }
     }
   },
-
-  // Features to install
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11"
+      "version": "3.12"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "18"
+      "version": "22"
     }
   },
-
-  // Post-create command to set up the environment
   "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
-
-  // Environment variables
   "remoteEnv": {
     "PYTHONUNBUFFERED": "1"
   },
-
-  // Use 'forwardPorts' to make a list of ports inside the container available locally
   "forwardPorts": [3000, 5432],
-
-  // Use 'postAttachCommand' to run commands after the container is created and attached
   "postAttachCommand": "echo 'Development environment ready!'",
-
-  // Configure mount points - keep git config
   "mounts": [
-    "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.gitconfig,target=/home/codespace/.gitconfig,type=bind,consistency=cached"
   ]
 }
