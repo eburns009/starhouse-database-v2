@@ -25,7 +25,8 @@ import type { StaffMember, StaffRole } from '@/lib/types/staff.types'
 import { RoleBadge } from './RoleBadge'
 import { EditRoleDialog } from './EditRoleDialog'
 import { DeactivateStaffDialog } from './DeactivateStaffDialog'
-import { Edit2, Trash2, Clock } from 'lucide-react'
+import { ResetPasswordDialog } from './ResetPasswordDialog'
+import { Edit2, Trash2, Clock, KeyRound } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface StaffTableProps {
@@ -38,6 +39,7 @@ interface StaffTableProps {
 export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: StaffTableProps) {
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null)
   const [deactivatingStaff, setDeactivatingStaff] = useState<StaffMember | null>(null)
+  const [resettingPasswordStaff, setResettingPasswordStaff] = useState<StaffMember | null>(null)
   const [sortKey, setSortKey] = useState<keyof StaffMember>('role')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
@@ -74,6 +76,10 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
 
   const handleDeactivate = (member: StaffMember) => {
     setDeactivatingStaff(member)
+  }
+
+  const handleResetPassword = (member: StaffMember) => {
+    setResettingPasswordStaff(member)
   }
 
   return (
@@ -201,6 +207,7 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
                               variant="ghost"
                               onClick={() => handleEditRole(member)}
                               disabled={!member.active}
+                              title="Change role"
                             >
                               <Edit2 className="h-4 w-4" />
                               <span className="sr-only">Edit role</span>
@@ -208,9 +215,21 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
                             <Button
                               size="sm"
                               variant="ghost"
+                              onClick={() => handleResetPassword(member)}
+                              disabled={!member.active}
+                              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              title="Reset password"
+                            >
+                              <KeyRound className="h-4 w-4" />
+                              <span className="sr-only">Reset password</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
                               onClick={() => handleDeactivate(member)}
                               disabled={!member.active || isSelf}
                               className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="Deactivate staff member"
                             >
                               <Trash2 className="h-4 w-4" />
                               <span className="sr-only">Deactivate</span>
@@ -241,6 +260,13 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
         onOpenChange={(open) => !open && setDeactivatingStaff(null)}
         staff={deactivatingStaff}
         onSuccess={onRefetch}
+      />
+
+      <ResetPasswordDialog
+        open={!!resettingPasswordStaff}
+        onOpenChange={(open) => !open && setResettingPasswordStaff(null)}
+        staffEmail={resettingPasswordStaff?.email || ''}
+        staffDisplayName={resettingPasswordStaff?.display_name || undefined}
       />
     </>
   )

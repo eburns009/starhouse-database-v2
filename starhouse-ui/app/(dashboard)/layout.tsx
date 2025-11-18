@@ -1,11 +1,21 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { Users, Heart, Building, Sparkles, Home, Menu, X, Shield } from 'lucide-react'
+import { Users, Heart, Building, Sparkles, Home, Menu, X, Shield, KeyRound, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { ChangePasswordDialog } from '@/components/staff/ChangePasswordDialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 
 const modules = [
   { name: 'Dashboard', icon: Home, href: '/', exact: true },
@@ -25,6 +35,7 @@ export default function DashboardLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -45,6 +56,12 @@ export default function DashboardLayout({
       return pathname === href
     }
     return pathname.startsWith(href)
+  }
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = '/login'
   }
 
   // Show loading state while checking auth
@@ -98,15 +115,35 @@ export default function DashboardLayout({
           {/* User info */}
           {user && (
             <div className="border-t border-border/50 p-4">
-              <div className="flex items-center gap-3 rounded-xl bg-secondary/30 px-4 py-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-xs font-semibold text-white">
-                  {user.email?.[0].toUpperCase()}
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <p className="truncate text-sm font-medium">{user.email}</p>
-                  <p className="text-xs text-muted-foreground">Staff Member</p>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 rounded-xl bg-secondary/30 px-4 py-3 h-auto hover:bg-secondary/50"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-xs font-semibold text-white">
+                      {user.email?.[0].toUpperCase()}
+                    </div>
+                    <div className="flex-1 overflow-hidden text-left">
+                      <p className="truncate text-sm font-medium">{user.email}</p>
+                      <p className="text-xs text-muted-foreground">Staff Member</p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    Change Password
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
         </div>
@@ -176,15 +213,35 @@ export default function DashboardLayout({
           {/* User info */}
           {user && (
             <div className="border-t border-border/50 p-4">
-              <div className="flex items-center gap-3 rounded-xl bg-secondary/30 px-4 py-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-xs font-semibold text-white">
-                  {user.email?.[0].toUpperCase()}
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <p className="truncate text-sm font-medium">{user.email}</p>
-                  <p className="text-xs text-muted-foreground">Staff Member</p>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 rounded-xl bg-secondary/30 px-4 py-3 h-auto hover:bg-secondary/50"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-xs font-semibold text-white">
+                      {user.email?.[0].toUpperCase()}
+                    </div>
+                    <div className="flex-1 overflow-hidden text-left">
+                      <p className="truncate text-sm font-medium">{user.email}</p>
+                      <p className="text-xs text-muted-foreground">Staff Member</p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
+                    <KeyRound className="mr-2 h-4 w-4" />
+                    Change Password
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
         </div>
@@ -192,6 +249,12 @@ export default function DashboardLayout({
 
       {/* Main content */}
       <main className="flex-1 overflow-auto scrollbar-thin pt-16 md:pt-0">{children}</main>
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+      />
     </div>
   )
 }

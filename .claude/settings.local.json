@@ -88,7 +88,17 @@
       "Bash(git diff:*)",
       "Bash(npx --version:*)",
       "Bash(npm install:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(DATABASE_URL='postgresql://postgres.lnagadkqejnopgfxwlkb:gqelzN6LRew4Cy9H@aws-1-us-east-2.pooler.supabase.com:5432/postgres' psql -c \"\\d staff_members\")",
+      "Bash(if [ -f .env.local ])",
+      "Bash(then grep -E \"(SUPABASE|DATABASE)\" .env.local)",
+      "Bash(elif [ -f starhouse-ui/.env.local ])",
+      "Bash(then grep -E \"(SUPABASE|DATABASE)\" starhouse-ui/.env.local)",
+      "Bash(else echo \"No .env.local found\")",
+      "Bash(pip3 install:*)",
+      "Bash(supabase status:*)",
+      "Bash(npx shadcn-ui@latest add dropdown-menu:*)",
+      "Bash(npx shadcn@latest add dropdown-menu:*)"
     ],
     "deny": [],
     "ask": []

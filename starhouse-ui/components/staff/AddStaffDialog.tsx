@@ -58,7 +58,12 @@ export function AddStaffDialog({ open, onOpenChange, onSuccess }: AddStaffDialog
     }
   })
 
-  const { add, isAdding, error, clearError } = useStaffActions(() => {
+  const { add, isAdding, error, clearError } = useStaffActions(async () => {
+    // Show success message with invitation info
+    const toastModule = await import('sonner')
+    toastModule.toast.success('Staff member invited successfully', {
+      description: 'An invitation email has been sent with instructions to set up their account.'
+    })
     onSuccess?.()
     handleClose()
   })
