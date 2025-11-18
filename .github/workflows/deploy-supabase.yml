@@ -1,0 +1,70 @@
+name: Deploy Supabase Edge Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/deploy-supabase.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy Edge Functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          echo "Deploying Edge Functions to Supabase..."
+
+          # Link to project
+          supabase link --project-ref $SUPABASE_PROJECT_ID
+
+          # Deploy invite-staff-member function
+          echo "Deploying invite-staff-member..."
+          supabase functions deploy invite-staff-member --no-verify-jwt=false
+
+          # Deploy reset-staff-password function
+          echo "Deploying reset-staff-password..."
+          supabase functions deploy reset-staff-password --no-verify-jwt=false
+
+          echo "✅ Edge Functions deployed successfully!"
+
+      - name: Verify Deployment
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          echo "Verifying deployed functions..."
+          supabase functions list
+
+      - name: Notify on Success
+        if: success()
+        run: |
+          echo "🎉 Deployment successful!"
+          echo "Functions deployed:"
+          echo "  - invite-staff-member"
+          echo "  - reset-staff-password"
+
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed. Check logs above for details."
+          exit 1
