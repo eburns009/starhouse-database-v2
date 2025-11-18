@@ -98,7 +98,10 @@
       "Bash(pip3 install:*)",
       "Bash(supabase status:*)",
       "Bash(npx shadcn-ui@latest add dropdown-menu:*)",
-      "Bash(npx shadcn@latest add dropdown-menu:*)"
+      "Bash(npx shadcn@latest add dropdown-menu:*)",
+      "Bash(mkdir:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(README.md)"
     ],
     "deny": [],
     "ask": []

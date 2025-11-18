@@ -812,6 +812,15 @@ async function findOrCreateContact(supabase: any, payload: any): Promise<any> {
         updates.shipping_address_updated_at = new Date().toISOString()
       }
 
+      // AUDIT LOGGING: Set context for name change tracking
+      try {
+        await supabase.rpc('execute_sql', {
+          sql: `SELECT set_config('app.change_source', 'paypal_webhook', false), set_config('app.change_context', 'paypal_email:${paypalEmail}', false)`
+        })
+      } catch (auditError) {
+        console.warn('⚠️ Failed to set audit context:', auditError)
+      }
+
       await supabase
         .from('contacts')
         .update(updates)
@@ -857,6 +866,16 @@ async function findOrCreateContact(supabase: any, payload: any): Promise<any> {
     newContact.shipping_address_verified = true  // PayPal verified!
     newContact.shipping_address_updated_at = new Date().toISOString()
     console.log(`📦 Adding verified shipping address from PayPal`)
+  }
+
+  // AUDIT LOGGING: Set context for name change tracking
+  try {
+    await supabase.rpc('execute_sql', {
+      sql: `SELECT set_config('app.change_source', 'paypal_webhook', false), set_config('app.change_context', 'paypal_email:${paypalEmail}', false)`
+    })
+    console.log(`🔍 Audit context set for PayPal contact ${paypalEmail}`)
+  } catch (auditError) {
+    console.warn('⚠️ Failed to set audit context:', auditError)
   }
 
   const { data: createdContact } = await supabase

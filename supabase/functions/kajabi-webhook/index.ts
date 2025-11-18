@@ -726,6 +726,18 @@ async function handleContact(supabase: any, data: any) {
     console.log(`📍 Captured billing address from Kajabi for ${email}`)
   }
 
+  // AUDIT LOGGING: Set context for name change tracking
+  // This will be captured by the log_contact_name_change() trigger
+  try {
+    await supabase.rpc('execute_sql', {
+      sql: `SELECT set_config('app.change_source', 'kajabi_webhook', false), set_config('app.change_context', 'kajabi_id:${data.id}', false)`
+    })
+    console.log(`🔍 Audit context set for contact ${email}`)
+  } catch (auditError) {
+    // Non-fatal: continue even if audit context fails
+    console.warn('⚠️ Failed to set audit context:', auditError)
+  }
+
   // Upsert contact
   const { data: result, error } = await supabase
     .from('contacts')
