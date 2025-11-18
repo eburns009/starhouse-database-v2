@@ -60,14 +60,14 @@ def main():
         insert_result = supabase.table('staff_members').insert({
             'email': admin_email,
             'role': 'admin',
-            'display_name': 'Erik Burns',
+            'display_name': 'Ed Burns',
             'active': True,
             'added_by': 'bootstrap_script',
             'notes': 'Initial admin user - added via bootstrap script'
         }).execute()
 
         print(f"   ✅ Successfully added {admin_email} as admin!")
-        print(f"   Display Name: Erik Burns")
+        print(f"   Display Name: Ed Burns")
         print(f"   Role: admin")
         print(f"   Active: true")
 

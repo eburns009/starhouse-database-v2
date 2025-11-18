@@ -2,15 +2,75 @@
 
 **Date:** 2025-11-18
 **Issue:** Ed Burns → Erik Burns name mutation
-**Status:** 🔧 Root cause identified, safeguards implemented
+**Status:** ✅ RESOLVED - Typo in bootstrap script, fixed in database
 
 ---
 
 ## Summary
 
-**Root Cause:** Kajabi webhook handler automatically overwrites contact names when receiving `contact.updated` events from Kajabi. If someone updated the Kajabi contact to "Erik Burns", it would immediately overwrite "Ed Burns" in your database with no audit trail.
+**ACTUAL Root Cause:** Typo in `add_admin.py` bootstrap script (line 63) wrote "Erik Burns" instead of "Ed Burns" to the `staff_members` table during UI deployment.
 
-**Risk Level:** CRITICAL - Affects all contacts, happens automatically, no visibility
+**Impact:** LOW - Only affected display name in Staff Management UI, not the actual contacts table.
+
+**Resolution:**
+- ✅ Fixed typo in add_admin.py
+- ✅ Updated staff_members table to "Ed Burns"
+- ✅ Added audit logging for future name change tracking (preventive measure)
+
+---
+
+## What Actually Happened
+
+### The Bug
+
+**File:** [`add_admin.py:63`](add_admin.py#L63)
+
+```python
+# BEFORE (typo):
+'display_name': 'Erik Burns',
+
+# AFTER (fixed):
+'display_name': 'Ed Burns',
+```
+
+**When it ran:** During the staff authentication deployment (commit db3512d on 2025-11-17)
+
+**What it did:** Added you as admin to the `staff_members` table with incorrect display name
+
+**Where you saw it:**
+- Staff Management UI (`/staff` page)
+- User profile menu (sidebar)
+- Anywhere staff member names are displayed
+
+**What was NOT affected:**
+- ❌ Contacts table (your customer contact record is fine)
+- ❌ Kajabi data
+- ❌ PayPal data
+- ❌ Transaction records
+
+---
+
+## Initial Misdiagnosis
+
+**What I initially thought:** Kajabi webhook was overwriting contact names automatically.
+
+**Why I was wrong:** No webhooks are currently active, so they couldn't have caused the change.
+
+**Why the confusion:** The investigation found multiple risky code paths that COULD mutate names (webhooks, enrichment scripts), which are real issues for the future, but not the cause of THIS specific incident.
+
+---
+
+## Risk Level Downgrade
+
+**Initial assessment:** CRITICAL - automatic data corruption across all contacts
+
+**Actual assessment:** LOW - simple typo in one-time bootstrap script affecting only staff UI display
+
+---
+
+## Potential Future Risks (Still Valid)
+
+While the Ed→Erik issue was just a typo, the investigation uncovered real risks:
 
 ---
 
