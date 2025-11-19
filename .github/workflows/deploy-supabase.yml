@@ -59,19 +59,38 @@ jobs:
           echo "✅ Successfully linked to project"
           echo ""
 
-          # Deploy invite-staff-member function
+          # Deploy all Edge Functions
+          echo "📦 Deploying health..."
+          supabase functions deploy health --no-verify-jwt
+          echo "✅ health deployed"
+          echo ""
+
           echo "📦 Deploying invite-staff-member..."
           supabase functions deploy invite-staff-member --no-verify-jwt=false
           echo "✅ invite-staff-member deployed"
           echo ""
 
-          # Deploy reset-staff-password function
           echo "📦 Deploying reset-staff-password..."
           supabase functions deploy reset-staff-password --no-verify-jwt=false
           echo "✅ reset-staff-password deployed"
           echo ""
 
-          echo "🎉 All edge functions deployed successfully!"
+          echo "📦 Deploying kajabi-webhook..."
+          supabase functions deploy kajabi-webhook --no-verify-jwt
+          echo "✅ kajabi-webhook deployed"
+          echo ""
+
+          echo "📦 Deploying paypal-webhook..."
+          supabase functions deploy paypal-webhook --no-verify-jwt
+          echo "✅ paypal-webhook deployed"
+          echo ""
+
+          echo "📦 Deploying ticket-tailor-webhook..."
+          supabase functions deploy ticket-tailor-webhook --no-verify-jwt
+          echo "✅ ticket-tailor-webhook deployed"
+          echo ""
+
+          echo "🎉 All 6 edge functions deployed successfully!"
 
       - name: Verify Deployment
         env:
@@ -86,8 +105,12 @@ jobs:
         run: |
           echo "🎉 Deployment successful!"
           echo "Functions deployed:"
-          echo "  - invite-staff-member"
-          echo "  - reset-staff-password"
+          echo "  - health (no JWT verification)"
+          echo "  - invite-staff-member (JWT required)"
+          echo "  - reset-staff-password (JWT required)"
+          echo "  - kajabi-webhook (no JWT verification)"
+          echo "  - paypal-webhook (no JWT verification)"
+          echo "  - ticket-tailor-webhook (no JWT verification)"
 
       - name: Notify on Failure
         if: failure()
