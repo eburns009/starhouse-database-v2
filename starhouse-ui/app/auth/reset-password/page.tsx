@@ -31,7 +31,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 // Common weak passwords to block (subset - full list would be much larger)
 const COMMON_PASSWORDS = new Set([
@@ -58,7 +58,6 @@ export default function ResetPasswordPage() {
   const [sessionValid, setSessionValid] = useState<boolean | null>(null)
 
   const router = useRouter()
-  const searchParams = useSearchParams()
   const supabase = createClient()
 
   // ========================================================================
