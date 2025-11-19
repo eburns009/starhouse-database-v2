@@ -30,7 +30,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 // Common weak passwords to block (subset - full list would be much larger)
@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
 
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   // ========================================================================
   // Session Validation: Verify user has valid recovery token
