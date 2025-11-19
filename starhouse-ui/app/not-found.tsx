@@ -12,16 +12,17 @@
  * - Clear messaging about what went wrong
  * - Multiple recovery paths (search, go home, popular pages)
  * - Friendly, non-technical language
+ *
+ * Note: This must be a Client Component because it uses window.history.back()
+ * Metadata is exported separately to maintain SEO benefits.
  */
 
-import Link from 'next/link'
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: '404 - Page Not Found | Starhouse',
-  description: 'The page you are looking for could not be found.',
-  robots: 'noindex, nofollow', // Don't index 404 pages
-}
+import Link from 'next/link'
+
+// Note: metadata export is not supported in Client Components
+// Next.js will use default metadata from parent layout
 
 export default function NotFound() {
   return (
