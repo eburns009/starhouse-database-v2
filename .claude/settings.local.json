@@ -101,7 +101,17 @@
       "Bash(npx shadcn@latest add dropdown-menu:*)",
       "Bash(mkdir:*)",
       "Bash(git ls-tree:*)",
-      "Bash(README.md)"
+      "Bash(README.md)",
+      "Bash(supabase functions list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh secret:*)",
+      "Bash(curl:*)",
+      "Bash(tar:*)",
+      "Bash(sudo mv:*)",
+      "Bash(supabase --version:*)",
+      "Bash(supabase link:*)",
+      "Bash(/usr/local/bin/supabase link:*)"
     ],
     "deny": [],
     "ask": []

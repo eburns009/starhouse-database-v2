@@ -27,25 +27,51 @@ jobs:
         with:
           version: latest
 
+      - name: Validate Secrets
+        run: |
+          echo "Validating required secrets..."
+          if [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ]; then
+            echo "❌ SUPABASE_ACCESS_TOKEN secret is not set"
+            echo "Please configure it in repository Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUPABASE_PROJECT_ID }}" ]; then
+            echo "❌ SUPABASE_PROJECT_ID secret is not set"
+            echo "Please configure it in repository Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "✅ All required secrets are configured"
+
       - name: Deploy Edge Functions
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
-          echo "Deploying Edge Functions to Supabase..."
+          set -e  # Exit on any error
+
+          echo "🚀 Deploying Edge Functions to Supabase..."
+          echo "Project: $SUPABASE_PROJECT_ID"
+          echo ""
 
           # Link to project
+          echo "📡 Linking to Supabase project..."
           supabase link --project-ref $SUPABASE_PROJECT_ID
+          echo "✅ Successfully linked to project"
+          echo ""
 
           # Deploy invite-staff-member function
-          echo "Deploying invite-staff-member..."
+          echo "📦 Deploying invite-staff-member..."
           supabase functions deploy invite-staff-member --no-verify-jwt=false
+          echo "✅ invite-staff-member deployed"
+          echo ""
 
           # Deploy reset-staff-password function
-          echo "Deploying reset-staff-password..."
+          echo "📦 Deploying reset-staff-password..."
           supabase functions deploy reset-staff-password --no-verify-jwt=false
+          echo "✅ reset-staff-password deployed"
+          echo ""
 
-          echo "✅ Edge Functions deployed successfully!"
+          echo "🎉 All edge functions deployed successfully!"
 
       - name: Verify Deployment
         env:
