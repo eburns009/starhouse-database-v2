@@ -147,7 +147,8 @@ export default function ResetPasswordPage() {
     // Cap score at 4
     score = Math.min(4, score) as 0 | 1 | 2 | 3 | 4
 
-    const strengthMap = {
+    // FAANG Standard: Explicit type annotation for strict TypeScript compliance
+    const strengthMap: Record<0 | 1 | 2 | 3 | 4, { color: string; label: string }> = {
       0: { color: 'red', label: 'Very Weak' },
       1: { color: 'orange', label: 'Weak' },
       2: { color: 'yellow', label: 'Fair' },
