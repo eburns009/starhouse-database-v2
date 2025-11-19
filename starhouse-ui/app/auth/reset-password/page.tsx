@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
     return {
       score,
       feedback: feedback.length > 0 ? feedback : ['Password meets requirements'],
-      ...strengthMap[score]
+      ...strengthMap[score as keyof typeof strengthMap]
     }
   }, [])
 
