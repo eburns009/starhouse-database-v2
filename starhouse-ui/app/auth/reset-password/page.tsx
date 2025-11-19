@@ -144,8 +144,8 @@ export default function ResetPasswordPage() {
       score = Math.max(0, score - 1)
     }
 
-    // Cap score at 4
-    score = Math.min(4, score) as 0 | 1 | 2 | 3 | 4
+    // Cap score at 4 and ensure it's the correct literal type
+    const finalScore = Math.min(4, score) as 0 | 1 | 2 | 3 | 4
 
     // FAANG Standard: Explicit type annotation for strict TypeScript compliance
     const strengthMap: Record<0 | 1 | 2 | 3 | 4, { color: string; label: string }> = {
@@ -157,9 +157,9 @@ export default function ResetPasswordPage() {
     }
 
     return {
-      score,
+      score: finalScore,
       feedback: feedback.length > 0 ? feedback : ['Password meets requirements'],
-      ...strengthMap[score as keyof typeof strengthMap]
+      ...strengthMap[finalScore]
     }
   }, [])
 
