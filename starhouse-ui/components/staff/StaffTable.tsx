@@ -50,9 +50,13 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
       const bVal = b[sortKey]
 
       // NULLS LAST - users who never signed in appear at the end
-      if (aVal === null && bVal === null) return 0
-      if (aVal === null) return 1
-      if (bVal === null) return -1
+      // Handle both null and undefined
+      const aIsNull = aVal === null || aVal === undefined
+      const bIsNull = bVal === null || bVal === undefined
+
+      if (aIsNull && bIsNull) return 0
+      if (aIsNull) return 1
+      if (bIsNull) return -1
 
       const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0
       return sortOrder === 'asc' ? comparison : -comparison
