@@ -64,7 +64,6 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
   }, [staff, sortKey, sortOrder])
 
   // Status counts
-  const activeCount = staff.filter(s => s.active).length
   const inactiveCount = staff.filter(s => !s.active).length
   const verifiedCount = staff.filter(s => s.active && s.email_confirmed_at).length
   const pendingCount = staff.filter(s => s.active && !s.email_confirmed_at).length
