@@ -6,6 +6,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type StaffRole = 'admin' | 'full_user' | 'read_only'
 
 export interface StaffMember {
+  id: string // UUID - primary key, links to auth.users
   email: string
   role: string
   added_at: string
@@ -15,7 +16,12 @@ export interface StaffMember {
   deactivated_at: string | null
   deactivated_by: string | null
   display_name: string | null
-  last_login_at: string | null
+  // Auth metadata (synced from auth.users)
+  last_sign_in_at: string | null
+  email_confirmed_at: string | null
+  updated_at: string
+  // Legacy field - use last_sign_in_at instead
+  last_login_at?: string | null
 }
 
 export interface Database {

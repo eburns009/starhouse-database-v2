@@ -26,7 +26,7 @@ import { RoleBadge } from './RoleBadge'
 import { EditRoleDialog } from './EditRoleDialog'
 import { DeactivateStaffDialog } from './DeactivateStaffDialog'
 import { ResetPasswordDialog } from './ResetPasswordDialog'
-import { Edit2, Trash2, Clock, KeyRound } from 'lucide-react'
+import { Edit2, Trash2, Clock, KeyRound, CheckCircle2, AlertCircle } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface StaffTableProps {
@@ -40,15 +40,17 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null)
   const [deactivatingStaff, setDeactivatingStaff] = useState<StaffMember | null>(null)
   const [resettingPasswordStaff, setResettingPasswordStaff] = useState<StaffMember | null>(null)
-  const [sortKey, setSortKey] = useState<keyof StaffMember>('role')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [sortKey, setSortKey] = useState<keyof StaffMember>('last_sign_in_at')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
-  // Sort staff
+  // Sort staff - NULLS LAST for proper ordering
   const sortedStaff = useMemo(() => {
     return [...staff].sort((a, b) => {
       const aVal = a[sortKey]
       const bVal = b[sortKey]
 
+      // NULLS LAST - users who never signed in appear at the end
+      if (aVal === null && bVal === null) return 0
       if (aVal === null) return 1
       if (bVal === null) return -1
 
@@ -57,9 +59,11 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
     })
   }, [staff, sortKey, sortOrder])
 
-  // Active vs inactive counts
+  // Status counts
   const activeCount = staff.filter(s => s.active).length
   const inactiveCount = staff.filter(s => !s.active).length
+  const verifiedCount = staff.filter(s => s.active && s.email_confirmed_at).length
+  const pendingCount = staff.filter(s => s.active && !s.email_confirmed_at).length
 
   const handleSort = (key: keyof StaffMember) => {
     if (sortKey === key) {
@@ -91,11 +95,16 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
             Total: <strong>{staff.length}</strong>
           </div>
           <div>
-            Active: <strong className="text-green-600">{activeCount}</strong>
+            Active: <strong className="text-green-600">{verifiedCount}</strong>
           </div>
           <div>
-            Inactive: <strong className="text-slate-400">{inactiveCount}</strong>
+            Pending: <strong className="text-yellow-600">{pendingCount}</strong>
           </div>
+          {inactiveCount > 0 && (
+            <div>
+              Inactive: <strong className="text-slate-400">{inactiveCount}</strong>
+            </div>
+          )}
         </div>
 
         {/* Table */}
@@ -124,11 +133,11 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
                 <TableHead>Status</TableHead>
                 <TableHead
                   className="cursor-pointer hover:bg-slate-50"
-                  onClick={() => handleSort('last_login_at')}
+                  onClick={() => handleSort('last_sign_in_at')}
                 >
                   <div className="flex items-center gap-1">
-                    Last Login
-                    {sortKey === 'last_login_at' && (sortOrder === 'asc' ? ' ↑' : ' ↓')}
+                    Last Sign In
+                    {sortKey === 'last_sign_in_at' && (sortOrder === 'asc' ? ' ↑' : ' ↓')}
                   </div>
                 </TableHead>
                 <TableHead>Notes</TableHead>
@@ -147,7 +156,7 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
                   const isSelf = member.email === currentUserEmail
 
                   return (
-                    <TableRow key={member.email} className={!member.active ? 'opacity-50' : ''}>
+                    <TableRow key={member.id} className={!member.active ? 'opacity-50' : ''}>
                       {/* Email / Name */}
                       <TableCell>
                         <div className="flex flex-col">
@@ -166,25 +175,35 @@ export function StaffTable({ staff, currentUserEmail, isAdmin, onRefetch }: Staf
                         <RoleBadge role={member.role as StaffRole} />
                       </TableCell>
 
-                      {/* Status */}
+                      {/* Status - based on email_confirmed_at */}
                       <TableCell>
-                        {member.active ? (
-                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                            Active
-                          </Badge>
-                        ) : (
+                        {!member.active ? (
                           <Badge variant="outline" className="bg-slate-50 text-slate-500">
                             Inactive
                           </Badge>
+                        ) : member.email_confirmed_at ? (
+                          <div className="flex items-center gap-1">
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                              Active
+                            </Badge>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <AlertCircle className="h-4 w-4 text-yellow-600" />
+                            <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                              Pending
+                            </Badge>
+                          </div>
                         )}
                       </TableCell>
 
-                      {/* Last Login */}
+                      {/* Last Sign In */}
                       <TableCell>
-                        {member.last_login_at ? (
+                        {member.last_sign_in_at ? (
                           <div className="flex items-center gap-1 text-sm text-slate-600">
                             <Clock className="h-3 w-3" />
-                            {formatDistanceToNow(new Date(member.last_login_at), { addSuffix: true })}
+                            {formatDistanceToNow(new Date(member.last_sign_in_at), { addSuffix: true })}
                           </div>
                         ) : (
                           <span className="text-sm text-slate-400">Never</span>

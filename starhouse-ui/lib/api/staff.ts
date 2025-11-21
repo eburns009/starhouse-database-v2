@@ -95,7 +95,7 @@ export async function getStaffMembers(): Promise<APIResponse<StaffMember[]>> {
     const { data, error } = await supabase
       .from('staff_members')
       .select('*')
-      .order('role', { ascending: true })
+      .order('last_sign_in_at', { ascending: false, nullsFirst: false })
       .order('email', { ascending: true })
 
     if (error) {
