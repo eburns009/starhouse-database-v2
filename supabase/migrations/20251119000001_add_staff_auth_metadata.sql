@@ -3,18 +3,18 @@
  * Created: 2025-11-19
  *
  * Purpose:
- * - Add auth metadata columns to staff_users table
+ * - Add auth metadata columns to staff_members table
  * - Enable UI to display login status without admin API calls
- * - Auto-sync metadata from auth.users table via triggers
+ * - Provide manual sync function to refresh auth data
  *
  * Changes:
- * 1. Add last_sign_in_at column (track last login)
+ * 1. Add last_sign_in_at column (track last login from auth.users)
  * 2. Add email_confirmed_at column (track email verification)
- * 3. Create trigger to sync from auth.users on auth events
+ * 3. Create refresh_staff_auth_metadata() function for manual sync
  * 4. Backfill existing data from auth.users
  *
  * Security:
- * - Columns are read-only for staff (updated by trigger only)
+ * - Columns are read-only for staff (updated by sync function only)
  * - RLS policies remain unchanged
  * - No sensitive auth data exposed (only timestamps)
  *
@@ -32,130 +32,121 @@
 -- Add last_sign_in_at column
 -- Tracks when the staff member last signed in
 -- Synced from auth.users.last_sign_in_at via trigger
-ALTER TABLE public.staff_users
+ALTER TABLE public.staff_members
 ADD COLUMN IF NOT EXISTS last_sign_in_at timestamptz NULL;
 
-COMMENT ON COLUMN public.staff_users.last_sign_in_at IS
+COMMENT ON COLUMN public.staff_members.last_sign_in_at IS
 'Timestamp of last successful sign-in. Automatically synced from auth.users.last_sign_in_at. Used by UI to display login activity without calling admin APIs.';
 
 -- Add email_confirmed_at column
 -- Tracks when the staff member's email was verified
 -- Synced from auth.users.email_confirmed_at via trigger
-ALTER TABLE public.staff_users
+ALTER TABLE public.staff_members
 ADD COLUMN IF NOT EXISTS email_confirmed_at timestamptz NULL;
 
-COMMENT ON COLUMN public.staff_users.email_confirmed_at IS
+COMMENT ON COLUMN public.staff_members.email_confirmed_at IS
 'Timestamp when email was confirmed. Automatically synced from auth.users.email_confirmed_at. NULL means email not yet verified. Used by UI to show verification status.';
 
 -- Add updated_at column
 -- Tracks when the staff record was last modified
 -- Automatically updated by trigger when auth metadata syncs
-ALTER TABLE public.staff_users
+ALTER TABLE public.staff_members
 ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT NOW();
 
-COMMENT ON COLUMN public.staff_users.updated_at IS
+COMMENT ON COLUMN public.staff_members.updated_at IS
 'Timestamp of last update to this staff record. Automatically updated by trigger when auth metadata (last_sign_in_at, email_confirmed_at) syncs from auth.users.';
 
 -- ============================================================================
--- STEP 2: Create Trigger Function to Sync Auth Metadata
+-- STEP 2: Create Manual Sync Function (No trigger - requires auth.users ownership)
 -- ============================================================================
 
 -- Drop existing function if it exists (for idempotency)
 DROP FUNCTION IF EXISTS sync_staff_auth_metadata() CASCADE;
+DROP FUNCTION IF EXISTS refresh_staff_auth_metadata() CASCADE;
 
-CREATE OR REPLACE FUNCTION sync_staff_auth_metadata()
-RETURNS TRIGGER
+-- Create a manual sync function that can be called periodically or on-demand
+-- This avoids the need for a trigger on auth.users (which requires ownership)
+CREATE OR REPLACE FUNCTION refresh_staff_auth_metadata()
+RETURNS TABLE(synced_count integer, total_staff integer)
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 /**
- * Function: sync_staff_auth_metadata
+ * Function: refresh_staff_auth_metadata
  *
  * Purpose:
- * Automatically sync auth metadata from auth.users to staff_users table
- * when authentication events occur (sign-in, email confirmation)
+ * Manually sync auth metadata from auth.users to staff_members table.
+ * Call this function periodically or after bulk auth operations.
  *
- * Trigger Events:
- * - AFTER UPDATE on auth.users
- * - Only when last_sign_in_at or email_confirmed_at changes
+ * Usage:
+ * SELECT * FROM refresh_staff_auth_metadata();
  *
- * Logic:
- * 1. Check if user exists in staff_users (by ID match)
- * 2. If exists, update last_sign_in_at and/or email_confirmed_at
- * 3. Update updated_at timestamp
+ * Returns:
+ * - synced_count: Number of staff members updated
+ * - total_staff: Total number of staff members
  *
- * Security:
- * - SECURITY DEFINER allows updating staff_users from auth context
- * - Only updates matching user IDs (prevents cross-contamination)
- * - No sensitive data exposed (only timestamps)
- *
- * Performance:
- * - Uses primary key lookup (fastest possible)
- * - Only runs on actual changes (WHEN clause in trigger)
- * - Single UPDATE statement (efficient)
+ * Note: This is used instead of a trigger because we don't have
+ * ownership of auth.users table (Supabase managed).
  */
+DECLARE
+    v_synced integer;
+    v_total integer;
 BEGIN
-    -- Only process if this is an UPDATE that changed auth metadata
-    IF TG_OP = 'UPDATE' THEN
-        -- Check if last_sign_in_at or email_confirmed_at changed
-        IF (OLD.last_sign_in_at IS DISTINCT FROM NEW.last_sign_in_at) OR
-           (OLD.email_confirmed_at IS DISTINCT FROM NEW.email_confirmed_at) THEN
+    -- Sync auth metadata from auth.users to staff_members
+    -- Join by id (UUID foreign key) for better performance
+    UPDATE public.staff_members sm
+    SET
+        last_sign_in_at = au.last_sign_in_at,
+        email_confirmed_at = au.email_confirmed_at,
+        updated_at = NOW()
+    FROM auth.users au
+    WHERE sm.id = au.id
+      AND (
+        sm.last_sign_in_at IS DISTINCT FROM au.last_sign_in_at OR
+        sm.email_confirmed_at IS DISTINCT FROM au.email_confirmed_at
+      );
 
-            -- Update staff_users table where ID matches
-            UPDATE public.staff_users
-            SET
-                last_sign_in_at = NEW.last_sign_in_at,
-                email_confirmed_at = NEW.email_confirmed_at,
-                updated_at = NOW()
-            WHERE id = NEW.id;
-        END IF;
-    END IF;
+    GET DIAGNOSTICS v_synced = ROW_COUNT;
+    SELECT COUNT(*) INTO v_total FROM public.staff_members;
 
-    RETURN NEW;
+    RETURN QUERY SELECT v_synced, v_total;
 END;
 $$;
 
-COMMENT ON FUNCTION sync_staff_auth_metadata() IS
-'Automatically syncs last_sign_in_at and email_confirmed_at from auth.users to staff_users when auth events occur. Triggered on UPDATE to auth.users table.';
+COMMENT ON FUNCTION refresh_staff_auth_metadata() IS
+'Manually syncs last_sign_in_at and email_confirmed_at from auth.users to staff_members. Call periodically or on-demand since we cannot create triggers on auth.users.';
+
+-- Grant execute permission
+GRANT EXECUTE ON FUNCTION refresh_staff_auth_metadata TO authenticated;
 
 -- ============================================================================
--- STEP 3: Create Trigger on auth.users
+-- NOTE: Trigger on auth.users skipped (requires table ownership)
 -- ============================================================================
-
--- Drop existing trigger if it exists (for idempotency)
-DROP TRIGGER IF EXISTS sync_staff_auth_metadata_trigger ON auth.users;
-
-CREATE TRIGGER sync_staff_auth_metadata_trigger
-    AFTER UPDATE ON auth.users
-    FOR EACH ROW
-    WHEN (
-        -- Only fire when auth metadata actually changes
-        OLD.last_sign_in_at IS DISTINCT FROM NEW.last_sign_in_at OR
-        OLD.email_confirmed_at IS DISTINCT FROM NEW.email_confirmed_at
-    )
-    EXECUTE FUNCTION sync_staff_auth_metadata();
-
-COMMENT ON TRIGGER sync_staff_auth_metadata_trigger ON auth.users IS
-'Syncs authentication metadata to staff_users table when sign-in or email confirmation events occur';
+-- To auto-sync auth metadata, you would need to:
+-- 1. Use Supabase Auth Hooks (recommended)
+-- 2. Call refresh_staff_auth_metadata() from your app after login
+-- 3. Set up a scheduled job to call refresh_staff_auth_metadata()
+-- ============================================================================
 
 -- ============================================================================
 -- STEP 4: Backfill Existing Staff Users with Current Auth Data
 -- ============================================================================
 
--- Sync existing auth data from auth.users to staff_users
+-- Sync existing auth data from auth.users to staff_members
 -- This is a one-time backfill for existing staff members
-UPDATE public.staff_users su
+-- Join by id (UUID foreign key) for better performance
+UPDATE public.staff_members sm
 SET
     last_sign_in_at = au.last_sign_in_at,
     email_confirmed_at = au.email_confirmed_at,
     updated_at = NOW()
 FROM auth.users au
-WHERE su.id = au.id
+WHERE sm.id = au.id
   AND (
     -- Only update if values are different (avoid unnecessary updates)
-    su.last_sign_in_at IS DISTINCT FROM au.last_sign_in_at OR
-    su.email_confirmed_at IS DISTINCT FROM au.email_confirmed_at
+    sm.last_sign_in_at IS DISTINCT FROM au.last_sign_in_at OR
+    sm.email_confirmed_at IS DISTINCT FROM au.email_confirmed_at
   );
 
 -- Log backfill results
@@ -165,11 +156,11 @@ DECLARE
     v_total_staff integer;
 BEGIN
     -- Get total staff count
-    SELECT COUNT(*) INTO v_total_staff FROM public.staff_users;
+    SELECT COUNT(*) INTO v_total_staff FROM public.staff_members;
 
     -- Get count of staff with auth metadata
     SELECT COUNT(*) INTO v_backfilled_count
-    FROM public.staff_users
+    FROM public.staff_members
     WHERE last_sign_in_at IS NOT NULL OR email_confirmed_at IS NOT NULL;
 
     RAISE NOTICE 'Backfill complete: % of % staff users have auth metadata',
@@ -183,10 +174,10 @@ END $$;
 -- Create index on last_sign_in_at for sorting and filtering in UI
 -- DESC NULLS LAST ensures NULL values (never signed in) appear at the end
 -- This optimizes queries like "ORDER BY last_sign_in_at DESC" in staff admin UI
-CREATE INDEX IF NOT EXISTS idx_staff_users_last_sign_in
-ON public.staff_users (last_sign_in_at DESC NULLS LAST);
+CREATE INDEX IF NOT EXISTS idx_staff_members_last_sign_in
+ON public.staff_members (last_sign_in_at DESC NULLS LAST);
 
-COMMENT ON INDEX idx_staff_users_last_sign_in IS
+COMMENT ON INDEX idx_staff_members_last_sign_in IS
 'Performance index for staff admin UI queries. Optimizes sorting by recent activity (last_sign_in_at DESC). NULLS LAST ensures users who never signed in appear at the end.';
 
 -- ============================================================================
@@ -199,7 +190,7 @@ COMMENT ON INDEX idx_staff_users_last_sign_in IS
 -- SELECT column_name, data_type, is_nullable, column_default
 -- FROM information_schema.columns
 -- WHERE table_schema = 'public'
---   AND table_name = 'staff_users'
+--   AND table_name = 'staff_members'
 --   AND column_name IN ('last_sign_in_at', 'email_confirmed_at');
 
 -- Check trigger exists
@@ -215,17 +206,17 @@ COMMENT ON INDEX idx_staff_users_last_sign_in IS
 --     COUNT(last_sign_in_at) as staff_with_last_sign_in,
 --     COUNT(email_confirmed_at) as staff_with_email_confirmed,
 --     COUNT(CASE WHEN last_sign_in_at IS NULL AND email_confirmed_at IS NULL THEN 1 END) as staff_without_auth_data
--- FROM public.staff_users;
+-- FROM public.staff_members;
 
 -- Sample data (first 5 staff members)
 -- SELECT
 --     email,
 --     last_sign_in_at,
 --     email_confirmed_at,
---     created_at,
+--     added_at,
 --     updated_at
--- FROM public.staff_users
--- ORDER BY created_at DESC
+-- FROM public.staff_members
+-- ORDER BY added_at DESC
 -- LIMIT 5;
 
 -- ============================================================================
@@ -235,15 +226,16 @@ COMMENT ON INDEX idx_staff_users_last_sign_in IS
 /**
  * To rollback this migration:
  *
- * -- Drop trigger
- * DROP TRIGGER IF EXISTS sync_staff_auth_metadata_trigger ON auth.users;
- *
  * -- Drop function
- * DROP FUNCTION IF EXISTS sync_staff_auth_metadata() CASCADE;
+ * DROP FUNCTION IF EXISTS refresh_staff_auth_metadata() CASCADE;
  *
  * -- Remove columns
- * ALTER TABLE public.staff_users DROP COLUMN IF EXISTS last_sign_in_at;
- * ALTER TABLE public.staff_users DROP COLUMN IF EXISTS email_confirmed_at;
+ * ALTER TABLE public.staff_members DROP COLUMN IF EXISTS last_sign_in_at;
+ * ALTER TABLE public.staff_members DROP COLUMN IF EXISTS email_confirmed_at;
+ * ALTER TABLE public.staff_members DROP COLUMN IF EXISTS updated_at;
+ *
+ * -- Drop index
+ * DROP INDEX IF EXISTS idx_staff_members_last_sign_in;
  */
 
 -- ============================================================================
@@ -254,18 +246,17 @@ COMMENT ON INDEX idx_staff_users_last_sign_in IS
 DO $$
 BEGIN
     RAISE NOTICE '✅ Migration 20251119000001_add_staff_auth_metadata completed successfully';
-    RAISE NOTICE '   - Added last_sign_in_at column to staff_users';
-    RAISE NOTICE '   - Added email_confirmed_at column to staff_users';
-    RAISE NOTICE '   - Added updated_at column to staff_users';
-    RAISE NOTICE '   - Created sync_staff_auth_metadata() trigger function';
-    RAISE NOTICE '   - Created trigger on auth.users table';
+    RAISE NOTICE '   - Added last_sign_in_at column to staff_members';
+    RAISE NOTICE '   - Added email_confirmed_at column to staff_members';
+    RAISE NOTICE '   - Added updated_at column to staff_members';
+    RAISE NOTICE '   - Created refresh_staff_auth_metadata() function';
     RAISE NOTICE '   - Backfilled existing staff users with auth data';
-    RAISE NOTICE '   - Created performance index: idx_staff_users_last_sign_in';
+    RAISE NOTICE '   - Created performance index: idx_staff_members_last_sign_in';
     RAISE NOTICE '   ';
     RAISE NOTICE '📊 Next steps:';
     RAISE NOTICE '   1. Update UI to display last_sign_in_at (login activity)';
     RAISE NOTICE '   2. Update UI to show email_confirmed_at (verification status)';
-    RAISE NOTICE '   3. Remove admin API calls for auth metadata (use staff_users instead)';
+    RAISE NOTICE '   3. Call refresh_staff_auth_metadata() after login or periodically';
     RAISE NOTICE '   ';
-    RAISE NOTICE '🔒 Security: Auth metadata auto-syncs via ID matching on sign-in/email confirmation events';
+    RAISE NOTICE '🔒 Usage: SELECT * FROM refresh_staff_auth_metadata() to sync auth data';
 END $$;

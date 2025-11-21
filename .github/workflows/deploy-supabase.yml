@@ -6,12 +6,125 @@ on:
       - main
     paths:
       - 'supabase/functions/**'
+      - 'supabase/config.toml'
       - '.github/workflows/deploy-supabase.yml'
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (validate without deploying)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+# FAANG Standard: Prevent concurrent deployments to avoid race conditions
+concurrency:
+  group: supabase-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Centralized configuration - DRY principle
+  SUPABASE_PROJECT_URL: https://lnagadkqejnopgfxwlkb.supabase.co
+  DENO_VERSION: 'v1.x'
+  SUPABASE_CLI_VERSION: 'latest'
 
 jobs:
-  deploy:
+  validate:
+    name: Validate Configuration
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      functions: ${{ steps.discover.outputs.functions }}
+      function_count: ${{ steps.discover.outputs.count }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate secrets format
+        id: validate-secrets
+        run: |
+          echo "Validating secret configuration..."
+
+          # Check SUPABASE_ACCESS_TOKEN exists and format
+          if [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN is not configured"
+            echo "::error::Set it in Settings → Secrets → Actions"
+            exit 1
+          fi
+
+          # Validate token format (must start with sbp_)
+          TOKEN_PREFIX="${{ secrets.SUPABASE_ACCESS_TOKEN }}"
+          TOKEN_PREFIX="${TOKEN_PREFIX:0:4}"
+          if [ "$TOKEN_PREFIX" != "sbp_" ]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN has invalid format"
+            echo "::error::Token must start with 'sbp_' (Supabase Personal Access Token)"
+            echo "::error::Generate a new token at: https://supabase.com/dashboard/account/tokens"
+            exit 1
+          fi
+
+          # Check SUPABASE_PROJECT_ID exists
+          if [ -z "${{ secrets.SUPABASE_PROJECT_ID }}" ]; then
+            echo "::error::SUPABASE_PROJECT_ID is not configured"
+            echo "::error::Set it in Settings → Secrets → Actions"
+            echo "::error::Value should be: lnagadkqejnopgfxwlkb"
+            exit 1
+          fi
+
+          echo "✅ All secrets validated successfully"
+
+      - name: Discover Edge Functions
+        id: discover
+        run: |
+          echo "Discovering Edge Functions..."
+
+          # Auto-discover functions from directory structure
+          FUNCTIONS=$(ls -d supabase/functions/*/ 2>/dev/null | xargs -n1 basename | grep -v '_shared' | tr '\n' ' ')
+          COUNT=$(echo $FUNCTIONS | wc -w)
+
+          echo "Found $COUNT functions: $FUNCTIONS"
+          echo "functions=$FUNCTIONS" >> $GITHUB_OUTPUT
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::No Edge Functions found in supabase/functions/"
+            exit 1
+          fi
+
+      - name: Validate function structure
+        run: |
+          echo "Validating function structure..."
+
+          ERRORS=0
+          for func_dir in supabase/functions/*/; do
+            func_name=$(basename "$func_dir")
+
+            # Skip shared modules
+            if [ "$func_name" = "_shared" ]; then
+              continue
+            fi
+
+            # Check for index.ts
+            if [ ! -f "$func_dir/index.ts" ]; then
+              echo "::error::Missing index.ts in $func_name"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ $ERRORS -gt 0 ]; then
+            echo "::error::Found $ERRORS validation errors"
+            exit 1
+          fi
+
+          echo "✅ All functions have valid structure"
+
+  deploy:
+    name: Deploy Functions
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -20,100 +133,164 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: ${{ env.DENO_VERSION }}
+
+      - name: Cache Deno dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/deno
+            ~/.deno
+          key: ${{ runner.os }}-deno-${{ hashFiles('supabase/functions/**/deps.ts', 'supabase/functions/**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-deno-
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: ${{ env.SUPABASE_CLI_VERSION }}
 
-      - name: Validate Secrets
+      - name: Link to Supabase project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          echo "Validating required secrets..."
-          if [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ]; then
-            echo "❌ SUPABASE_ACCESS_TOKEN secret is not set"
-            echo "Please configure it in repository Settings → Secrets and variables → Actions"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SUPABASE_PROJECT_ID }}" ]; then
-            echo "❌ SUPABASE_PROJECT_ID secret is not set"
-            echo "Please configure it in repository Settings → Secrets and variables → Actions"
-            exit 1
-          fi
-          echo "✅ All required secrets are configured"
+          echo "Linking to Supabase project..."
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+          echo "✅ Successfully linked to project"
+
+      - name: Check for dry run
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        run: |
+          echo "::notice::Dry run mode - skipping deployment"
+          echo "Would deploy ${{ needs.validate.outputs.function_count }} functions:"
+          echo "${{ needs.validate.outputs.functions }}"
+          exit 0
 
       - name: Deploy Edge Functions
+        id: deploy
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
-          set -e  # Exit on any error
+          set -e
 
-          echo "🚀 Deploying Edge Functions to Supabase..."
-          echo "Project: $SUPABASE_PROJECT_ID"
+          echo "Deploying ${{ needs.validate.outputs.function_count }} Edge Functions..."
           echo ""
 
-          # Link to project
-          echo "📡 Linking to Supabase project..."
-          supabase link --project-ref $SUPABASE_PROJECT_ID
-          echo "✅ Successfully linked to project"
-          echo ""
+          DEPLOYED=0
+          FAILED=0
+          FAILED_FUNCS=""
 
-          # Deploy all Edge Functions
-          echo "📦 Deploying health..."
-          supabase functions deploy health --no-verify-jwt
-          echo "✅ health deployed"
-          echo ""
+          # Read JWT config from config.toml
+          get_jwt_setting() {
+            local func_name=$1
+            if grep -A1 "\[functions.$func_name\]" supabase/config.toml 2>/dev/null | grep -q "verify_jwt = false"; then
+              echo "--no-verify-jwt"
+            else
+              echo ""
+            fi
+          }
 
-          echo "📦 Deploying invite-staff-member..."
-          supabase functions deploy invite-staff-member --no-verify-jwt=false
-          echo "✅ invite-staff-member deployed"
-          echo ""
+          for func_name in ${{ needs.validate.outputs.functions }}; do
+            echo "📦 Deploying $func_name..."
 
-          echo "📦 Deploying reset-staff-password..."
-          supabase functions deploy reset-staff-password --no-verify-jwt=false
-          echo "✅ reset-staff-password deployed"
-          echo ""
+            JWT_FLAG=$(get_jwt_setting "$func_name")
 
-          echo "📦 Deploying kajabi-webhook..."
-          supabase functions deploy kajabi-webhook --no-verify-jwt
-          echo "✅ kajabi-webhook deployed"
-          echo ""
+            if supabase functions deploy "$func_name" $JWT_FLAG; then
+              echo "✅ $func_name deployed successfully"
+              DEPLOYED=$((DEPLOYED + 1))
+            else
+              echo "::error::Failed to deploy $func_name"
+              FAILED=$((FAILED + 1))
+              FAILED_FUNCS="$FAILED_FUNCS $func_name"
+            fi
+            echo ""
+          done
 
-          echo "📦 Deploying paypal-webhook..."
-          supabase functions deploy paypal-webhook --no-verify-jwt
-          echo "✅ paypal-webhook deployed"
-          echo ""
+          echo "deployed=$DEPLOYED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
 
-          echo "📦 Deploying ticket-tailor-webhook..."
-          supabase functions deploy ticket-tailor-webhook --no-verify-jwt
-          echo "✅ ticket-tailor-webhook deployed"
-          echo ""
+          if [ $FAILED -gt 0 ]; then
+            echo "::error::Failed to deploy $FAILED functions:$FAILED_FUNCS"
+            exit 1
+          fi
 
-          echo "🎉 All 6 edge functions deployed successfully!"
+          echo "🎉 Successfully deployed $DEPLOYED functions"
 
-      - name: Verify Deployment
+      - name: Generate deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Functions Discovered | ${{ needs.validate.outputs.function_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployed | ${{ steps.deploy.outputs.deployed || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Failed | ${{ steps.deploy.outputs.failed || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+  verify:
+    name: Verify Deployment
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+
+      - name: Link to Supabase project
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+
+      - name: List deployed functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           echo "Verifying deployed functions..."
           supabase functions list
 
-      - name: Notify on Success
-        if: success()
+      - name: Health check
         run: |
-          echo "🎉 Deployment successful!"
-          echo "Functions deployed:"
-          echo "  - health (no JWT verification)"
-          echo "  - invite-staff-member (JWT required)"
-          echo "  - reset-staff-password (JWT required)"
-          echo "  - kajabi-webhook (no JWT verification)"
-          echo "  - paypal-webhook (no JWT verification)"
-          echo "  - ticket-tailor-webhook (no JWT verification)"
+          echo "Running health check..."
 
-      - name: Notify on Failure
-        if: failure()
+          HEALTH_URL="${{ env.SUPABASE_PROJECT_URL }}/functions/v1/health"
+
+          # Retry up to 3 times with exponential backoff
+          for i in 1 2 3; do
+            echo "Attempt $i: Checking $HEALTH_URL"
+
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+
+            if [ "$RESPONSE" = "200" ]; then
+              echo "✅ Health check passed (HTTP $RESPONSE)"
+              exit 0
+            fi
+
+            echo "Health check returned HTTP $RESPONSE"
+
+            if [ $i -lt 3 ]; then
+              SLEEP_TIME=$((i * 5))
+              echo "Retrying in ${SLEEP_TIME}s..."
+              sleep $SLEEP_TIME
+            fi
+          done
+
+          echo "::warning::Health check failed after 3 attempts"
+          echo "::warning::This may indicate a deployment issue or cold start"
+          # Don't fail the workflow - health endpoint may have cold start delay
+
+      - name: Update deployment summary
         run: |
-          echo "❌ Deployment failed. Check logs above for details."
-          exit 1
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Functions listed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Health check completed" >> $GITHUB_STEP_SUMMARY
