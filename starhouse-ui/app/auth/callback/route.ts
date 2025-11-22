@@ -37,6 +37,13 @@ export async function GET(request: NextRequest) {
       }
     )
 
+    // SECURITY FIX (P0): Clear any existing session before exchanging invite code
+    // This prevents session contamination when invitation links are clicked
+    // Without this, a new user clicking an invite link while another user is logged in
+    // would see the existing user's dashboard instead of their own account setup
+    await supabase.auth.signOut()
+
+    // Now exchange the invitation code for a new session
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {

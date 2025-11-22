@@ -313,8 +313,21 @@ export async function addStaffMember(
       }
     })
 
+    // UX FIX (P1): Improved error handling for Edge Function responses
+    // Handles CORS parsing issues that can cause false negative errors
     if (error) {
       console.error('[addStaffMember] Edge Function error:', error)
+
+      // If we got an error but data exists with success=true, the invitation worked
+      // This handles CORS parsing issues where the response is misinterpreted
+      if (data?.success) {
+        console.warn('[addStaffMember] Got error AND success data - treating as success (CORS issue)')
+        return {
+          success: true,
+          data: data.data
+        }
+      }
+
       throw new StaffAPIError('Failed to invite staff member', 'EDGE_FUNCTION_ERROR', error)
     }
 
