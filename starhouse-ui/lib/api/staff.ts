@@ -313,26 +313,24 @@ export async function addStaffMember(
       }
     })
 
-    // UX FIX (P1): Improved error handling for Edge Function responses
-    // Handles CORS parsing issues that can cause false negative errors
+    // FIX: Check data.success FIRST before checking error
+    // This handles cases where both data and error exist (CORS/parsing issues)
+    // The Edge Function returns success:true when invitation succeeds
+    if (data?.success) {
+      return {
+        success: true,
+        data: data.data
+      }
+    }
+
+    // Now check for errors
     if (error) {
       console.error('[addStaffMember] Edge Function error:', error)
-
-      // If we got an error but data exists with success=true, the invitation worked
-      // This handles CORS parsing issues where the response is misinterpreted
-      if (data?.success) {
-        console.warn('[addStaffMember] Got error AND success data - treating as success (CORS issue)')
-        return {
-          success: true,
-          data: data.data
-        }
-      }
-
       throw new StaffAPIError('Failed to invite staff member', 'EDGE_FUNCTION_ERROR', error)
     }
 
-    // Edge Function returns typed response
-    if (!data.success) {
+    // Edge Function returns typed response with error details
+    if (!data || !data.success) {
       const errorCode = data.error?.code || 'UNKNOWN_ERROR'
       const errorMessage = data.error?.message || 'Failed to add staff member'
 
