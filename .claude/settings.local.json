@@ -1,22 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(then grep DATABASE_URL .env)",
-      "Bash(then grep DATABASE_URL starhouse-ui/.env.local)",
-      "Bash(else echo 'Looking for env files...')",
-      "Bash(gh run:*)",
-      "Bash(gh secret:*)",
-      "Bash(sudo apt-get update:*)",
-      "Bash(sudo apt-get install:*)",
-      "Bash(psql \"$DATABASE_URL\" -c \"DELETE FROM staff_members WHERE email IN (''edward@sunshinesnowremoval.com'', ''support@thestarhouse.com'');\")",
-      "Bash(psql:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
       "Bash(npx tsc:*)",
       "Bash(npx supabase:*)",
-      "Bash(cat:*)"
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh workflow run:*)"
     ],
     "deny": [],
     "ask": []
