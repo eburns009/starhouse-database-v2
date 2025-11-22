@@ -11,7 +11,9 @@
       "Bash(npx supabase:*)",
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
-      "Bash(gh workflow run:*)"
+      "Bash(gh workflow run:*)",
+      "Bash(curl:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

@@ -305,6 +305,13 @@ data/production/**/*.tsv
 
 # Temporary directories
 /kajabi*
+"kajabi 3 files review"/
+
+# Data files should NEVER be in git (use database or external storage)
+*.csv
+*.xlsx
+*.xls
+!data/samples/*.csv
 
 # Temporary analysis and summary files in root
 contact_search*.md
