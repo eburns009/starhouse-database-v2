@@ -550,7 +550,7 @@ export default function NewDonationPage() {
                   </div>
                   <div>
                     <Label htmlFor="newDonorEmail" className="text-xs">
-                      Email
+                      Email (optional)
                     </Label>
                     <Input
                       id="newDonorEmail"
@@ -562,10 +562,17 @@ export default function NewDonationPage() {
                           newDonorEmail: e.target.value,
                         }))
                       }
+                      placeholder="donor@example.com"
                     />
                     {formErrors.newDonorEmail && (
                       <p className="text-xs text-red-600 mt-1">
                         {formErrors.newDonorEmail}
+                      </p>
+                    )}
+                    {!formData.newDonorEmail && (formData.newDonorFirstName || formData.newDonorLastName) && (
+                      <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        No email - acknowledgment cannot be sent electronically
                       </p>
                     )}
                   </div>

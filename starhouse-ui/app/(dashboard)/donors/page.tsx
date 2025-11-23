@@ -251,20 +251,24 @@ export default function DonorsPage() {
           </p>
         </div>
         <Button
-          variant="outline"
+          variant={includeMemberships ? 'default' : 'outline'}
           size="sm"
           onClick={toggleMemberships}
-          className="flex items-center gap-2"
+          className={`flex items-center gap-2 ${
+            includeMemberships
+              ? 'bg-blue-600 hover:bg-blue-700 text-white'
+              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+          }`}
         >
           {includeMemberships ? (
             <>
               <ToggleRight className="h-4 w-4" />
-              Including Memberships
+              Memberships: ON
             </>
           ) : (
             <>
               <ToggleLeft className="h-4 w-4" />
-              Include Memberships
+              Memberships: OFF
             </>
           )}
         </Button>
@@ -377,6 +381,7 @@ export default function DonorsPage() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Lifetime Amount</TableHead>
                     <TableHead>Last Gift</TableHead>
@@ -398,6 +403,19 @@ export default function DonorsPage() {
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {donor.email || '—'}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {donor.phone ? (
+                            <a
+                              href={`tel:${donor.phone}`}
+                              className="hover:text-primary hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {donor.phone}
+                            </a>
+                          ) : (
+                            '—'
+                          )}
                         </TableCell>
                         <TableCell>
                           <Badge className={statusInfo.className} variant="outline">

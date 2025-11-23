@@ -379,20 +379,24 @@ export default function DonorDetailPage() {
                   {statusInfo.label}
                 </Badge>
                 <Button
-                  variant="outline"
+                  variant={includeMemberships ? 'default' : 'outline'}
                   size="sm"
                   onClick={toggleMemberships}
-                  className="text-xs"
+                  className={`text-xs ${
+                    includeMemberships
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  }`}
                 >
                   {includeMemberships ? (
                     <>
                       <ToggleRight className="mr-1 h-3 w-3" />
-                      Including Memberships
+                      Memberships: ON
                     </>
                   ) : (
                     <>
                       <ToggleLeft className="mr-1 h-3 w-3" />
-                      Include Memberships
+                      Memberships: OFF
                     </>
                   )}
                 </Button>
