@@ -90,6 +90,7 @@ function formatDate(dateString: string | null): string {
 export default function DonorsPage() {
   const router = useRouter()
   const [donors, setDonors] = useState<DonorSummary[]>([])
+  const [membershipDonorIds, setMembershipDonorIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -99,29 +100,55 @@ export default function DonorsPage() {
   const [sortField, setSortField] = useState<SortField>('lifetime_amount')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
-  // Fetch donors
+  // Fetch donors and membership donor IDs
   useEffect(() => {
-    async function fetchDonors() {
+    async function fetchData() {
       setLoading(true)
       setError(null)
 
       const supabase = createClient()
-      const { data, error } = await supabase
+
+      // Fetch donors
+      const { data: donorData, error: donorError } = await supabase
         .from('v_donor_summary')
         .select('*')
         .order('lifetime_amount', { ascending: false })
 
-      if (error) {
-        console.error('Error fetching donors:', error)
-        setError(error.message)
+      if (donorError) {
+        console.error('Error fetching donors:', donorError)
+        setError(donorError.message)
+        setLoading(false)
+        return
+      }
+
+      setDonors(donorData || [])
+
+      // Fetch donor IDs with membership transactions
+      const { data: membershipData, error: membershipError } = await supabase
+        .from('transactions')
+        .select('contact_id')
+        .or('donation_category.ilike.%Membership%,donation_subcategory.ilike.%Membership%')
+
+      if (membershipError) {
+        console.error('Error fetching membership donors:', membershipError)
       } else {
-        setDonors(data || [])
+        // Get unique contact IDs with memberships
+        const membershipContactIds = new Set<string>(
+          membershipData?.map((t: { contact_id: string }) => t.contact_id) || []
+        )
+        // Map to donor IDs
+        const membershipDonorSet = new Set<string>(
+          (donorData || [])
+            .filter((d: DonorSummary) => membershipContactIds.has(d.contact_id))
+            .map((d: DonorSummary) => d.donor_id)
+        )
+        setMembershipDonorIds(membershipDonorSet)
       }
 
       setLoading(false)
     }
 
-    fetchDonors()
+    fetchData()
   }, [])
 
   // Filtered and sorted donors
@@ -129,7 +156,11 @@ export default function DonorsPage() {
     let result = [...donors]
 
     // Apply status filter
-    if (statusFilter !== 'all') {
+    if (statusFilter === 'lapsed_dormant') {
+      result = result.filter((d) => d.donor_status === 'lapsed' || d.donor_status === 'dormant')
+    } else if (statusFilter === 'exclude_memberships') {
+      result = result.filter((d) => !membershipDonorIds.has(d.donor_id))
+    } else if (statusFilter !== 'all') {
       result = result.filter((d) => d.donor_status === statusFilter)
     }
 
@@ -167,7 +198,7 @@ export default function DonorsPage() {
     })
 
     return result
-  }, [donors, statusFilter, searchQuery, sortField, sortDirection])
+  }, [donors, membershipDonorIds, statusFilter, searchQuery, sortField, sortDirection])
 
   // Summary stats
   const stats = useMemo(() => {
@@ -273,13 +304,12 @@ export default function DonorsPage() {
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="all">All Donors</SelectItem>
                 <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="lapsed">Lapsed</SelectItem>
-                <SelectItem value="major">Major</SelectItem>
-                <SelectItem value="dormant">Dormant</SelectItem>
+                <SelectItem value="lapsed_dormant">Lapsed/Dormant</SelectItem>
+                <SelectItem value="major">Major Donors</SelectItem>
                 <SelectItem value="first_time">First Time</SelectItem>
-                <SelectItem value="prospect">Prospect</SelectItem>
+                <SelectItem value="exclude_memberships">Exclude Memberships</SelectItem>
               </SelectContent>
             </Select>
 
