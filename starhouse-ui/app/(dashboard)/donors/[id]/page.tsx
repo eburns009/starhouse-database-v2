@@ -10,7 +10,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -39,6 +39,8 @@ import {
   Send,
   ChevronLeft,
   ChevronRight,
+  ToggleLeft,
+  ToggleRight,
 } from 'lucide-react'
 import { formatDonationCategory } from '@/lib/utils'
 
@@ -160,7 +162,11 @@ const ITEMS_PER_PAGE = 20
 export default function DonorDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const donorId = params.id as string
+
+  // Membership toggle state from URL
+  const includeMemberships = searchParams.get('includeMemberships') === 'true'
 
   const [donor, setDonor] = useState<Donor | null>(null)
   const [contact, setContact] = useState<Contact | null>(null)
@@ -171,6 +177,16 @@ export default function DonorDetailPage() {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Toggle membership inclusion
+  const toggleMemberships = () => {
+    const newValue = !includeMemberships
+    if (newValue) {
+      router.push(`/donors/${donorId}?includeMemberships=true`)
+    } else {
+      router.push(`/donors/${donorId}`)
+    }
+  }
 
   // Fetch donor data
   useEffect(() => {
@@ -213,12 +229,20 @@ export default function DonorDetailPage() {
       setContact(contactData)
 
       // Fetch transactions (donations)
-      const { data: transactionsData, error: transactionsError } = await supabase
+      // Filter out memberships unless includeMemberships is true
+      let transactionsQuery = supabase
         .from('transactions')
         .select('*')
         .eq('contact_id', donorData.contact_id)
         .eq('is_donation', true)
         .order('transaction_date', { ascending: false })
+
+      // When excluding memberships, filter out transactions with membership subcategory
+      if (!includeMemberships) {
+        transactionsQuery = transactionsQuery.or('donation_subcategory.is.null,donation_subcategory.not.ilike.%Membership%')
+      }
+
+      const { data: transactionsData, error: transactionsError } = await transactionsQuery
 
       if (transactionsError) {
         console.error('Error fetching transactions:', transactionsError)
@@ -245,7 +269,8 @@ export default function DonorDetailPage() {
     if (donorId) {
       fetchDonorData()
     }
-  }, [donorId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [donorId, includeMemberships])
 
   // Paginated transactions
   const paginatedTransactions = useMemo(() => {
@@ -261,6 +286,22 @@ export default function DonorDetailPage() {
       const amount = t.transaction_type === 'refund' ? -t.amount : t.amount
       return sum + amount
     }, 0)
+  }, [transactions])
+
+  // Calculated metrics from filtered transactions
+  const calculatedMetrics = useMemo(() => {
+    const totalAmount = transactions.reduce((sum, t) => {
+      const amount = t.transaction_type === 'refund' ? -t.amount : t.amount
+      return sum + amount
+    }, 0)
+    const totalCount = transactions.length
+    const avgGift = totalCount > 0 ? totalAmount / totalCount : 0
+
+    return {
+      lifetimeAmount: totalAmount,
+      lifetimeCount: totalCount,
+      averageGift: avgGift,
+    }
   }, [transactions])
 
   // Donor display name
@@ -315,7 +356,7 @@ export default function DonorDetailPage() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => router.push('/donors')}
+        onClick={() => router.push(includeMemberships ? '/donors?includeMemberships=true' : '/donors')}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -327,17 +368,43 @@ export default function DonorDetailPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <CardTitle className="text-2xl">{donorName}</CardTitle>
-              <div className="mt-2">
+              <div className="flex items-center gap-3">
+                <CardTitle className="text-2xl">{donorName}</CardTitle>
+                {!includeMemberships && (
+                  <span className="text-sm text-muted-foreground">(Donations Only)</span>
+                )}
+              </div>
+              <div className="mt-2 flex items-center gap-3">
                 <Badge className={statusInfo.className} variant="outline">
                   {statusInfo.label}
                 </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleMemberships}
+                  className="text-xs"
+                >
+                  {includeMemberships ? (
+                    <>
+                      <ToggleRight className="mr-1 h-3 w-3" />
+                      Including Memberships
+                    </>
+                  ) : (
+                    <>
+                      <ToggleLeft className="mr-1 h-3 w-3" />
+                      Include Memberships
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-muted-foreground">Lifetime Total</div>
+              <div className="text-sm text-muted-foreground">
+                Lifetime Total
+                {!includeMemberships && ' (Donations Only)'}
+              </div>
               <div className="text-3xl font-bold text-primary">
-                {formatCurrency(donor.lifetime_amount)}
+                {formatCurrency(calculatedMetrics.lifetimeAmount)}
               </div>
             </div>
           </div>
@@ -372,7 +439,7 @@ export default function DonorDetailPage() {
                   <Hash className="h-4 w-4 text-muted-foreground" />
                   <div>
                     <div className="text-xs text-muted-foreground">Total Gifts</div>
-                    <div className="text-sm font-medium">{donor.lifetime_count}</div>
+                    <div className="text-sm font-medium">{calculatedMetrics.lifetimeCount}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -380,7 +447,7 @@ export default function DonorDetailPage() {
                   <div>
                     <div className="text-xs text-muted-foreground">Average Gift</div>
                     <div className="text-sm font-medium">
-                      {donor.average_gift ? formatCurrency(donor.average_gift) : '—'}
+                      {calculatedMetrics.averageGift > 0 ? formatCurrency(calculatedMetrics.averageGift) : '—'}
                     </div>
                   </div>
                 </div>

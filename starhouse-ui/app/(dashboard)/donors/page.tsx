@@ -201,9 +201,13 @@ export default function DonorsPage() {
     }
   }, [donors])
 
-  // Handle row click
+  // Handle row click - pass membership toggle state to detail page
   const handleRowClick = (donorId: string) => {
-    router.push(`/donors/${donorId}`)
+    if (includeMemberships) {
+      router.push(`/donors/${donorId}?includeMemberships=true`)
+    } else {
+      router.push(`/donors/${donorId}`)
+    }
   }
 
   if (loading) {
