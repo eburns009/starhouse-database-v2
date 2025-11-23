@@ -33,19 +33,22 @@ from pathlib import Path
 from typing import Optional, Any
 
 
-def get_database_url() -> str:
+def get_database_url(production: bool = False) -> str:
     """
     Get database URL from environment variable.
 
-    Looks for DATABASE_URL in:
+    Looks for DATABASE_URL (or PRODUCTION_DATABASE_URL) in:
     1. Environment variables
     2. .env file in project root
+
+    Args:
+        production: If True, use PRODUCTION_DATABASE_URL instead of DATABASE_URL
 
     Returns:
         str: Database connection URL
 
     Raises:
-        ValueError: If DATABASE_URL is not set
+        ValueError: If required DATABASE_URL is not set
     """
     # Try to load from .env file if python-dotenv is available
     try:
@@ -67,18 +70,23 @@ def get_database_url() -> str:
         print("[INFO] Falling back to environment variables only")
 
     # Get DATABASE_URL from environment
-    database_url = os.getenv('DATABASE_URL')
+    env_var_name = 'PRODUCTION_DATABASE_URL' if production else 'DATABASE_URL'
+    database_url = os.getenv(env_var_name)
 
     if not database_url:
         print("\n" + "=" * 80)
-        print("ERROR: DATABASE_URL environment variable not set")
+        print(f"ERROR: {env_var_name} environment variable not set")
         print("=" * 80)
         print()
-        print("To fix this:")
-        print("1. Copy .env.example to .env:")
-        print("   cp .env.example .env")
-        print()
-        print("2. Edit .env and add your database credentials")
+        if production:
+            print("To fix this, add PRODUCTION_DATABASE_URL to your .env file")
+            print("Get this from Supabase Dashboard → Settings → Database → Connection string")
+        else:
+            print("To fix this:")
+            print("1. Copy .env.example to .env:")
+            print("   cp .env.example .env")
+            print()
+            print("2. Edit .env and add your database credentials")
         print()
         print("3. Re-run the script")
         print()

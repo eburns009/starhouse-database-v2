@@ -686,9 +686,10 @@ class QuickBooksDonorImporter:
     Import QuickBooks donors into the donor module.
     """
 
-    def __init__(self, csv_path: str, dry_run: bool = True):
+    def __init__(self, csv_path: str, dry_run: bool = True, production: bool = False):
         self.csv_path = csv_path
         self.dry_run = dry_run
+        self.production = production
         self.conn = None
         self.cur = None
         self.matcher = None
@@ -712,12 +713,15 @@ class QuickBooksDonorImporter:
 
     def connect(self):
         """Establish database connection."""
+        env_name = "PRODUCTION" if self.production else "DEVELOPMENT"
+        logger.info(f"Connecting to {env_name} database...")
+
         self.conn = psycopg2.connect(
-            get_database_url(),
+            get_database_url(production=self.production),
             cursor_factory=RealDictCursor
         )
         self.cur = self.conn.cursor()
-        logger.info("Database connection established")
+        logger.info(f"Database connection established ({env_name})")
 
     def disconnect(self):
         """Clean up database connection."""
@@ -1185,13 +1189,33 @@ def main():
         type=str,
         help='Output CSV for match results'
     )
+    parser.add_argument(
+        '--production',
+        action='store_true',
+        help='Use production database (requires PRODUCTION_DATABASE_URL in .env)'
+    )
 
     args = parser.parse_args()
+
+    # Safety check for production
+    if args.production and args.execute:
+        print("\n" + "=" * 80)
+        print("⚠️  WARNING: PRODUCTION DATABASE IMPORT")
+        print("=" * 80)
+        print("You are about to import data into the PRODUCTION database.")
+        print("This action will modify live data.")
+        print()
+        confirm = input("Type 'CONFIRM' to proceed: ")
+        if confirm != 'CONFIRM':
+            print("Import cancelled.")
+            sys.exit(0)
+        print()
 
     # Run import
     importer = QuickBooksDonorImporter(
         csv_path=args.csv_file,
-        dry_run=not args.execute
+        dry_run=not args.execute,
+        production=args.production
     )
     importer.run()
 
