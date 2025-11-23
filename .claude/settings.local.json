@@ -13,7 +13,18 @@
       "Bash(gh run view:*)",
       "Bash(gh workflow run:*)",
       "Bash(curl:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(migration-notes.txt)",
+      "Bash(code --list-extensions)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(sort:*)",
+      "Bash(python3:*)",
+      "Bash(audit_output.txt)",
+      "Bash(git log:*)",
+      "Bash(mkdir:*)",
+      "Bash(source:*)",
+      "Bash(psql:*)"
     ],
     "deny": [],
     "ask": []
