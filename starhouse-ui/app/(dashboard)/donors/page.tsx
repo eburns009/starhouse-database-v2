@@ -92,7 +92,6 @@ export default function DonorsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [donors, setDonors] = useState<DonorSummary[]>([])
-  const [membershipDonorIds, setMembershipDonorIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -116,7 +115,7 @@ export default function DonorsPage() {
     router.push(`/donors?${params.toString()}`)
   }
 
-  // Fetch donors and membership donor IDs
+  // Fetch donors from appropriate view based on membership toggle
   useEffect(() => {
     async function fetchData() {
       setLoading(true)
@@ -124,9 +123,11 @@ export default function DonorsPage() {
 
       const supabase = createClient()
 
-      // Fetch donors
+      // Use donations-only view by default, full view when memberships included
+      const viewName = includeMemberships ? 'v_donor_summary' : 'v_donor_summary_donations_only'
+
       const { data: donorData, error: donorError } = await supabase
-        .from('v_donor_summary')
+        .from(viewName)
         .select('*')
         .order('lifetime_amount', { ascending: false })
 
@@ -138,43 +139,15 @@ export default function DonorsPage() {
       }
 
       setDonors(donorData || [])
-
-      // Fetch donor IDs with membership transactions
-      const { data: membershipData, error: membershipError } = await supabase
-        .from('transactions')
-        .select('contact_id')
-        .or('donation_category.ilike.%Membership%,donation_subcategory.ilike.%Membership%')
-
-      if (membershipError) {
-        console.error('Error fetching membership donors:', membershipError)
-      } else {
-        // Get unique contact IDs with memberships
-        const membershipContactIds = new Set<string>(
-          membershipData?.map((t: { contact_id: string }) => t.contact_id) || []
-        )
-        // Map to donor IDs
-        const membershipDonorSet = new Set<string>(
-          (donorData || [])
-            .filter((d: DonorSummary) => membershipContactIds.has(d.contact_id))
-            .map((d: DonorSummary) => d.donor_id)
-        )
-        setMembershipDonorIds(membershipDonorSet)
-      }
-
       setLoading(false)
     }
 
     fetchData()
-  }, [])
+  }, [includeMemberships])
 
   // Filtered and sorted donors
   const filteredDonors = useMemo(() => {
     let result = [...donors]
-
-    // Apply membership exclusion by default (unless includeMemberships is true)
-    if (!includeMemberships) {
-      result = result.filter((d) => !membershipDonorIds.has(d.donor_id))
-    }
 
     // Apply status filter
     if (statusFilter === 'lapsed_dormant') {
@@ -217,21 +190,16 @@ export default function DonorsPage() {
     })
 
     return result
-  }, [donors, membershipDonorIds, includeMemberships, statusFilter, searchQuery, sortField, sortDirection])
+  }, [donors, statusFilter, searchQuery, sortField, sortDirection])
 
-  // Summary stats (based on filtered donors)
+  // Summary stats (based on all donors from the view)
   const stats = useMemo(() => {
-    // Use donors filtered by membership toggle (but not by status/search)
-    const baseList = includeMemberships
-      ? donors
-      : donors.filter((d) => !membershipDonorIds.has(d.donor_id))
-
     return {
-      totalDonors: baseList.length,
-      totalLifetimeValue: baseList.reduce((sum, d) => sum + d.lifetime_amount, 0),
-      majorDonors: baseList.filter((d) => d.donor_status === 'major').length,
+      totalDonors: donors.length,
+      totalLifetimeValue: donors.reduce((sum, d) => sum + d.lifetime_amount, 0),
+      majorDonors: donors.filter((d) => d.donor_status === 'major').length,
     }
-  }, [donors, membershipDonorIds, includeMemberships])
+  }, [donors])
 
   // Handle row click
   const handleRowClick = (donorId: string) => {
