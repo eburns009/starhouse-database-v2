@@ -62,3 +62,22 @@ export function truncate(text: string, length: number): string {
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+/**
+ * Format donation category to show only subcategory
+ * Removes parent category prefix (e.g., "DEVELOPMENT:", "STARHOUSE REVENUE:")
+ *
+ * Examples:
+ * - "DEVELOPMENT:General Donations" → "General Donations"
+ * - "DEVELOPMENT:Fundraising" → "Fundraising"
+ * - "STARHOUSE REVENUE:ASC Offerings" → "ASC Offerings"
+ */
+export function formatDonationCategory(fullCategory: string | null): string {
+  if (!fullCategory) return 'Uncategorized'
+
+  // Split on colon and take last part
+  const parts = fullCategory.split(':')
+  const subcategory = parts[parts.length - 1].trim()
+
+  return subcategory || fullCategory
+}

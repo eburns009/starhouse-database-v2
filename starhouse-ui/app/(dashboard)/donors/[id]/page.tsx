@@ -40,6 +40,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
+import { formatDonationCategory } from '@/lib/utils'
 
 interface Donor {
   id: string
@@ -495,7 +496,7 @@ export default function DonorDetailPage() {
                             {formatCurrency(displayAmount)}
                           </TableCell>
                           <TableCell className="text-muted-foreground">
-                            {transaction.donation_category || '—'}
+                            {transaction.donation_subcategory || formatDonationCategory(transaction.donation_category)}
                           </TableCell>
                           <TableCell className="text-muted-foreground">
                             {transaction.payment_method || '—'}
