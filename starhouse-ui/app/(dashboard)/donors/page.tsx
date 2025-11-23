@@ -10,9 +10,10 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -30,7 +31,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Search, Loader2, AlertCircle, Users, DollarSign, Star } from 'lucide-react'
+import { Search, Loader2, AlertCircle, Users, DollarSign, Star, ToggleLeft, ToggleRight } from 'lucide-react'
 
 interface DonorSummary {
   donor_id: string
@@ -89,16 +90,31 @@ function formatDate(dateString: string | null): string {
 
 export default function DonorsPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [donors, setDonors] = useState<DonorSummary[]>([])
   const [membershipDonorIds, setMembershipDonorIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // URL-based membership toggle (default: exclude memberships)
+  const includeMemberships = searchParams.get('includeMemberships') === 'true'
 
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [sortField, setSortField] = useState<SortField>('lifetime_amount')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+
+  // Toggle membership inclusion
+  const toggleMemberships = () => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (includeMemberships) {
+      params.delete('includeMemberships')
+    } else {
+      params.set('includeMemberships', 'true')
+    }
+    router.push(`/donors?${params.toString()}`)
+  }
 
   // Fetch donors and membership donor IDs
   useEffect(() => {
@@ -155,11 +171,14 @@ export default function DonorsPage() {
   const filteredDonors = useMemo(() => {
     let result = [...donors]
 
+    // Apply membership exclusion by default (unless includeMemberships is true)
+    if (!includeMemberships) {
+      result = result.filter((d) => !membershipDonorIds.has(d.donor_id))
+    }
+
     // Apply status filter
     if (statusFilter === 'lapsed_dormant') {
       result = result.filter((d) => d.donor_status === 'lapsed' || d.donor_status === 'dormant')
-    } else if (statusFilter === 'exclude_memberships') {
-      result = result.filter((d) => !membershipDonorIds.has(d.donor_id))
     } else if (statusFilter !== 'all') {
       result = result.filter((d) => d.donor_status === statusFilter)
     }
@@ -198,16 +217,21 @@ export default function DonorsPage() {
     })
 
     return result
-  }, [donors, membershipDonorIds, statusFilter, searchQuery, sortField, sortDirection])
+  }, [donors, membershipDonorIds, includeMemberships, statusFilter, searchQuery, sortField, sortDirection])
 
-  // Summary stats
+  // Summary stats (based on filtered donors)
   const stats = useMemo(() => {
+    // Use donors filtered by membership toggle (but not by status/search)
+    const baseList = includeMemberships
+      ? donors
+      : donors.filter((d) => !membershipDonorIds.has(d.donor_id))
+
     return {
-      totalDonors: donors.length,
-      totalLifetimeValue: donors.reduce((sum, d) => sum + d.lifetime_amount, 0),
-      majorDonors: donors.filter((d) => d.donor_status === 'major').length,
+      totalDonors: baseList.length,
+      totalLifetimeValue: baseList.reduce((sum, d) => sum + d.lifetime_amount, 0),
+      majorDonors: baseList.filter((d) => d.donor_status === 'major').length,
     }
-  }, [donors])
+  }, [donors, membershipDonorIds, includeMemberships])
 
   // Handle row click
   const handleRowClick = (donorId: string) => {
@@ -244,11 +268,34 @@ export default function DonorsPage() {
   return (
     <div className="container mx-auto p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold">Donors</h1>
-        <p className="text-muted-foreground">
-          Manage donor relationships and giving history
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold">Donors</h1>
+          <p className="text-muted-foreground">
+            Manage donor relationships and giving history
+            {!includeMemberships && (
+              <span className="ml-2 text-sm font-medium text-blue-600">(Donations Only)</span>
+            )}
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleMemberships}
+          className="flex items-center gap-2"
+        >
+          {includeMemberships ? (
+            <>
+              <ToggleRight className="h-4 w-4" />
+              Including Memberships
+            </>
+          ) : (
+            <>
+              <ToggleLeft className="h-4 w-4" />
+              Include Memberships
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Summary Stats */}
@@ -309,7 +356,6 @@ export default function DonorsPage() {
                 <SelectItem value="lapsed_dormant">Lapsed/Dormant</SelectItem>
                 <SelectItem value="major">Major Donors</SelectItem>
                 <SelectItem value="first_time">First Time</SelectItem>
-                <SelectItem value="exclude_memberships">Exclude Memberships</SelectItem>
               </SelectContent>
             </Select>
 
