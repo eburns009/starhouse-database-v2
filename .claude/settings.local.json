@@ -24,7 +24,15 @@
       "Bash(git log:*)",
       "Bash(mkdir:*)",
       "Bash(source:*)",
-      "Bash(psql:*)"
+      "Bash(psql:*)",
+      "Bash(ls:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npx shadcn@latest add checkbox:*)",
+      "Bash(tee:*)",
+      "Bash(echo:*)",
+      "Bash(export DATABASE_URL=\"postgresql://postgres.lnagadkqejnopgfxwlkb:H59Hy33Q3ZmK71Ev@aws-1-us-east-2.pooler.supabase.com:5432/postgres\")",
+      "Bash(PGPASSWORD=\"H59Hy33Q3ZmK71Ev\" psql:*)",
+      "Bash(python scripts/import_quickbooks_donors.py:*)"
     ],
     "deny": [],
     "ask": []

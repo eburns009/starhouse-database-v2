@@ -179,6 +179,26 @@ def normalize_name(name: str) -> str:
     # Remove punctuation except &
     name = re.sub(r'[^\w\s&]', '', name)
 
+    # Strip common business suffixes (must be done after punctuation removal)
+    # These are organizational designations that should not affect name matching
+    business_suffixes = [
+        ' ug',           # German: Unternehmergesellschaft
+        ' llc',          # Limited Liability Company
+        ' inc',          # Incorporated
+        ' corp',         # Corporation
+        ' ltd',          # Limited
+        ' foundation',   # Foundation
+        ' trust',        # Trust
+        ' llp',          # Limited Liability Partnership
+        ' pllc',         # Professional LLC
+        ' pc',           # Professional Corporation
+        ' co',           # Company
+    ]
+    for suffix in business_suffixes:
+        if name.endswith(suffix):
+            name = name[:-len(suffix)]
+            break  # Only remove one suffix
+
     # Collapse whitespace
     name = ' '.join(name.split())
 
@@ -360,7 +380,35 @@ class DonorMatcher:
                         'source': 'contacts'
                     })
 
-        logger.info(f"Cached {len(self.email_cache)} email mappings")
+        logger.info(f"Cached {len(self.email_cache)} primary email mappings")
+
+        # Cache email aliases from contact_emails table
+        # This ensures we match against secondary/historical emails from merged contacts
+        self.cur.execute("""
+            SELECT
+                ce.email,
+                c.id,
+                c.email as primary_email,
+                TRIM(COALESCE(c.first_name, '') || ' ' || COALESCE(c.last_name, '')) as full_name
+            FROM contact_emails ce
+            JOIN contacts c ON ce.contact_id = c.id
+            WHERE c.deleted_at IS NULL
+              AND ce.email IS NOT NULL
+              AND ce.email != ''
+        """)
+
+        alias_count = 0
+        for row in self.cur.fetchall():
+            email_lower = row['email'].lower().strip()
+            if email_lower and email_lower not in self.email_cache:
+                self.email_cache[email_lower] = {
+                    'id': row['id'],
+                    'email': row['primary_email'] or row['email'],  # Return primary for consistency
+                    'name': row['full_name']
+                }
+                alias_count += 1
+
+        logger.info(f"Cached {alias_count} additional email aliases (total: {len(self.email_cache)})")
 
         # Load contact_names variations
         self.cur.execute("""
@@ -686,10 +734,15 @@ class QuickBooksDonorImporter:
     Import QuickBooks donors into the donor module.
     """
 
-    def __init__(self, csv_path: str, dry_run: bool = True, production: bool = False):
+    def __init__(self, csv_path: str, dry_run: bool = True, production: bool = False,
+                 create_contacts: bool = False, import_major_only: bool = False,
+                 import_mid_tier: bool = False):
         self.csv_path = csv_path
         self.dry_run = dry_run
         self.production = production
+        self.create_contacts = create_contacts
+        self.import_major_only = import_major_only
+        self.import_mid_tier = import_mid_tier
         self.conn = None
         self.cur = None
         self.matcher = None
@@ -737,6 +790,12 @@ class QuickBooksDonorImporter:
         logger.info("QUICKBOOKS DONOR IMPORT")
         logger.info("=" * 80)
         logger.info(f"Mode: {'DRY RUN' if self.dry_run else 'LIVE EXECUTION'}")
+        if self.import_major_only:
+            logger.info("Filter: MAJOR DONORS ONLY (>= $1,000)")
+        elif self.import_mid_tier:
+            logger.info("Filter: MID-TIER ONLY ($100 - $999)")
+        if self.create_contacts:
+            logger.info("Create Contacts: ENABLED (will create contacts for new donors)")
         logger.info("")
 
         try:
@@ -899,6 +958,14 @@ class QuickBooksDonorImporter:
                 logger.info(f"  {donor.customer_name}")
                 logger.info(f"    Total: ${donor.total_amount:,.2f} | {donor.transaction_count} transactions")
 
+    def _filter_by_tier(self, donor) -> bool:
+        """Check if donor passes the tier filter."""
+        if self.import_major_only:
+            return donor.total_amount >= 1000
+        elif self.import_mid_tier:
+            return 100 <= donor.total_amount < 1000
+        return True  # No filter, include all
+
     def _execute_import(self):
         """Execute the actual import (not dry run)."""
         logger.info("\n" + "=" * 80)
@@ -907,26 +974,35 @@ class QuickBooksDonorImporter:
 
         imported_count = 0
         error_count = 0
+        skipped_tier = 0
+        new_contacts_created = 0
         donor_ids = []
 
         try:
             # Process high-confidence matches
-            total_matched = len(self.results['matched'])
+            matched_filtered = [item for item in self.results['matched'] if self._filter_by_tier(item['donor'])]
+            skipped_tier += len(self.results['matched']) - len(matched_filtered)
+            total_matched = len(matched_filtered)
             logger.info(f"\nProcessing {total_matched} high-confidence matches...")
-            for i, item in enumerate(self.results['matched'], 1):
+            for i, item in enumerate(matched_filtered, 1):
                 try:
                     if i % 50 == 0 or i == 1:
                         logger.info(f"  Processing donor {i}/{total_matched}: {item['donor'].customer_name}")
+                    # Use savepoint so one failure doesn't rollback all donors
+                    self.cur.execute(f"SAVEPOINT donor_{i}")
                     donor_id = self._import_donor(item['donor'], item['match'].contact_id)
                     if donor_id:
                         donor_ids.append(donor_id)
                         imported_count += 1
+                    self.cur.execute(f"RELEASE SAVEPOINT donor_{i}")
                 except Exception as e:
                     logger.error(f"Error importing {item['donor'].customer_name}: {e}")
+                    self.cur.execute(f"ROLLBACK TO SAVEPOINT donor_{i}")
                     error_count += 1
 
             # Process organizations that matched
-            org_with_match = [item for item in self.results['org'] if item['match'].contact_id]
+            org_with_match = [item for item in self.results['org'] if item['match'].contact_id and self._filter_by_tier(item['donor'])]
+            skipped_tier += len([item for item in self.results['org'] if item['match'].contact_id]) - len(org_with_match)
             total_orgs = len(org_with_match)
             if total_orgs > 0:
                 logger.info(f"\nProcessing {total_orgs} matched organizations...")
@@ -934,13 +1010,67 @@ class QuickBooksDonorImporter:
                 try:
                     if i % 10 == 0 or i == 1:
                         logger.info(f"  Processing org {i}/{total_orgs}: {item['donor'].customer_name}")
+                    self.cur.execute(f"SAVEPOINT org_{i}")
                     donor_id = self._import_donor(item['donor'], item['match'].contact_id)
                     if donor_id:
                         donor_ids.append(donor_id)
                         imported_count += 1
+                    self.cur.execute(f"RELEASE SAVEPOINT org_{i}")
                 except Exception as e:
                     logger.error(f"Error importing org {item['donor'].customer_name}: {e}")
+                    self.cur.execute(f"ROLLBACK TO SAVEPOINT org_{i}")
                     error_count += 1
+
+            # Process new donors (create contacts if enabled)
+            if self.create_contacts:
+                new_filtered = [donor for donor in self.results['new'] if self._filter_by_tier(donor)]
+                skipped_tier += len(self.results['new']) - len(new_filtered)
+                total_new = len(new_filtered)
+                if total_new > 0:
+                    logger.info(f"\nCreating {total_new} new contacts and donors...")
+                for i, donor in enumerate(new_filtered, 1):
+                    try:
+                        if i % 10 == 0 or i == 1:
+                            logger.info(f"  Creating contact {i}/{total_new}: {donor.customer_name}")
+                        self.cur.execute(f"SAVEPOINT new_{i}")
+                        contact_id = self._create_contact(donor)
+                        if contact_id:
+                            new_contacts_created += 1
+                            donor_id = self._import_donor(donor, contact_id)
+                            if donor_id:
+                                donor_ids.append(donor_id)
+                                imported_count += 1
+                        self.cur.execute(f"RELEASE SAVEPOINT new_{i}")
+                    except Exception as e:
+                        logger.error(f"Error creating contact for {donor.customer_name}: {e}")
+                        self.cur.execute(f"ROLLBACK TO SAVEPOINT new_{i}")
+                        error_count += 1
+
+                # Also process organizations without matches
+                org_without_match = [item for item in self.results['org']
+                                     if not item['match'].contact_id and self._filter_by_tier(item['donor'])]
+                skipped_tier += len([item for item in self.results['org'] if not item['match'].contact_id]) - len(org_without_match)
+                total_new_orgs = len(org_without_match)
+                if total_new_orgs > 0:
+                    logger.info(f"\nCreating {total_new_orgs} new organization contacts...")
+                for i, item in enumerate(org_without_match, 1):
+                    try:
+                        donor = item['donor']
+                        if i % 10 == 0 or i == 1:
+                            logger.info(f"  Creating org contact {i}/{total_new_orgs}: {donor.customer_name}")
+                        self.cur.execute(f"SAVEPOINT neworg_{i}")
+                        contact_id = self._create_contact(donor)
+                        if contact_id:
+                            new_contacts_created += 1
+                            donor_id = self._import_donor(donor, contact_id)
+                            if donor_id:
+                                donor_ids.append(donor_id)
+                                imported_count += 1
+                        self.cur.execute(f"RELEASE SAVEPOINT neworg_{i}")
+                    except Exception as e:
+                        logger.error(f"Error creating org contact for {item['donor'].customer_name}: {e}")
+                        self.cur.execute(f"ROLLBACK TO SAVEPOINT neworg_{i}")
+                        error_count += 1
 
             # Commit all changes
             self.conn.commit()
@@ -966,11 +1096,78 @@ class QuickBooksDonorImporter:
         logger.info("IMPORT COMPLETE")
         logger.info("=" * 80)
         logger.info(f"  Imported: {imported_count}")
+        if new_contacts_created > 0:
+            logger.info(f"  New contacts created: {new_contacts_created}")
         logger.info(f"  Errors: {error_count}")
+        if skipped_tier > 0:
+            logger.info(f"  Skipped (tier filter): {skipped_tier}")
         logger.info(f"  Skipped (review needed): {len(self.results['review'])}")
         logger.info(f"  Skipped (multiple matches): {len(self.results['multiple'])}")
-        logger.info(f"  Skipped (new donors): {len(self.results['new'])}")
+        if not self.create_contacts:
+            logger.info(f"  Skipped (new donors): {len(self.results['new'])}")
         logger.info(f"  Skipped (joint donors): {len(self.results['joint'])}")
+
+    def _create_contact(self, donor) -> Optional[str]:
+        """
+        Create a new contact from donor data.
+
+        Returns contact_id if successful.
+        """
+        # Parse name for first/last
+        first_name = None
+        last_name = None
+
+        if donor.is_organization:
+            # For orgs, put full name in last_name
+            last_name = donor.customer_name
+        else:
+            # Try to split name
+            name_parts = donor.customer_name.strip().split()
+            if len(name_parts) >= 2:
+                first_name = name_parts[0]
+                last_name = ' '.join(name_parts[1:])
+            elif len(name_parts) == 1:
+                last_name = name_parts[0]
+            else:
+                last_name = donor.customer_name
+
+        # Generate placeholder email if none provided
+        # Email is required in the contacts table
+        import uuid
+        if donor.email:
+            email = donor.email
+        else:
+            # Generate unique placeholder: qb-import-{uuid}@placeholder.starhouse.org
+            email = f"qb-import-{uuid.uuid4().hex[:8]}@placeholder.starhouse.org"
+
+        # Create contact
+        self.cur.execute("""
+            INSERT INTO contacts (
+                first_name,
+                last_name,
+                email,
+                phone,
+                address_line_1,
+                city,
+                state,
+                postal_code,
+                source_system
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'quickbooks')
+            RETURNING id
+        """, (
+            first_name,
+            last_name,
+            email,
+            donor.phone or None,
+            donor.address.get('street') or None,
+            donor.address.get('city') or None,
+            donor.address.get('state') or None,
+            donor.address.get('zip') or None
+        ))
+
+        result = self.cur.fetchone()
+        return result['id'] if result else None
 
     def _import_donor(self, donor: DonorRecord, contact_id: str) -> Optional[str]:
         """
@@ -1194,6 +1391,21 @@ def main():
         action='store_true',
         help='Use production database (requires PRODUCTION_DATABASE_URL in .env)'
     )
+    parser.add_argument(
+        '--create-contacts',
+        action='store_true',
+        help='Create new contacts for unmatched donors (instead of skipping them)'
+    )
+    parser.add_argument(
+        '--import-major-only',
+        action='store_true',
+        help='Only import donors with lifetime amount >= $1,000'
+    )
+    parser.add_argument(
+        '--import-mid-tier',
+        action='store_true',
+        help='Only import donors with lifetime amount >= $100 and < $1,000'
+    )
 
     args = parser.parse_args()
 
@@ -1215,7 +1427,10 @@ def main():
     importer = QuickBooksDonorImporter(
         csv_path=args.csv_file,
         dry_run=not args.execute,
-        production=args.production
+        production=args.production,
+        create_contacts=args.create_contacts,
+        import_major_only=args.import_major_only,
+        import_mid_tier=args.import_mid_tier
     )
     importer.run()
 
