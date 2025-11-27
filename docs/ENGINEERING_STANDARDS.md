@@ -1,10 +1,13 @@
 # StarHouse Platform - Engineering Standards
 
 ## Context
+
 - **Project:** Internal CRM+ for StarHouse (spiritual/transformational community)
 - **Scale:** <10 staff members (internal tool, not public SaaS)
 - **Tech Lead:** Ed Burns
 - **Standard:** FAANG-level engineering (we build it right, once)
+
+---
 
 ## Core Principles
 
@@ -38,6 +41,8 @@
 - ✅ Show me the verification queries
 - ✅ Full diagnostic before attempting fix
 
+---
+
 ## Tech Stack
 
 ### Frontend
@@ -50,34 +55,20 @@
 - Supabase (PostgreSQL + Auth + Edge Functions)
 - Database: PostgreSQL with RLS
 - Auth: Supabase Auth (email/password)
-- Edge Functions: Deno runtime
 
 ### Deployment
 - Frontend: Vercel (auto-deploy on push to main)
-- Edge Functions: GitHub Actions
 - Database: Supabase managed
 
-## Database Standards
-
-### Schema Rules
-- ✅ Use UUID as primary key (immutable)
-- ❌ Never use mutable fields (email) as PK
-- ✅ Foreign keys with CASCADE delete
-- ✅ Timestamps: created_at, updated_at
-- ✅ Idempotent migrations (IF NOT EXISTS)
-
-### Current Schema
-- **staff_members:** id (UUID PK), email (UNIQUE), role, last_sign_in_at, email_confirmed_at, updated_at
-- **Primary roles:** super_admin, admin, staff
+---
 
 ## Code Quality Standards
 
 ### Before Every Commit
 ```bash
-# Must pass all three:
-npm run build          # ✅ Next.js build
-npx tsc --noEmit       # ✅ TypeScript check
-npm run lint           # ✅ ESLint check
+npm run build          # ✅ Next.js build must pass
+npx tsc --noEmit       # ✅ TypeScript check must pass
+npm run lint           # ✅ ESLint check must pass
 ```
 
 ### Git Commit Format
@@ -85,13 +76,13 @@ npm run lint           # ✅ ESLint check
 type(scope): description
 
 Types: feat, fix, refactor, docs, test, chore
-Scope: auth, db, ui, api, edge-functions
+Scope: auth, db, ui, api, donors, contacts, imports
 ```
 
 Examples:
-- `fix(auth): Clear existing sessions on invite callback`
-- `feat(db): Add UUID primary key to staff_members`
-- `refactor(ui): Extract StaffTable into separate component`
+- `fix(donors): Resolve duplicate transactions in import`
+- `feat(db): Add email alias matching to contact lookup`
+- `refactor(ui): Extract DonorCard into separate component`
 
 ### TypeScript Standards
 - ✅ Strict mode enabled
@@ -99,52 +90,30 @@ Examples:
 - ✅ Explicit return types on exported functions
 - ✅ Interface over type for object shapes
 
-### Error Handling
-- ✅ Always handle both success and error cases
-- ✅ Log errors with context (what operation, what inputs)
-- ✅ User-facing errors must be actionable
-- ❌ Never swallow errors silently
+---
 
-## Testing Standards
+## Database Standards
 
-### Local Testing Checklist
-1. Build passes: `npm run build`
-2. TypeScript passes: `npx tsc --noEmit`
-3. Lint passes: `npm run lint`
-4. Manual test the specific feature
-5. Check browser console for errors
-6. Verify database state after operations
+### Schema Rules
+- ✅ Use UUID as primary key (immutable)
+- ❌ Never use mutable fields (email) as PK
+- ✅ Foreign keys with appropriate CASCADE behavior
+- ✅ Timestamps: created_at, updated_at
+- ✅ Idempotent migrations (IF NOT EXISTS)
+- ✅ Soft-delete (deleted_at) over hard delete
 
-### Database Verification
-```sql
--- Always verify state changes
-SELECT id, email, role, email_confirmed_at, last_sign_in_at
-FROM staff_members
-WHERE email = 'user@example.com';
-```
+### Query Standards
+- ✅ Always include `WHERE deleted_at IS NULL` unless investigating deleted records
+- ✅ Use `LOWER(TRIM())` for string comparisons
+- ✅ Limit results during investigation (`LIMIT 20`)
+- ✅ Show `COUNT(*)` before showing details
 
-## Deployment Checklist
-
-### Before Push to Main
-- [ ] All local checks pass
-- [ ] Changes tested manually
-- [ ] No console errors
-- [ ] Database migrations are idempotent
-- [ ] Environment variables documented
-
-### After Deploy
-- [ ] Verify Vercel deployment succeeded
-- [ ] Check Vercel function logs for errors
-- [ ] Test feature in production
-- [ ] Monitor for 5 minutes post-deploy
-
-## Security Standards
-
-### Authentication
-- ✅ Use Supabase Auth exclusively
-- ✅ Clear sessions before creating new ones
-- ✅ Validate session on every protected route
-- ✅ Handle invite flow vs normal sign-in separately
+### Write Standards
+- ✅ Default to DRY-RUN mode for bulk operations
+- ✅ Require explicit `--execute` flag for writes
+- ✅ Use savepoints for batch operations
+- ✅ Verify counts before AND after writes
+- ✅ Create backup records for destructive operations
 
 ### Row Level Security (RLS)
 - ✅ Enable RLS on all tables
@@ -152,237 +121,18 @@ WHERE email = 'user@example.com';
 - ✅ Test policies with different user roles
 - ❌ Never disable RLS in production
 
-### Sensitive Data
-- ✅ Never log passwords or tokens
-- ✅ Use environment variables for secrets
-- ✅ Rotate credentials on suspected compromise
+---
 
-## Incident Response
+## Error Handling Standards
 
-### P0 (Critical) - Security Bugs
-- **Response time:** Immediate
-- **Action:** Stop all other work, fix immediately
-- **Examples:** Session hijacking, auth bypass, data exposure
+### Code Errors
+- ✅ Always handle both success and error cases
+- ✅ Log errors with context (what operation, what inputs)
+- ✅ User-facing errors must be actionable
+- ❌ Never swallow errors silently
 
-### P1 (High) - Feature Breaking
-- **Response time:** Same day
-- **Action:** Fix before any new features
-- **Examples:** Can't sign in, can't save data
-
-### P2 (Medium) - Degraded Experience
-- **Response time:** This week
-- **Examples:** Slow queries, UI glitches
-
-### P3 (Low) - Nice to Have
-- **Response time:** When convenient
-- **Examples:** Code cleanup, minor improvements
-
-## Documentation Requirements
-
-### Code Comments
-- ✅ Why, not what (code shows what)
-- ✅ Document non-obvious business logic
-- ✅ Link to relevant docs/issues
-- ❌ Don't comment obvious code
-
-### README Updates
-- ✅ Update setup instructions when dependencies change
-- ✅ Document environment variables
-- ✅ Keep architecture diagrams current
-
-## Review Checklist
-
-Before requesting review:
-- [ ] Self-reviewed the diff
-- [ ] All checks pass locally
-- [ ] No commented-out code
-- [ ] No console.log statements (except intentional logging)
-- [ ] No TODO comments without issue links
-- [ ] Commit messages follow format
-
-## Data Import Standards (Python Scripts)
-
-### Core Requirements
-
-All data import scripts must implement:
-
-#### 1. Dry-Run Mode
+### Database Errors
 ```python
-# Required: --dry-run flag that shows what would happen without writing
-parser.add_argument('--dry-run', action='store_true',
-                    help='Show what would be imported without writing to database')
-```
-- ✅ Default to dry-run (require explicit `--execute` to write)
-- ✅ Log all operations that would occur
-- ✅ Show record counts and sample data
-
-#### 2. Idempotency
-- ✅ Running the same import twice produces the same result
-- ✅ Use upsert patterns (INSERT ... ON CONFLICT)
-- ✅ Check for existing records before creating
-- ❌ Never duplicate data on re-run
-
-#### 3. Validation Before Write
-```python
-# Validate all records before any database writes
-errors = validate_all_records(records)
-if errors:
-    log_errors(errors)
-    sys.exit(1)
-# Only after validation passes:
-write_to_database(records)
-```
-- ✅ Validate entire dataset before first write
-- ✅ Fail fast on validation errors
-- ✅ Log specific validation failures with row numbers
-
-#### 4. Transaction Safety
-```python
-# Wrap bulk operations in transactions
-with connection.begin():
-    for record in records:
-        upsert_record(record)
-    # Commit only if all succeed
-```
-- ✅ Use database transactions for atomicity
-- ✅ All-or-nothing for bulk operations
-- ✅ Automatic rollback on error
-
-#### 5. Audit Logging
-```python
-# Required log format
-logging.info(f"Import started: {csv_file}")
-logging.info(f"Records to process: {len(records)}")
-logging.info(f"Created: {created_count}, Updated: {updated_count}, Skipped: {skipped_count}")
-logging.info(f"Import completed in {elapsed_time}s")
-```
-- ✅ Log to file in `logs/` directory with timestamp
-- ✅ Include source file, record counts, timing
-- ✅ Log individual record actions at DEBUG level
-- ✅ Log errors with full context (row number, data, reason)
-
-#### 6. Verification Queries
-```python
-# After import, verify database state
-def verify_import():
-    """Run verification queries and log results."""
-    count = db.execute("SELECT COUNT(*) FROM donors WHERE source = 'quickbooks'")
-    logging.info(f"Verification: {count} QuickBooks donors in database")
-```
-- ✅ Run verification after import completes
-- ✅ Compare expected vs actual counts
-- ✅ Sample data integrity checks
-
-### Import Script Structure
-
-```python
-#!/usr/bin/env python3
-"""
-Import [source] data into [target table].
-
-Usage:
-    python import_source.py --dry-run           # Preview changes
-    python import_source.py --execute           # Apply changes
-    python import_source.py --execute --force   # Skip confirmations
-"""
-
-import argparse
-import logging
-from datetime import datetime
-
-def setup_logging(script_name: str) -> None:
-    """Configure logging to file and console."""
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    log_file = f"logs/{script_name}_{timestamp}.log"
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_file),
-            logging.StreamHandler()
-        ]
-    )
-
-def parse_args():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--dry-run', action='store_true', default=True)
-    parser.add_argument('--execute', action='store_true')
-    parser.add_argument('--force', action='store_true')
-    return parser.parse_args()
-
-def main():
-    args = parse_args()
-    setup_logging('import_source')
-
-    # 1. Load and validate data
-    records = load_csv(CSV_PATH)
-    errors = validate_records(records)
-    if errors:
-        for error in errors:
-            logging.error(error)
-        sys.exit(1)
-
-    # 2. Preview or execute
-    if args.execute:
-        if not args.force:
-            confirm = input(f"Import {len(records)} records? [y/N] ")
-            if confirm.lower() != 'y':
-                sys.exit(0)
-        import_records(records)
-        verify_import()
-    else:
-        preview_import(records)
-        logging.info("Dry run complete. Use --execute to apply changes.")
-
-if __name__ == '__main__':
-    main()
-```
-
-### CSV Handling Standards
-
-```python
-# Required: Explicit encoding and error handling
-import pandas as pd
-
-df = pd.read_csv(
-    filepath,
-    encoding='utf-8',
-    dtype=str,  # Read all as strings, convert explicitly
-    na_values=['', 'NULL', 'null', 'None'],
-    keep_default_na=False
-)
-
-# Required: Column validation
-expected_columns = ['Name', 'Date', 'Amount', ...]
-missing = set(expected_columns) - set(df.columns)
-if missing:
-    raise ValueError(f"Missing required columns: {missing}")
-```
-
-### Contact Matching Standards
-
-When matching CSV records to existing contacts:
-
-```python
-# Priority order for matching (highest to lowest confidence)
-1. Exact email match (case-insensitive)
-2. Exact full name match + phone match
-3. Exact full name match + address match
-4. Fuzzy name match (>90% similarity) + email domain match
-
-# Required: Log match confidence
-logging.info(f"Matched '{csv_name}' to contact {contact_id} via {match_method}")
-```
-
-- ✅ Log the matching method used for each record
-- ✅ Flag low-confidence matches for review
-- ✅ Never auto-merge without high confidence match
-- ❌ Never create duplicates without checking
-
-### Error Handling
-
-```python
-# Specific exception handling with context
 try:
     result = db.execute(query, params)
 except IntegrityError as e:
@@ -398,36 +148,61 @@ except Exception as e:
 - ✅ Continue processing on recoverable errors (duplicates)
 - ✅ Fail fast on unrecoverable errors
 
-## Automated Testing Standards
+---
 
-### Minimum Requirements
+## Logging Standards
 
-Even for a small team, automated tests prevent regressions:
+### Log Levels
+- **ERROR**: Operation failed, needs attention
+- **WARNING**: Unexpected but recoverable (e.g., skipped record)
+- **INFO**: Normal operations (import started, counts, completed)
+- **DEBUG**: Detailed record-level operations
 
-#### 1. Critical Path Tests
-```bash
-# tests/ directory structure
-tests/
-  test_auth.py           # Login, logout, session management
-  test_data_import.py    # Import script validation logic
-  test_api_endpoints.py  # Core API functionality
+### Required Format
+```python
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(f"logs/{script_name}_{timestamp}.log"),
+        logging.StreamHandler()
+    ]
+)
 ```
 
-- ✅ Test authentication flows
-- ✅ Test import validation functions (unit tests)
-- ✅ Test critical database operations
-
-#### 2. Running Tests
-```bash
-# Add to package.json scripts
-"test": "pytest tests/ -v",
-"test:watch": "pytest tests/ -v --watch"
-
-# Run before commit
-pytest tests/ -v
+### Required Log Points
+```python
+logging.info(f"Operation started: {source}")
+logging.info(f"Records to process: {count}")
+logging.info(f"Created: {x}, Updated: {y}, Skipped: {z}, Errors: {e}")
+logging.info(f"Operation completed in {elapsed}s")
 ```
 
-#### 3. Import Script Tests
+- ✅ Log to file in `logs/` directory with timestamp
+- ✅ Include source, record counts, timing
+- ✅ Log errors with full context (row number, data, reason)
+- ❌ Never log passwords or tokens
+
+---
+
+## Testing Standards
+
+### Before Every Commit
+1. Build passes: `npm run build`
+2. TypeScript passes: `npx tsc --noEmit`
+3. Lint passes: `npm run lint`
+4. Manual test the specific feature
+5. Check browser console for errors
+6. Verify database state after operations
+
+### Database Verification
+```sql
+-- Always verify state changes with queries
+-- Check counts before and after operations
+-- Verify no unintended side effects
+```
+
+### Import Script Tests
 ```python
 # Test validation logic without database
 def test_validate_email():
@@ -436,74 +211,218 @@ def test_validate_email():
 
 def test_parse_amount():
     assert parse_amount("$1,234.56") == 1234.56
-    assert parse_amount("1234") == 1234.0
-
-def test_match_contact():
-    # Test matching logic with mock data
-    contacts = [{"id": 1, "email": "test@example.com"}]
-    result = find_matching_contact("test@example.com", contacts)
-    assert result["id"] == 1
 ```
 
-### CI Pipeline (Future)
+---
 
-When ready, add GitHub Actions:
-```yaml
-# .github/workflows/test.yml
-name: Tests
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run tests
-        run: pytest tests/ -v
-```
+## Deployment Checklist
 
-## Observability Standards
+### Before Push to Main
+- [ ] All local checks pass
+- [ ] Changes tested manually
+- [ ] No console errors
+- [ ] Database migrations are idempotent
 
-### Structured Logging
+### After Deploy
+- [ ] Verify Vercel deployment succeeded
+- [ ] Check Vercel function logs for errors
+- [ ] Test feature in production
+- [ ] Monitor for 5 minutes post-deploy
 
-Use consistent log format for easy parsing:
+---
 
+## Incident Response
+
+### P0 (Critical) - Security/Data Integrity
+- **Response time:** Immediate
+- **Action:** Stop all other work, fix immediately
+- **Examples:** Session hijacking, auth bypass, data exposure, duplicate data corruption
+
+### P1 (High) - Feature Breaking
+- **Response time:** Same day
+- **Action:** Fix before any new features
+- **Examples:** Can't sign in, can't save data, import failures
+
+### P2 (Medium) - Degraded Experience
+- **Response time:** This week
+- **Examples:** Slow queries, UI glitches
+
+### P3 (Low) - Nice to Have
+- **Response time:** When convenient
+- **Examples:** Code cleanup, minor improvements
+
+---
+
+## Data Import Standards (Python Scripts)
+
+### Required Flags
 ```python
-import logging
-import json
-
-class StructuredFormatter(logging.Formatter):
-    def format(self, record):
-        log_data = {
-            "timestamp": self.formatTime(record),
-            "level": record.levelname,
-            "message": record.getMessage(),
-            "script": record.name,
-        }
-        if hasattr(record, 'extra'):
-            log_data.update(record.extra)
-        return json.dumps(log_data)
+parser.add_argument('--dry-run', action='store_true', default=True)
+parser.add_argument('--execute', action='store_true')
+parser.add_argument('--force', action='store_true')
 ```
 
-### Log Levels
-- **ERROR**: Operation failed, needs attention
-- **WARNING**: Unexpected but recoverable (e.g., skipped record)
-- **INFO**: Normal operations (import started, counts, completed)
-- **DEBUG**: Detailed record-level operations
+- ✅ Default to dry-run (require explicit `--execute` to write)
+- ✅ Log all operations that would occur
+- ✅ Show record counts and sample data
 
-### Key Metrics to Log
+### Idempotency
+- ✅ Running the same import twice produces the same result
+- ✅ Use upsert patterns (INSERT ... ON CONFLICT)
+- ✅ Check for existing records before creating
+- ❌ Never duplicate data on re-run
 
-For every import script:
+### Validation Before Write
 ```python
-logging.info("Import summary", extra={
-    "source": "quickbooks",
-    "file": csv_path,
-    "total_records": len(records),
-    "created": created_count,
-    "updated": updated_count,
-    "skipped": skipped_count,
-    "errors": error_count,
-    "duration_seconds": elapsed
-})
+errors = validate_all_records(records)
+if errors:
+    log_errors(errors)
+    sys.exit(1)
+# Only after validation passes:
+write_to_database(records)
+```
+
+- ✅ Validate entire dataset before first write
+- ✅ Fail fast on validation errors
+- ✅ Log specific validation failures with row numbers
+
+### Transaction Safety
+```python
+for record in records:
+    try:
+        cur.execute("SAVEPOINT record_import")
+        import_record(record)
+        cur.execute("RELEASE SAVEPOINT record_import")
+    except Exception as e:
+        cur.execute("ROLLBACK TO SAVEPOINT record_import")
+        logging.error(f"Failed: {record} - {e}")
+        continue
+conn.commit()
+```
+
+- ✅ Use savepoints for batch operations
+- ✅ One failure doesn't rollback all
+- ✅ Log errors and continue processing
+
+### Verification After Import
+```python
+def verify_import():
+    expected = len(records_to_import)
+    actual = db.query("SELECT COUNT(*) FROM table WHERE source = 'import'")
+    logging.info(f"Verification: Expected {expected}, Actual {actual}")
+```
+
+- ✅ Run verification after import completes
+- ✅ Compare expected vs actual counts
+- ✅ Sample data integrity checks
+
+---
+
+## Duplicate Prevention Standards
+
+### 1. Define Unique Key
+```python
+# Every import must define what makes a record unique
+UNIQUE_KEY_FIELDS = ['source_id', 'contact_id', 'transaction_date', 'amount']
+```
+
+### 2. Check Before Insert
+```python
+existing = db.query("""
+    SELECT id FROM transactions 
+    WHERE quickbooks_invoice_num = %s 
+      AND contact_id = %s
+      AND amount = %s
+""", [invoice_num, contact_id, amount])
+
+if existing:
+    logging.warning(f"Skipping duplicate: {invoice_num}")
+    skip_count += 1
+    continue
+```
+
+### 3. Use Upsert Pattern
+```sql
+INSERT INTO transactions (...)
+VALUES (...)
+ON CONFLICT (quickbooks_invoice_num, contact_id) 
+DO UPDATE SET updated_at = NOW()
+```
+
+### 4. Post-Import Duplicate Check
+```sql
+-- Required: Check for duplicates after every import
+SELECT source_id, contact_id, COUNT(*) 
+FROM transactions 
+WHERE source_system = 'quickbooks'
+GROUP BY source_id, contact_id
+HAVING COUNT(*) > 1;
+```
+
+- ✅ If duplicates found: STOP and investigate
+- ❌ Never assume "it will just update"
+
+---
+
+## Contact Matching Standards
+
+### Priority Order (Highest to Lowest Confidence)
+1. Exact email match (case-insensitive) - includes `contact_emails` aliases
+2. External ID match (QuickBooks ID, PayPal ID, etc.)
+3. Exact full name match + phone match
+4. Exact full name match + address match
+5. Fuzzy name match (>90% similarity)
+
+### Name Normalization
+```python
+def normalize_name(name):
+    name = name.lower().strip()
+    name = re.sub(r'[^\w\s]', '', name)  # Remove punctuation
+    name = re.sub(r'\s+', ' ', name)     # Collapse whitespace
+    # Strip business suffixes
+    for suffix in [' ug', ' llc', ' inc', ' corp', ' ltd', ' foundation']:
+        if name.endswith(suffix):
+            name = name[:-len(suffix)].strip()
+    return name
+```
+
+### Required Logging
+```python
+logging.info(f"Matched '{csv_name}' to contact {contact_id} via {match_method}")
+```
+
+- ✅ Log the matching method used for each record
+- ✅ Flag low-confidence matches for review
+- ✅ Check `contact_emails` table for email aliases
+- ❌ Never auto-merge without high confidence match
+- ❌ Never create duplicates without checking
+
+---
+
+## Documentation Requirements
+
+### Code Comments
+- ✅ Why, not what (code shows what)
+- ✅ Document non-obvious business logic
+- ❌ Don't comment obvious code
+
+### README Updates
+- ✅ Update setup instructions when dependencies change
+- ✅ Document environment variables
+
+---
+
+## Prohibited Actions
+```
+❌ Never DELETE without backup
+❌ Never UPDATE without WHERE clause verification
+❌ Never deploy without local testing
+❌ Never commit with failing builds
+❌ Never use production credentials in code
+❌ Never skip verification steps
+❌ Never guess at root causes
+❌ Never make multiple partial fixes
+❌ Never re-import without deduplication check
 ```
 
 ---
