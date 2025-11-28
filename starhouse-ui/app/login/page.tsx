@@ -2,18 +2,16 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Mail } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const router = useRouter()
+  const [emailSent, setEmailSent] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,22 +21,59 @@ export default function LoginPage() {
     try {
       const supabase = createClient()
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithOtp({
         email,
-        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
 
       if (error) {
         setError(error.message)
         setLoading(false)
       } else {
-        router.push('/')
-        router.refresh()
+        setEmailSent(true)
+        setLoading(false)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
       setLoading(false)
     }
+  }
+
+  if (emailSent) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/10 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-4 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600">
+              <Mail className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl">Check your email</CardTitle>
+              <CardDescription className="mt-2">
+                We sent a login link to <span className="font-medium text-foreground">{email}</span>
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-sm text-muted-foreground">
+              Click the link in your email to sign in. The link expires in 24 hours.
+            </p>
+            <Button
+              variant="ghost"
+              className="mt-4"
+              onClick={() => {
+                setEmailSent(false)
+                setEmail('')
+              }}
+            >
+              Use a different email
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -51,7 +86,7 @@ export default function LoginPage() {
           <div>
             <CardTitle className="text-2xl">Welcome to StarHouse</CardTitle>
             <CardDescription className="mt-2">
-              Sign in to access your dashboard
+              Enter your email to receive a magic link
             </CardDescription>
           </div>
         </CardHeader>
@@ -72,19 +107,6 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
             {error && (
               <div className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
                 {error}
@@ -92,7 +114,7 @@ export default function LoginPage() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Sending...' : 'Send magic link'}
             </Button>
           </form>
         </CardContent>
