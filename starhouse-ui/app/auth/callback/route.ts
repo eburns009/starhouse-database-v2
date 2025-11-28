@@ -110,6 +110,25 @@ export async function GET(request: NextRequest) {
   }
 
   // ============================================================================
+  // FLOW 4: Magic Link (token + type=magiclink)
+  // ============================================================================
+  if (token && type === 'magiclink') {
+    console.log('[auth/callback] Processing magic link flow')
+
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: token,
+      type: 'magiclink'
+    })
+
+    if (!error) {
+      console.log('[auth/callback] Magic link SUCCESS - redirecting to:', next)
+      return NextResponse.redirect(new URL(next, requestUrl.origin))
+    }
+
+    console.error('[auth/callback] Magic link FAILED:', error.message)
+  }
+
+  // ============================================================================
   // Fallback: No valid parameters or all flows failed
   // ============================================================================
   console.log('[auth/callback] No valid auth parameters or verification failed - redirecting to login')
