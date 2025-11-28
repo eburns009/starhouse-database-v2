@@ -50,8 +50,9 @@ export async function GET(request: NextRequest) {
   if (code) {
     console.log('[auth/callback] Processing OAuth/Magic Link flow')
 
-    // SECURITY: Clear existing session to prevent session contamination
-    await supabase.auth.signOut()
+    // NOTE: Do NOT call signOut() here - it clears the PKCE code_verifier
+    // from cookies, which is required for exchangeCodeForSession to work.
+    // The code exchange will establish a new session automatically.
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
