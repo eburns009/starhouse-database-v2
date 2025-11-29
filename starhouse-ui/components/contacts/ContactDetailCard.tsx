@@ -78,16 +78,42 @@ function getEmailSourceLabel(source: string): string {
 }
 
 /**
- * Get product name from transaction
+ * Get product name from transaction using multi-source fallback
  * FAANG Standard: Pure function with clear priority logic
- * Priority: Direct product > Subscription product > Transaction type fallback
+ *
+ * Priority chain:
+ * 1. products.name (direct product link - 16.6% of transactions)
+ * 2. subscriptions.products.name (via subscription)
+ * 3. quickbooks_memo (Kajabi transactions - 50.7% have this)
+ * 4. raw_source.event_name (Ticket Tailor events)
+ * 5. transaction_type (final fallback)
  */
 function getTransactionDisplayName(transaction: TransactionWithProduct): string {
-  return (
-    transaction.products?.name ||
-    transaction.subscriptions?.products?.name ||
-    transaction.transaction_type.replace('_', ' ')
-  )
+  // Direct product link
+  if (transaction.products?.name) {
+    return transaction.products.name
+  }
+
+  // Via subscription
+  if (transaction.subscriptions?.products?.name) {
+    return transaction.subscriptions.products.name
+  }
+
+  // Kajabi: quickbooks_memo field
+  if (transaction.quickbooks_memo) {
+    return transaction.quickbooks_memo
+  }
+
+  // Ticket Tailor: raw_source.event_name
+  if (transaction.raw_source && typeof transaction.raw_source === 'object') {
+    const eventName = (transaction.raw_source as Record<string, unknown>).event_name
+    if (typeof eventName === 'string' && eventName.trim()) {
+      return eventName
+    }
+  }
+
+  // Final fallback: transaction type
+  return transaction.transaction_type.replace('_', ' ')
 }
 
 /**
@@ -530,10 +556,13 @@ export function ContactDetailCard({
 
       // Fetch transactions with product information (both direct and via subscription)
       // FAANG Standard: Explicit select with proper joins for type safety
+      // Includes multi-source fallback fields: quickbooks_memo (Kajabi), raw_source (Ticket Tailor)
       const { data: transactionsData, error: transactionsError } = await supabase
         .from('transactions')
         .select(`
           *,
+          quickbooks_memo,
+          raw_source,
           products (
             name,
             product_type

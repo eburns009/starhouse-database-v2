@@ -17,6 +17,12 @@ export interface SubscriptionWithProduct extends Subscription {
 /**
  * Transaction with joined product information
  * FAANG Standard: Explicit type for database joins instead of 'any'
+ *
+ * Includes multi-source fallback fields for product name display:
+ * - products.name (direct product link)
+ * - subscriptions.products.name (via subscription)
+ * - quickbooks_memo (Kajabi transactions)
+ * - raw_source.event_name (Ticket Tailor events)
  */
 export interface TransactionWithProduct extends Transaction {
   products?: Pick<Product, 'name' | 'product_type'> | null
@@ -24,6 +30,9 @@ export interface TransactionWithProduct extends Transaction {
     id: string
     products: Pick<Product, 'name' | 'product_type'> | null
   } | null
+  // Multi-source fallback fields
+  quickbooks_memo?: string | null
+  raw_source?: Record<string, unknown> | null
 }
 
 /**
