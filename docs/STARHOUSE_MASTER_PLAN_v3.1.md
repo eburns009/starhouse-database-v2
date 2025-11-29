@@ -2049,3 +2049,30 @@ Test case: Kate Kripke (3 duplicate contacts identified)
 - Consider storing in `raw_source` JSON for future flexibility
 
 **Trigger:** When staff requests better PayPal transaction labeling in purchase history.
+
+---
+
+### Technical Debt: Supabase Security Advisor Cleanup
+**Priority:** P2 (Medium)
+**Estimate:** 2-4 hours
+**Source:** Supabase Security Advisor (discovered 2025-11-29)
+
+**Issues:**
+- 65 errors: Security Definer Views — views using `SECURITY DEFINER` bypass RLS
+- 57 warnings: To be assessed
+
+**Affected views (partial list):**
+- `public.mailing_list_quality_issues`
+- `public.v_failed_webhooks`
+- `public.phone_verification_stats`
+- `public.mailing_list_stats`
+- `public.v_donor_summary`
+- `public.name_sync_health`
+- `public.recent_webhook_failures`
+
+**Action required:**
+- Review each view for RLS bypass necessity
+- Convert to `SECURITY INVOKER` where appropriate
+- Document any views that legitimately need `SECURITY DEFINER`
+
+**Risk assessment:** Low — staff-only internal tool, all users authenticated
