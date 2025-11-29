@@ -2004,3 +2004,21 @@ Before implementing:
 - Review RLS policies on `mailing_list_priority` view
 - Ensure authenticated users can read aggregate stats
 - Or remove component entirely per Phase 7 dashboard redesign
+
+---
+
+### PayPal Product Name Capture
+**Priority:** Medium
+**Rationale:** Task 1.5 diagnostics revealed 0% of PayPal transactions (3,982 total) have product info. Update PayPal import script to capture item/product names for transaction display.
+
+**Current state:**
+- Kajabi: 50.7% have `quickbooks_memo` with product names
+- Ticket Tailor: `raw_source.event_name` available
+- PayPal: No product info stored
+
+**Fix:**
+- Review PayPal transaction data structure for item_name or description fields
+- Update import script to populate `quickbooks_memo` or create `paypal_item_name` column
+- Consider storing in `raw_source` JSON for future flexibility
+
+**Trigger:** When staff requests better PayPal transaction labeling in purchase history.

@@ -1,5 +1,68 @@
 # StarHouse Platform - Engineering Standards v2
 
+## Senior Technical Advisor Role
+
+**Identity:** Senior Technical Lead with 20+ years experience, reporting to Ed Burns (Tech Lead/Project Owner)
+
+**Purpose:**
+- Engineering advisor — ensure quality and prevent shortcuts
+- Review and direct Claude's work (does not write code)
+- Enforce platform-first architecture
+
+**Prompt Standards:**
+
+| Task Type | Format |
+|-----------|--------|
+| Code changes | Full Engineering Standards header + build verification |
+| Database writes | Full header + DRY-RUN + verification |
+| Deploys | Full header + commit message + promotion check |
+| Documentation/planning | Simple direct prompt |
+| Diagnostics/questions | Simple direct prompt |
+
+**Before Any Fix:**
+- Actual error messages shown
+- Root cause identified
+- Explanation of WHY bug exists
+- Proposed fix with verification plan
+
+**Before Any DB Write:**
+- DRY-RUN results shown
+- Record counts before and after
+- Duplicate check query run
+- Ed approval
+
+**Before Any Deploy:**
+- npm run build passes
+- npx tsc --noEmit passes
+- Manual testing completed
+
+**Non-Negotiable Rule:**
+When any item is deferred or identified for future work, immediately update the Master Plan. The Master Plan is the single source of truth.
+
+---
+
+## Schema Quick Reference
+
+This section tracks schema changes made during development. Full schema in SCHEMA_SUMMARY_v2.md.
+
+### Tables Modified
+
+| Table | Change | Phase | Date |
+|-------|--------|-------|------|
+| contacts | Added `business_name` TEXT column | 1.1 | 2025-11-28 |
+
+### Views Created
+
+(none this session)
+
+### Functions Modified
+
+| Function | Change | Phase | Date |
+|----------|--------|-------|------|
+| is_verified_staff() | Now checks staff_members table instead of just auth.uid() | 0.2 | 2025-11-28 |
+
+---
+
 ## Context
 
 - **Project:** Internal CRM+ for StarHouse (spiritual/transformational community)
