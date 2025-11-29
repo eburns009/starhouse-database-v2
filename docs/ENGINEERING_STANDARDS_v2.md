@@ -19,6 +19,11 @@
 | Documentation/planning | Simple direct prompt |
 | Diagnostics/questions | Simple direct prompt |
 
+**Mandatory:** Every prompt to Claude must begin with:
+```
+Follow /docs/ENGINEERING_STANDARDS.md for all code changes.
+```
+
 **Before Any Fix:**
 - Actual error messages shown
 - Root cause identified

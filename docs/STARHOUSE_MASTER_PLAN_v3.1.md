@@ -1913,29 +1913,56 @@ GROUP BY c.id, c.name, c.type, c.goal_amount, c.status;
 
 ---
 
-## Session Start Template
+## Project Status
 
-**Upload these files:**
-1. `ENGINEERING_STANDARDS.md`
-2. `STARHOUSE_SENIOR_ADVISOR.txt`
-3. `SCHEMA_SUMMARY.md`
-4. `STARHOUSE_MASTER_PLAN_v3.1.md`
+**Last Updated:** 2025-11-29
 
-**First prompt:**
+### Current Phase
+Phase 1 - Contact Foundation (5 of 8 tasks complete)
+
+### Active To-Do
+- [ ] 1.6 Deduplication UI (Kate Kripke test case ready)
+- [ ] 1.7 Contact Card Redesign (business_name header, reusable component)
+- [ ] 1.8 Review Other Platforms for UI Best Practices
+
+### Up Next (Phase 2: Donor Module)
+- [ ] 2.1 Complete Remaining Imports (356 contacts, 17 joint donors)
+- [ ] 2.2 Donor List UI
+- [ ] 2.3 Donor Classification
+- [ ] 2.4 Manual Donation Entry
+- [ ] 2.5 Fix "nan" Donor Names
+- [ ] 2.6 Prevention Trigger for NULL external_transaction_id
+
+### Blocked / Needs Decision
+(none currently)
+
+### Completed
+| Task | Date |
+|------|------|
+| 1.5 Display Purchase History | 2025-11-29 |
+| 1.4 Display Kajabi Tags | 2025-11-29 |
+| 1.3 Address Strategy | 2025-11-29 |
+| 1.2 Multi-Email Display | 2025-11-28 |
+| 1.1 Edit Contact Function | 2025-11-28 |
+| 0.2 Supabase Auth | 2025-11-28 |
+| 0.1 Fix Duplicate Transactions | 2025-11-28 |
+
+### Remaining Phases
+- Phase 3: Events Module (10 tasks) — Zoho Replacement
+- Phase 4: Membership Module (10 tasks)
+- Phase 5: School for Souls (10 tasks)
+- Phase 6: Donor Advanced (6 tasks)
+- Phase 7: Dashboard & Polish (4 tasks)
+- Future Enhancements (4 items)
+
+### Next Session Starts With
 ```
 Follow /docs/ENGINEERING_STANDARDS.md for all code changes.
 
-Core principle: Build only what we must. Use Wix for public-facing, 
-Supabase for data/logic, Vercel for infrastructure.
+Current phase: Phase 1 - Contact Foundation
+Current task: 1.6 Deduplication UI
 
-Current phase: [PHASE]
-Current task: [TASK]
-
-Before implementing:
-1. Can Wix do this? If yes, configure webhook.
-2. Can Supabase do this? If yes, create view/function.
-3. Can Vercel do this? If yes, configure cron.
-4. Only if none above: build in app.
+Test case: Kate Kripke (3 duplicate contacts identified)
 ```
 
 ---
