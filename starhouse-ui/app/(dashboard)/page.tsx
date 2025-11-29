@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, TrendingUp, DollarSign, Calendar } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Users, TrendingUp, DollarSign, Calendar, AlertTriangle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { MailingListStats } from '@/components/dashboard/MailingListStats'
 import { ValidationFirstExplainer } from '@/components/dashboard/ValidationFirstExplainer'
@@ -12,6 +13,11 @@ export default async function DashboardPage() {
     .from('contacts')
     .select('*', { count: 'exact', head: true })
     .is('deleted_at', null)
+
+  // Fetch duplicate count
+  const { count: duplicateCount } = await supabase
+    .from('v_name_based_duplicates')
+    .select('*', { count: 'exact', head: true })
 
   return (
     <div className="container mx-auto p-8">
@@ -102,6 +108,26 @@ export default async function DashboardPage() {
                 <p className="text-sm text-muted-foreground">Find and manage contacts</p>
               </div>
             </a>
+
+            {duplicateCount && duplicateCount > 0 && (
+              <a
+                href="/contacts/duplicates"
+                className="group flex items-center gap-4 rounded-xl border-2 border-yellow-200 bg-yellow-50 p-4 transition-all duration-200 hover:border-yellow-400 hover:bg-yellow-100"
+              >
+                <div className="rounded-lg bg-yellow-200 p-3">
+                  <AlertTriangle className="h-5 w-5 text-yellow-700" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium flex items-center gap-2">
+                    Review Duplicates
+                    <Badge variant="secondary" className="text-xs">
+                      {duplicateCount}
+                    </Badge>
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Merge duplicate contacts</p>
+                </div>
+              </a>
+            )}
           </CardContent>
         </Card>
       </div>
