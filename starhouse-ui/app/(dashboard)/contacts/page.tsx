@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Search, X, AlertTriangle } from 'lucide-react'
 import { ContactSearchResults } from '@/components/contacts/ContactSearchResults'
-import { ContactDetailCard } from '@/components/contacts/ContactDetailCard'
+import { Contact360Card } from '@/components/contacts/contact-card'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
@@ -78,7 +78,7 @@ export default function ContactsPage() {
 
         {/* Results or Detail Card */}
         {selectedContactId ? (
-          <ContactDetailCard
+          <Contact360Card
             contactId={selectedContactId}
             onClose={() => setSelectedContactId(null)}
           />
