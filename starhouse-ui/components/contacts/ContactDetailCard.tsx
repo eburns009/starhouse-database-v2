@@ -26,7 +26,9 @@ import {
   Building2,
   AlertTriangle,
   Truck,
+  Pencil,
 } from 'lucide-react'
+import { ContactEditModal } from './ContactEditModal'
 import type {
   Contact,
   ContactWithValidation,
@@ -409,6 +411,7 @@ export function ContactDetailCard({
   const [contactTags, setContactTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   // Refs for scrolling to expanded sections
   const additionalNamesRef = useRef<HTMLDivElement>(null)
@@ -596,130 +599,132 @@ export function ContactDetailCard({
     }
   }
 
-  useEffect(() => {
-    const fetchContactDetails = async () => {
-      try {
-        const supabase = createClient()
+  // Fetch contact details - extracted for reuse (initial load and after edit)
+  const fetchContactDetails = async () => {
+    try {
+      const supabase = createClient()
 
-        // Fetch contact
-        const { data: contactData, error: contactError } = await supabase
-          .from('contacts')
-          .select('*')
-          .eq('id', contactId)
-          .single()
+      // Fetch contact
+      const { data: contactData, error: contactError } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('id', contactId)
+        .single()
 
-        if (contactError) throw contactError
+      if (contactError) throw contactError
 
-        // Fetch transactions with product information (both direct and via subscription)
-        // FAANG Standard: Explicit select with proper joins for type safety
-        const { data: transactionsData, error: transactionsError } = await supabase
-          .from('transactions')
-          .select(`
-            *,
+      // Fetch transactions with product information (both direct and via subscription)
+      // FAANG Standard: Explicit select with proper joins for type safety
+      const { data: transactionsData, error: transactionsError } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          products (
+            name,
+            product_type
+          ),
+          subscriptions (
+            id,
             products (
               name,
               product_type
-            ),
-            subscriptions (
-              id,
-              products (
-                name,
-                product_type
-              )
             )
-          `)
-          .eq('contact_id', contactId)
-          .order('transaction_date', { ascending: false })
-          .limit(5)
+          )
+        `)
+        .eq('contact_id', contactId)
+        .order('transaction_date', { ascending: false })
+        .limit(5)
 
-        if (transactionsError) {
-          console.error('Error fetching transactions:', transactionsError)
-        }
-
-        // Fetch total revenue (all transactions, not just the recent 5)
-        // FAANG Standard: Include refunds - they are stored as negative amounts
-        const { data: revenueData, error: revenueError } = await supabase
-          .from('transactions')
-          .select('amount, status')
-          .eq('contact_id', contactId)
-          .in('status', ['completed', 'succeeded'])
-
-        if (revenueError) {
-          console.error('Error fetching revenue:', revenueError)
-        } else {
-          // Sum all amounts (refunds are negative, so they subtract automatically)
-          const revenue = revenueData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
-          setTotalRevenue(revenue)
-        }
-
-        // Get total transaction count
-        const { count: transactionCount } = await supabase
-          .from('transactions')
-          .select('*', { count: 'exact', head: true })
-          .eq('contact_id', contactId)
-
-        setTotalTransactionCount(transactionCount || 0)
-
-        // Fetch subscriptions with product information (JOIN)
-        const { data: subscriptionsData, error: subscriptionsError } = await supabase
-          .from('subscriptions')
-          .select(`
-            *,
-            products (
-              id,
-              name,
-              product_type
-            )
-          `)
-          .eq('contact_id', contactId)
-          .not('product_id', 'is', null)  // Only show subscriptions with products
-          .order('created_at', { ascending: false })
-
-        if (subscriptionsError) {
-          console.error('Error fetching subscriptions:', subscriptionsError)
-        }
-
-        // Fetch notes
-        const { data: notesData, error: notesError } = await supabase
-          .from('contact_notes')
-          .select('*')
-          .eq('contact_id', contactId)
-          .order('is_pinned', { ascending: false })  // Pinned notes first
-          .order('created_at', { ascending: false })  // Then by date
-
-        if (notesError) {
-          console.error('Error fetching notes:', notesError)
-        }
-
-        setContact(contactData)
-        setTransactions(transactionsData || [])
-        setSubscriptions(subscriptionsData || [])
-        setNotes(notesData || [])
-
-        // Load tags from contact data
-        if (contactData.tags && Array.isArray(contactData.tags)) {
-          setContactTags(contactData.tags)
-        }
-
-        // Fetch mailing list recommendation with scores
-        const { data: mailingData } = await supabase
-          .from('mailing_list_priority')
-          .select('recommended_address, billing_score, shipping_score, confidence')
-          .eq('id', contactId)
-          .single()
-
-        if (mailingData) {
-          setMailingListData(mailingData)
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load contact')
-        console.error('Error loading contact:', err)
-      } finally {
-        setLoading(false)
+      if (transactionsError) {
+        console.error('Error fetching transactions:', transactionsError)
       }
-    }
 
+      // Fetch total revenue (all transactions, not just the recent 5)
+      // FAANG Standard: Include refunds - they are stored as negative amounts
+      const { data: revenueData, error: revenueError } = await supabase
+        .from('transactions')
+        .select('amount, status')
+        .eq('contact_id', contactId)
+        .in('status', ['completed', 'succeeded'])
+
+      if (revenueError) {
+        console.error('Error fetching revenue:', revenueError)
+      } else {
+        // Sum all amounts (refunds are negative, so they subtract automatically)
+        const revenue = revenueData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+        setTotalRevenue(revenue)
+      }
+
+      // Get total transaction count
+      const { count: transactionCount } = await supabase
+        .from('transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('contact_id', contactId)
+
+      setTotalTransactionCount(transactionCount || 0)
+
+      // Fetch subscriptions with product information (JOIN)
+      const { data: subscriptionsData, error: subscriptionsError } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          products (
+            id,
+            name,
+            product_type
+          )
+        `)
+        .eq('contact_id', contactId)
+        .not('product_id', 'is', null)  // Only show subscriptions with products
+        .order('created_at', { ascending: false })
+
+      if (subscriptionsError) {
+        console.error('Error fetching subscriptions:', subscriptionsError)
+      }
+
+      // Fetch notes
+      const { data: notesData, error: notesError } = await supabase
+        .from('contact_notes')
+        .select('*')
+        .eq('contact_id', contactId)
+        .order('is_pinned', { ascending: false })  // Pinned notes first
+        .order('created_at', { ascending: false })  // Then by date
+
+      if (notesError) {
+        console.error('Error fetching notes:', notesError)
+      }
+
+      setContact(contactData)
+      setTransactions(transactionsData || [])
+      setSubscriptions(subscriptionsData || [])
+      setNotes(notesData || [])
+
+      // Load tags from contact data
+      if (contactData.tags && Array.isArray(contactData.tags)) {
+        setContactTags(contactData.tags)
+      }
+
+      // Fetch mailing list recommendation with scores
+      const { data: mailingData } = await supabase
+        .from('mailing_list_priority')
+        .select('recommended_address, billing_score, shipping_score, confidence')
+        .eq('id', contactId)
+        .single()
+
+      if (mailingData) {
+        setMailingListData(mailingData)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load contact')
+      console.error('Error loading contact:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
     fetchContactDetails()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactId])
 
   // Extract all variants with memoization for performance
@@ -775,17 +780,36 @@ export function ContactDetailCard({
 
   return (
     <div className="space-y-4">
+      {/* Edit Modal */}
+      <ContactEditModal
+        contact={contact}
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
+        onSaved={fetchContactDetails}
+      />
+
       {/* Header Card */}
       <Card className="relative">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClose}
-          className="absolute top-4 right-4 h-8 w-8 p-0 rounded-full hover:bg-muted"
-          title="Close"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        <div className="absolute top-4 right-4 flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowEditModal(true)}
+            className="h-8 w-8 p-0 rounded-full hover:bg-muted"
+            title="Edit contact"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0 rounded-full hover:bg-muted"
+            title="Close"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
         <CardContent className="pt-6">
           <div className="flex items-start gap-4 sm:gap-6">
             <Avatar

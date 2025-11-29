@@ -89,6 +89,7 @@ export interface Database {
           paypal_first_name: string | null
           paypal_last_name: string | null
           paypal_business_name: string | null
+          business_name: string | null
           additional_name: string | null
           additional_name_source: string | null
           email_subscribed: boolean
@@ -119,6 +120,7 @@ export interface Database {
           state?: string | null
           postal_code?: string | null
           country?: string | null
+          business_name?: string | null
           email_subscribed?: boolean
           source_system?: SourceSystem
           kajabi_id?: string | null
@@ -144,6 +146,7 @@ export interface Database {
           state?: string | null
           postal_code?: string | null
           country?: string | null
+          business_name?: string | null
           email_subscribed?: boolean
           source_system?: SourceSystem
           kajabi_id?: string | null
