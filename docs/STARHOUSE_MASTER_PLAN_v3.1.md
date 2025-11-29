@@ -2076,3 +2076,27 @@ Test case: Kate Kripke (3 duplicate contacts identified)
 - Document any views that legitimately need `SECURITY DEFINER`
 
 **Risk assessment:** Low — staff-only internal tool, all users authenticated
+
+---
+
+### Technical Debt: Contact Edit Modal Enhancements
+**Priority:** P2 (Medium)
+**Estimate:** 2-3 hours total
+**Source:** UI capability assessment (discovered 2025-11-29)
+
+**Current state:**
+- ContactEditModal supports editing billing/mailing address only
+- Shipping address fields exist in schema but not exposed in edit UI
+- No ability to set primary email/phone/address from contact card
+
+**Missing features:**
+1. **Shipping address editing** — Add shipping address fields to ContactEditModal (schema fields already exist: `shipping_address_line_1`, `shipping_city`, etc.)
+2. **Set primary email** — Allow marking an email as primary from IdentityColumn email list
+3. **Set primary phone** — Allow marking a phone as primary from IdentityColumn phone list
+4. **Set primary address** — Allow setting `preferred_mailing_address` field (billing vs shipping) from UI
+
+**Files to modify:**
+- `starhouse-ui/components/contacts/ContactEditModal.tsx` — Add shipping address section
+- `starhouse-ui/components/contacts/contact-card/IdentityColumn.tsx` — Add "Set Primary" actions
+
+**Trigger:** When staff requests ability to edit shipping addresses or set primary contact methods via UI
