@@ -36,9 +36,10 @@ import type {
   SubscriptionWithProduct,
   NameVariant,
   PhoneVariant,
+  ContactEmail,
 } from '@/lib/types/contact'
-import type { MailingListData, RankedAddress, RankedEmail } from '@/lib/types/mailing'
-import { EMAIL_SCORE_WEIGHTS, EMAIL_SOURCE_PRIORITY, getConfidenceDisplay } from '@/lib/constants/scoring'
+import type { MailingListData, RankedAddress } from '@/lib/types/mailing'
+import { getConfidenceDisplay } from '@/lib/constants/scoring'
 
 // Note type for contact notes
 interface ContactNote {
@@ -59,15 +60,6 @@ interface ContactDetailCardProps {
 }
 
 /**
- * Get source priority for email ranking
- * FAANG Standard: Pure function with clear business logic
- */
-function getEmailSourcePriority(source: string): number {
-  const key = source.toLowerCase() as keyof typeof EMAIL_SOURCE_PRIORITY
-  return EMAIL_SOURCE_PRIORITY[key] || EMAIL_SOURCE_PRIORITY.MANUAL
-}
-
-/**
  * Get display label for email source
  */
 function getEmailSourceLabel(source: string): string {
@@ -77,6 +69,9 @@ function getEmailSourceLabel(source: string): string {
     'paypal': 'PayPal',
     'manual': 'Manual Entry',
     'zoho': 'Zoho CRM',
+    'quickbooks': 'QuickBooks',
+    'mailchimp': 'Mailchimp',
+    'import': 'Imported',
   }
   return labels[source.toLowerCase()] || source
 }
@@ -242,148 +237,6 @@ function buildRankedAddresses(
   })
 }
 
-/**
- * Build ranked emails for display with scores and verification
- * FAANG Standard: Pure function, proper types, optimized scoring
- */
-function buildRankedEmails(contact: ContactWithValidation): RankedEmail[] {
-  const emails: RankedEmail[] = []
-  const processedEmails = new Set<string>()
-
-  // Helper to calculate email score using constants
-  const calculateEmailScore = (
-    isPrimary: boolean,
-    isSubscribed: boolean,
-    sourcePriority: number,
-    isVerified: boolean
-  ): number => {
-    let score = 0
-
-    // Primary email bonus
-    if (isPrimary) score += EMAIL_SCORE_WEIGHTS.PRIMARY
-
-    // Subscription status
-    if (isSubscribed) score += EMAIL_SCORE_WEIGHTS.SUBSCRIBED
-
-    // Source priority (inverse of priority number)
-    score += Math.max(0, EMAIL_SCORE_WEIGHTS.SOURCE_PRIORITY_MAX - (sourcePriority * 4))
-
-    // Verified email
-    if (isVerified) score += EMAIL_SCORE_WEIGHTS.VERIFIED
-
-    return Math.min(100, score)
-  }
-
-  // Primary Email (from main contact)
-  if (contact.email) {
-    const email = contact.email.toLowerCase()
-    processedEmails.add(email)
-
-    const sourcePriority = getEmailSourcePriority(contact.source_system || 'manual')
-    const score = calculateEmailScore(
-      true, // isPrimary
-      contact.email_subscribed || false,
-      sourcePriority,
-      false // isVerified - could add email_verified field later
-    )
-
-    emails.push({
-      label: 'Primary',
-      email: contact.email,
-      score,
-      isSubscribed: contact.email_subscribed || false,
-      isVerified: false,
-      isPrimary: true,
-      isRecommended: false, // Will be set after sorting
-      source: contact.source_system || 'manual',
-      sourcePriority,
-    })
-  }
-
-  // PayPal Email
-  if (contact.paypal_email && !processedEmails.has(contact.paypal_email.toLowerCase())) {
-    processedEmails.add(contact.paypal_email.toLowerCase())
-
-    const score = calculateEmailScore(
-      false,
-      false, // PayPal emails not typically in subscription list
-      EMAIL_SOURCE_PRIORITY.PAYPAL,
-      false
-    )
-
-    emails.push({
-      label: 'PayPal',
-      email: contact.paypal_email,
-      score,
-      isSubscribed: false,
-      isVerified: false,
-      isPrimary: false,
-      isRecommended: false,
-      source: 'paypal',
-      sourcePriority: EMAIL_SOURCE_PRIORITY.PAYPAL,
-    })
-  }
-
-  // Additional Email
-  if (contact.additional_email && !processedEmails.has(contact.additional_email.toLowerCase())) {
-    processedEmails.add(contact.additional_email.toLowerCase())
-
-    const sourcePriority = getEmailSourcePriority(contact.additional_email_source || 'manual')
-    const score = calculateEmailScore(
-      false,
-      false,
-      sourcePriority,
-      false
-    )
-
-    emails.push({
-      label: 'Additional',
-      email: contact.additional_email,
-      score,
-      isSubscribed: false,
-      isVerified: false,
-      isPrimary: false,
-      isRecommended: false,
-      source: contact.additional_email_source || 'manual',
-      sourcePriority,
-    })
-  }
-
-  // Zoho Email
-  if (contact.zoho_email && !processedEmails.has(contact.zoho_email.toLowerCase())) {
-    processedEmails.add(contact.zoho_email.toLowerCase())
-
-    const score = calculateEmailScore(
-      false,
-      false,
-      EMAIL_SOURCE_PRIORITY.ZOHO,
-      false
-    )
-
-    emails.push({
-      label: 'Zoho',
-      email: contact.zoho_email,
-      score,
-      isSubscribed: false,
-      isVerified: false,
-      isPrimary: false,
-      isRecommended: false,
-      source: 'zoho',
-      sourcePriority: EMAIL_SOURCE_PRIORITY.ZOHO,
-    })
-  }
-
-  // Sort by score (highest first)
-  emails.sort((a, b) => b.score - a.score)
-
-  // Mark the highest scoring email as recommended
-  if (emails.length > 0) {
-    emails[0].isRecommended = true
-  }
-
-  return emails
-}
-
 export function ContactDetailCard({
   contactId,
   onClose,
@@ -412,6 +265,7 @@ export function ContactDetailCard({
   const [newTag, setNewTag] = useState('')
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [contactEmails, setContactEmails] = useState<ContactEmail[]>([])
 
   // Refs for scrolling to expanded sections
   const additionalNamesRef = useRef<HTMLDivElement>(null)
@@ -714,6 +568,22 @@ export function ContactDetailCard({
       if (mailingData) {
         setMailingListData(mailingData)
       }
+
+      // Fetch contact emails from contact_emails table
+      // FAANG Standard: Use normalized table for multi-value fields
+      const { data: emailsData, error: emailsError } = await supabase
+        .from('contact_emails')
+        .select('*')
+        .eq('contact_id', contactId)
+        .order('is_primary', { ascending: false })
+        .order('is_outreach', { ascending: false })
+        .order('created_at', { ascending: true })
+
+      if (emailsError) {
+        console.error('Error fetching contact emails:', emailsError)
+      } else {
+        setContactEmails(emailsData || [])
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load contact')
       console.error('Error loading contact:', err)
@@ -745,10 +615,7 @@ export function ContactDetailCard({
     return buildRankedAddresses(contact, mailingListData)
   }, [contact, mailingListData])
 
-  const rankedEmails = useMemo(() => {
-    if (!contact) return []
-    return buildRankedEmails(contact)
-  }, [contact])
+  // Note: rankedEmails removed - now using contactEmails from contact_emails table
 
   // Calculate stats
   const activeSubscriptions = useMemo(() => {
@@ -1094,9 +961,9 @@ export function ContactDetailCard({
                 <AtSign className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <div className="font-medium text-sm">Other Emails</div>
+                <div className="font-medium text-sm">All Emails</div>
                 <div className="text-xs text-muted-foreground">
-                  {rankedEmails.length > 1 ? rankedEmails.length - 1 : 0} email{rankedEmails.length - 1 !== 1 ? 's' : ''}
+                  {contactEmails.length} email{contactEmails.length !== 1 ? 's' : ''} on file
                 </div>
               </div>
             </div>
@@ -1240,71 +1107,115 @@ export function ContactDetailCard({
           </div>
         )}
 
-        {/* Other Emails Expanded */}
-        {showOtherEmails && rankedEmails.length > 1 && (
+        {/* All Emails Expanded - Using contact_emails table */}
+        {showOtherEmails && (
           <div ref={otherEmailsRef}>
             <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <p className="text-sm text-muted-foreground">
-                Ranked by deliverability for email campaigns
+                All email addresses from contact_emails table
               </p>
             </CardHeader>
             <CardContent className="space-y-3">
-              {rankedEmails.slice(1).map((email, idx) => {
-                const confidence = getConfidenceDisplay(email.score)
-
-                return (
+              {contactEmails.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic text-center py-6">
+                  No emails in contact_emails table. Primary email: {contact.email}
+                </p>
+              ) : (
+                contactEmails.map((email) => (
                   <div
-                    key={idx}
-                    className="rounded-lg border border-border bg-card p-4"
+                    key={email.id}
+                    className={`rounded-lg border p-4 ${
+                      email.is_primary
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border bg-card'
+                    }`}
                   >
                     <div className="space-y-3">
-                      {/* Header Row */}
+                      {/* Header Row with Badges */}
                       <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h4 className="font-medium text-sm">{email.label}</h4>
-                          <p className="text-xs text-muted-foreground capitalize">{getEmailSourceLabel(email.source)}</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {email.is_primary && (
+                            <Badge variant="default" className="text-xs">
+                              Primary
+                            </Badge>
+                          )}
+                          {email.is_outreach && (
+                            <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">
+                              <Mail className="mr-1 h-3 w-3" />
+                              Outreach
+                            </Badge>
+                          )}
+                          <Badge variant="outline" className="text-xs capitalize">
+                            {email.email_type}
+                          </Badge>
                         </div>
 
-                        {/* Tiered Score Badge */}
-                        <div className="text-right">
-                          <Badge
-                            variant="secondary"
-                            className={`text-xs font-semibold ${
-                              confidence.label === 'Very High' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300' :
-                              confidence.label === 'High' ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300' :
-                              confidence.label === 'Medium' ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300' :
-                              confidence.label === 'Low' ? 'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300' :
-                              'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300'
-                            }`}
-                          >
-                            {confidence.label}
-                          </Badge>
-                          <div className="text-xs text-muted-foreground mt-1">Score: {email.score}</div>
+                        {/* Verification/Deliverability Status */}
+                        <div className="flex flex-col items-end gap-1">
+                          {email.verified && (
+                            <Badge variant="secondary" className="text-xs bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300">
+                              <CheckCircle className="mr-1 h-3 w-3" />
+                              Verified
+                            </Badge>
+                          )}
+                          {email.deliverable === true && (
+                            <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                              Deliverable
+                            </Badge>
+                          )}
+                          {email.deliverable === false && (
+                            <Badge variant="destructive" className="text-xs">
+                              Undeliverable
+                            </Badge>
+                          )}
                         </div>
                       </div>
 
                       {/* Email Address */}
-                      <a
-                        href={`mailto:${email.email}`}
-                        className="block font-mono text-sm hover:text-primary break-all"
-                      >
-                        {email.email}
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`mailto:${email.email}`}
+                          className="font-mono text-sm hover:text-primary break-all"
+                        >
+                          {email.email}
+                        </a>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 flex-shrink-0"
+                          onClick={() => handleCopyEmail(email.email)}
+                          title="Copy email"
+                        >
+                          {copiedEmail ? (
+                            <Check className="h-3 w-3 text-green-600" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
 
-                      {/* Status Badges */}
-                      {email.isSubscribed && (
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            <CheckCircle className="mr-1 h-3 w-3" />
-                            Subscribed
-                          </Badge>
+                      {/* Source and Metadata */}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className="capitalize">{getEmailSourceLabel(email.source)}</span>
+                        <span>•</span>
+                        <span>Added {formatDate(email.created_at)}</span>
+                      </div>
+
+                      {/* Bounce Info if present */}
+                      {email.last_bounce_at && (
+                        <div className="mt-2 rounded-md bg-destructive/10 p-2 text-xs">
+                          <span className="font-medium text-destructive">Last bounce:</span>{' '}
+                          {formatDate(email.last_bounce_at)}
+                          {email.bounce_reason && (
+                            <span className="text-muted-foreground"> — {email.bounce_reason}</span>
+                          )}
                         </div>
                       )}
                     </div>
                   </div>
-                )
-              })}
+                ))
+              )}
             </CardContent>
             </Card>
           </div>

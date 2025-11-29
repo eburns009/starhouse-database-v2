@@ -26,6 +26,28 @@ export interface TransactionWithProduct extends Transaction {
   } | null
 }
 
+/**
+ * Email record from contact_emails table
+ * FAANG Standard: Match database schema exactly
+ */
+export interface ContactEmail {
+  id: string
+  contact_id: string
+  email: string
+  email_type: 'personal' | 'work' | 'other'
+  is_primary: boolean
+  is_outreach: boolean
+  source: 'kajabi' | 'paypal' | 'ticket_tailor' | 'zoho' | 'quickbooks' | 'mailchimp' | 'manual' | 'import'
+  verified: boolean
+  verified_at: string | null
+  deliverable: boolean | null
+  last_bounce_at: string | null
+  bounce_reason: string | null
+  created_at: string
+  updated_at: string
+}
+
+/** @deprecated Use ContactEmail instead */
 export interface AlternateEmail {
   id: string
   email: string

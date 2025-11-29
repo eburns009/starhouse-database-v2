@@ -509,6 +509,11 @@ ORDER BY t.transaction_date DESC;
 
 **Build:** Unified contact view showing all relationships
 
+**Key Features:**
+- Display `business_name` in header (field added in 1.1)
+- Reusable `ContactCard` component for use across all modules (Donors, Members, Events)
+- Edit button opens ContactEditModal
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ HEADER                                                                  │
@@ -663,6 +668,55 @@ GROUP BY c.id, c.full_name, c.email;
 
 ---
 
+#### 2.5 Fix "nan" Donor Names
+**Estimate:** 1-2 hours
+
+**Issue:** Some donors display "nan" as first/last name from QuickBooks import
+
+**Investigation:**
+1. Query contacts with `first_name = 'nan'` or `last_name = 'nan'`
+2. Check source data in QuickBooks export
+3. Determine if these are business names incorrectly parsed
+
+**Fix:**
+- Correct data in database (manual or script)
+- Update import script to handle "nan" values as NULL
+- Business names should populate `business_name` field, not name fields
+
+---
+
+#### 2.6 Prevention Trigger for NULL external_transaction_id
+**Estimate:** 1-2 hours
+
+**Issue:** Duplicate transactions occur when `external_transaction_id` is NULL
+
+**Build:** Database constraint or trigger to prevent inserts with NULL external_transaction_id for donation transactions
+
+```sql
+-- Option 1: Constraint (stricter)
+ALTER TABLE transactions
+ADD CONSTRAINT require_external_id_for_donations
+CHECK (NOT is_donation OR external_transaction_id IS NOT NULL);
+
+-- Option 2: Trigger (allows soft enforcement with logging)
+CREATE OR REPLACE FUNCTION check_donation_external_id()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.is_donation = true AND NEW.external_transaction_id IS NULL THEN
+    RAISE WARNING 'Donation transaction inserted without external_transaction_id: %', NEW.id;
+    -- Or RAISE EXCEPTION to block the insert
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_donation_external_id
+BEFORE INSERT ON transactions
+FOR EACH ROW EXECUTE FUNCTION check_donation_external_id();
+```
+
+---
+
 **Phase 2 Acceptance Criteria:**
 - [ ] ~1,000 donors imported
 - [ ] Zero duplicate transactions
@@ -670,6 +724,8 @@ GROUP BY c.id, c.full_name, c.email;
 - [ ] Donor classification badges
 - [ ] Manual entry works
 - [ ] Export works
+- [ ] No "nan" donor names displayed
+- [ ] NULL external_transaction_id prevention active
 
 **DEFERRED to Phase 6:**
 - Campaign tracking
@@ -1787,12 +1843,36 @@ GROUP BY c.id, c.name, c.type, c.goal_amount, c.status;
 
 ---
 
+#### 7.4 Staff Management UI
+**Estimate:** 4-6 hours
+
+**Build:** Admin interface for managing staff users
+
+**Features:**
+- List all staff users (from Supabase Auth)
+- Invite new staff (send Supabase Auth invite)
+- View last login, activity
+- Disable/enable staff accounts
+- Role assignment (if roles beyond basic staff are needed)
+
+**Don't build:**
+- Auth system — use Supabase Auth
+- Password management — Supabase handles via magic links/password reset
+
+**UI:**
+- Staff list with status badges (active, disabled)
+- "Invite Staff" button → enters email, sends invite
+- Click staff row to view details/activity
+
+---
+
 **Phase 7 Acceptance Criteria:**
 - [ ] Dashboard shows all module KPIs
 - [ ] No mailing list widget
 - [ ] Consistent UI across modules
 - [ ] Mobile-friendly
 - [ ] Documentation complete
+- [ ] Staff management UI functional
 
 ---
 
@@ -1890,3 +1970,37 @@ Before implementing:
 ---
 
 **Remember:** StarHouse is a staff UI layer. The less code we write, the less we maintain. Let the platforms do their jobs.
+
+---
+
+## Future Enhancements
+
+*Items identified during development that are valuable but not critical for launch. Track here for future phases.*
+
+### Normalized Phone/Address Tables
+**Priority:** Low
+**Rationale:** Current column-based storage (phone, paypal_phone, address_line_1, shipping_address_line_1) works for display. Full normalization to `contact_phones` and `contact_addresses` tables would require:
+- Migration to create tables (schemas defined in 1.2)
+- Data migration script to populate from existing columns
+- Update UI to query from new tables
+- Decision on column vs table as source of truth
+
+**Trigger:** Consider when staff needs to add/edit multiple phones or addresses per contact.
+
+---
+
+### Backfill NULL external_transaction_id
+**Priority:** Medium
+**Rationale:** Historical transactions may have NULL `external_transaction_id`, complicating duplicate detection. After implementing 2.6 prevention trigger:
+- Audit existing NULL records
+- Attempt to match with QuickBooks invoice numbers
+- Generate synthetic IDs for unmatched records (e.g., `legacy_YYYYMMDD_amount`)
+
+---
+
+### Fix MailingListStats Permission Error
+**Priority:** Low
+**Rationale:** Dashboard component `MailingListStats` throws RLS permission error. Current workaround: component hidden. Future fix:
+- Review RLS policies on `mailing_list_priority` view
+- Ensure authenticated users can read aggregate stats
+- Or remove component entirely per Phase 7 dashboard redesign
