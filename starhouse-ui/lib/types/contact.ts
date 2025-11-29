@@ -58,6 +58,24 @@ export interface AlternateEmail {
   verified: boolean
 }
 
+/**
+ * Tag record from contact_tags junction table with joined tag info
+ * FAANG Standard: Match database schema with JOIN result
+ */
+export interface ContactTag {
+  id: string
+  contact_id: string
+  tag_id: string
+  created_at: string
+  tags: {
+    id: string
+    name: string
+    name_norm: string
+    description: string | null
+    category: string | null
+  }
+}
+
 export interface ContactWithDetails extends Contact {
   alternate_emails: AlternateEmail[]
   transactions: Transaction[]

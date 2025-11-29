@@ -37,6 +37,7 @@ import type {
   NameVariant,
   PhoneVariant,
   ContactEmail,
+  ContactTag,
 } from '@/lib/types/contact'
 import type { MailingListData, RankedAddress } from '@/lib/types/mailing'
 import { getConfidenceDisplay } from '@/lib/constants/scoring'
@@ -261,8 +262,9 @@ export function ContactDetailCard({
   const [showPhones, setShowPhones] = useState(false)
   const [showAddresses, setShowAddresses] = useState(false)
   const [showTransactionsSection, setShowTransactionsSection] = useState(false)
-  const [contactTags, setContactTags] = useState<string[]>([])
+  const [contactTags, setContactTags] = useState<ContactTag[]>([])
   const [newTag, setNewTag] = useState('')
+  const [addingTag, setAddingTag] = useState(false)
   const [mailingListData, setMailingListData] = useState<MailingListData | null>(null)
   const [showEditModal, setShowEditModal] = useState(false)
   const [contactEmails, setContactEmails] = useState<ContactEmail[]>([])
@@ -356,8 +358,8 @@ export function ContactDetailCard({
       return { valid: false, normalized: '', error: 'Tag cannot exceed 50 characters' }
     }
 
-    // Check for duplicate (case-insensitive)
-    if (contactTags.some(existingTag => existingTag.toLowerCase() === normalized)) {
+    // Check for duplicate (case-insensitive) using ContactTag objects
+    if (contactTags.some(ct => ct.tags.name_norm === normalized)) {
       return { valid: false, normalized: '', error: 'Tag already exists' }
     }
 
@@ -365,8 +367,8 @@ export function ContactDetailCard({
   }
 
   /**
-   * Add tag using atomic database operation
-   * FAANG Standard: Use PostgreSQL RPC to prevent race conditions
+   * Add tag using junction table
+   * FAANG Standard: Uses normalized contact_tags + tags tables
    */
   const handleAddTag = async () => {
     const validation = validateTag(newTag)
@@ -378,60 +380,89 @@ export function ContactDetailCard({
       return
     }
 
-    // Optimistic UI update
-    const optimisticTags = [...contactTags, validation.normalized]
-    setContactTags(optimisticTags)
-    setNewTag('')
+    setAddingTag(true)
+    const previousTags = [...contactTags]
 
     try {
       const supabase = createClient()
 
-      // Use atomic RPC function to prevent race conditions
-      const { data, error } = await supabase.rpc('add_contact_tag', {
-        p_contact_id: contactId,
-        p_new_tag: validation.normalized,
-      })
+      // First, find or create the tag in the tags table
+      let tagId: string
 
-      if (error) {
-        console.error('Error adding tag:', error)
-        // Revert optimistic update
-        setContactTags(contactTags)
-        setNewTag(newTag) // Restore input
-        alert(`Failed to add tag: ${error.message}`)
-        return
+      // Check if tag exists
+      const { data: existingTag } = await supabase
+        .from('tags')
+        .select('id')
+        .eq('name_norm', validation.normalized)
+        .single()
+
+      if (existingTag) {
+        tagId = existingTag.id
+      } else {
+        // Create new tag
+        const { data: newTagData, error: createError } = await supabase
+          .from('tags')
+          .insert({
+            name: newTag.trim(),
+            name_norm: validation.normalized,
+            description: 'Added manually via UI',
+          })
+          .select('id')
+          .single()
+
+        if (createError) {
+          throw createError
+        }
+        tagId = newTagData.id
       }
 
-      // Sync with actual database state to handle any normalization
-      if (data && data.tags) {
-        setContactTags(data.tags)
+      // Insert into junction table
+      const { error: junctionError } = await supabase
+        .from('contact_tags')
+        .insert({
+          contact_id: contactId,
+          tag_id: tagId,
+        })
+
+      if (junctionError) {
+        // Check if it's a duplicate error
+        if (junctionError.code === '23505') {
+          alert('Tag already exists on this contact')
+          return
+        }
+        throw junctionError
       }
+
+      // Refetch tags to get the updated list
+      await fetchContactTags()
+      setNewTag('')
     } catch (err) {
       console.error('Error adding tag:', err)
-      // Revert optimistic update
-      setContactTags(contactTags)
-      setNewTag(newTag) // Restore input
+      setContactTags(previousTags)
       alert('Failed to add tag. Please try again.')
+    } finally {
+      setAddingTag(false)
     }
   }
 
   /**
-   * Remove tag using atomic database operation
-   * FAANG Standard: Use PostgreSQL RPC to prevent race conditions
+   * Remove tag using junction table
+   * FAANG Standard: Uses normalized contact_tags table
    */
-  const handleRemoveTag = async (tagToRemove: string) => {
+  const handleRemoveTag = async (contactTagId: string) => {
     // Optimistic UI update
     const previousTags = [...contactTags]
-    const optimisticTags = contactTags.filter((tag) => tag !== tagToRemove)
+    const optimisticTags = contactTags.filter((ct) => ct.id !== contactTagId)
     setContactTags(optimisticTags)
 
     try {
       const supabase = createClient()
 
-      // Use atomic RPC function to prevent race conditions
-      const { data, error } = await supabase.rpc('remove_contact_tag', {
-        p_contact_id: contactId,
-        p_tag_to_remove: tagToRemove,
-      })
+      // Delete from junction table
+      const { error } = await supabase
+        .from('contact_tags')
+        .delete()
+        .eq('id', contactTagId)
 
       if (error) {
         console.error('Error removing tag:', error)
@@ -440,16 +471,46 @@ export function ContactDetailCard({
         alert(`Failed to remove tag: ${error.message}`)
         return
       }
-
-      // Sync with actual database state
-      if (data && data.tags) {
-        setContactTags(data.tags)
-      }
     } catch (err) {
       console.error('Error removing tag:', err)
       // Revert optimistic update
       setContactTags(previousTags)
       alert('Failed to remove tag. Please try again.')
+    }
+  }
+
+  /**
+   * Fetch tags from junction table
+   * FAANG Standard: Separate function for reusability
+   */
+  const fetchContactTags = async () => {
+    try {
+      const supabase = createClient()
+      const { data: tagsData, error: tagsError } = await supabase
+        .from('contact_tags')
+        .select(`
+          id,
+          contact_id,
+          tag_id,
+          created_at,
+          tags (
+            id,
+            name,
+            name_norm,
+            description,
+            category
+          )
+        `)
+        .eq('contact_id', contactId)
+        .order('created_at', { ascending: true })
+
+      if (tagsError) {
+        console.error('Error fetching contact tags:', tagsError)
+      } else {
+        setContactTags((tagsData as ContactTag[]) || [])
+      }
+    } catch (err) {
+      console.error('Error fetching contact tags:', err)
     }
   }
 
@@ -553,10 +614,8 @@ export function ContactDetailCard({
       setSubscriptions(subscriptionsData || [])
       setNotes(notesData || [])
 
-      // Load tags from contact data
-      if (contactData.tags && Array.isArray(contactData.tags)) {
-        setContactTags(contactData.tags)
-      }
+      // Fetch tags from junction table (contact_tags + tags)
+      await fetchContactTags()
 
       // Fetch mailing list recommendation with scores
       const { data: mailingData } = await supabase
@@ -1540,24 +1599,34 @@ export function ContactDetailCard({
         {showTags && (
           <div ref={tagsRef}>
             <Card className="shadow-sm">
-            <CardContent className="pt-6 space-y-4">
+            <CardHeader className="pb-3">
+              <p className="text-sm text-muted-foreground">
+                Tags from Kajabi and manual entries
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
               {/* Add Tag Input */}
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                  onKeyPress={(e) => e.key === 'Enter' && !addingTag && handleAddTag()}
                   placeholder="Add a tag..."
-                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  disabled={addingTag}
+                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
                 />
                 <Button
                   size="sm"
                   onClick={handleAddTag}
-                  disabled={!newTag.trim()}
+                  disabled={!newTag.trim() || addingTag}
                   className="h-9"
                 >
-                  <Plus className="h-4 w-4" />
+                  {addingTag ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Plus className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
 
@@ -1568,21 +1637,47 @@ export function ContactDetailCard({
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {contactTags.map((tag, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="text-sm"
-                    >
-                      {tag}
-                      <button
-                        onClick={() => handleRemoveTag(tag)}
-                        className="ml-1.5 hover:text-destructive transition-colors"
+                  {contactTags.map((ct) => {
+                    const isKajabiTag = !ct.tags.description?.includes('manually')
+                    return (
+                      <Badge
+                        key={ct.id}
+                        variant="secondary"
+                        className={`text-sm py-1.5 ${
+                          isKajabiTag
+                            ? 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800'
+                            : ''
+                        }`}
+                        title={ct.tags.description || undefined}
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
+                        {ct.tags.name}
+                        {isKajabiTag && (
+                          <span className="ml-1.5 text-[10px] opacity-60">K</span>
+                        )}
+                        <button
+                          onClick={() => handleRemoveTag(ct.id)}
+                          className="ml-1.5 hover:text-destructive transition-colors"
+                          title="Remove tag"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Legend */}
+              {contactTags.length > 0 && (
+                <div className="pt-2 border-t border-border/50 flex items-center gap-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">K</Badge>
+                    Kajabi
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">Tag</Badge>
+                    Manual
+                  </span>
                 </div>
               )}
             </CardContent>
